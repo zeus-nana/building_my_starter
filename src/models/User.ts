@@ -6,20 +6,21 @@ export interface User {
   password: string;
   phone: string | null;
   email: string;
-  function: string;
+  department: string;
   role: string;
-  status: boolean;
+  active: boolean;
+  must_reset_password: boolean;
   created_at: Date;
   updated_at: Date;
 }
 
 export type UserCreationAttributes = Omit<
   User,
-  'id' | 'created_at' | 'updated_at'
+  'id' | 'active' | 'created_at' | 'updated_at'
 >;
 
 export type UserUpdatableFields = Partial<
-  Pick<User, 'username' | 'phone' | 'function' | 'role' | 'status'>
+  Pick<User, 'username' | 'phone' | 'department' | 'active'>
 >;
 
 export interface UserValidationResult {

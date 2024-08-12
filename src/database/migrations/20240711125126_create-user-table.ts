@@ -5,7 +5,7 @@ import { Knex } from 'knex';
  * @returns {Knex.SchemaBuilder}
  */
 
-import { onUpdateTrigger } from '../../knexfile';
+import { onUpdateTrigger } from '../../../knexfile';
 
 exports.up = async function (knex: Knex) {
   await knex.schema.createTable('users', (table) => {
@@ -14,9 +14,17 @@ exports.up = async function (knex: Knex) {
     table.string('password').notNullable();
     table.string('email').unique().notNullable();
     table.string('phone');
-    table.string('function').notNullable();
-    table.string('role').notNullable();
-    table.integer('user_id').references('id').inTable('users');
+    table
+      .enum('department', [
+        'finance',
+        'project',
+        'audit',
+        'it_support',
+        'admin',
+      ])
+      .notNullable();
+    table.integer('created_by').references('id').inTable('users');
+    table.integer('updated_by').references('id').inTable('users');
     table.boolean('active').defaultTo(true);
     table.timestamps(true, true);
   });

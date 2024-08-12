@@ -63,7 +63,18 @@ const sendErrorDev = (error: any, res: Response) => {
     });
   }
 
-  res.status(error.statusCode).json({
+  // Gestion des erreurs de token
+  if (error.name === 'JsonWebTokenError') {
+    console.error('Joi Error:', error);
+    return res.status(401).json({
+      status: 'JWT error',
+      message: error.message,
+      error,
+      stack: error.stack,
+    });
+  }
+
+  return res.status(error.statusCode || 500).json({
     status: error.status,
     error,
     message: error.message,
@@ -78,6 +89,15 @@ const sendErrorProd = (error: any, res: Response) => {
     return res.status(statusCode).json({
       status: 'Database error',
       message: message,
+    });
+  }
+
+  // Gestion des erreurs de token
+  if (error.name === 'JsonWebTokenError') {
+    console.error('Joi Error:', error);
+    return res.status(401).json({
+      status: 'JWT error',
+      message: 'Invalid Token.',
     });
   }
 

@@ -1,7 +1,7 @@
 import knex, { Knex } from 'knex';
 import dotenv from 'dotenv';
 
-import knexfile from '../knexfile';
+import knexfile from '../../knexfile';
 
 dotenv.config();
 

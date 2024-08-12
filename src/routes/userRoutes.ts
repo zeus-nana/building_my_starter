@@ -1,13 +1,13 @@
 import express from 'express';
 import usersController from '../controllers/usersController';
+import authController from '../controllers/authController';
 
 const router = express.Router();
 
-router.route('/:id').get(usersController.getUserById);
+router.use(authController.protect);
 
-router
-  .route('/')
-  .get(usersController.getAllUser)
-  .post(usersController.createUser);
+// Regular user routes
+router.route('/changePassword').patch(usersController.changePassword);
+// router.route('/updateMe').patch(usersController.updateOwnProfile);
 
 export default router;
