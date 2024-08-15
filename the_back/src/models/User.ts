@@ -10,6 +10,8 @@ export interface User {
   role: string;
   active: boolean;
   must_reset_password: boolean;
+  localisation: string;
+  login: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -20,7 +22,7 @@ export type UserCreationAttributes = Omit<
 >;
 
 export type UserUpdatableFields = Partial<
-  Pick<User, 'username' | 'phone' | 'department' | 'active'>
+  Pick<User, 'username' | 'phone' | 'department' | 'role' | 'localisation' | 'email' | 'active'>
 >;
 
 export interface UserValidationResult {

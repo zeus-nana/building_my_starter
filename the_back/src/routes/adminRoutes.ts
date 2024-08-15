@@ -5,7 +5,7 @@ import AppError from '../utils/appError';
 
 const router = express.Router();
 
-router.use(authController.protect);
+// router.use(authController.protect);
 
 // Support/Admin routes
 // router.use(authController.restrictTo('support', 'admin'));

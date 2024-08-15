@@ -34,7 +34,7 @@ const getUserById = catchAsync(
 );
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
-  const users: User[] = await db('users').select('*').orderBy('id', 'desc');
+  const users: User[] = await db('users').select('*').orderBy('id', 'asc');
 
   return res.status(200).json({
     status: 'success',

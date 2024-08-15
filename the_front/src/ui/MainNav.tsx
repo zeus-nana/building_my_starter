@@ -34,7 +34,7 @@ const StyledNavLink = styled(NavLink)`
   &.active {
     color: var(--color-grey-800);
     background-color: var(--color-grey-100);
-    border-radius: var(--border-radius-sm);
+    border-radius: 12px;
   }
 
   svg {

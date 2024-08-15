@@ -24,7 +24,7 @@ const SubNavButton = styled.button`
   &:hover {
     color: var(--color-grey-800);
     background-color: var(--color-grey-100);
-    border-radius: var(--border-radius-sm);
+    border-radius: 12px;
   }
 
   svg {
@@ -59,7 +59,7 @@ const StyledSubNavLink = styled(NavLink)`
 
     color: var(--color-grey-600);
     font-size: 1.4rem;
-    font-weight: 400;
+    font-weight: 500;
     padding: 0.8rem 1.6rem;
     transition: all 0.3s;
   }
@@ -70,7 +70,7 @@ const StyledSubNavLink = styled(NavLink)`
   &.active:visited {
     color: var(--color-grey-800);
     background-color: var(--color-grey-100);
-    border-radius: var(--border-radius-sm);
+    border-radius: 8px;
   }
 
   & svg {

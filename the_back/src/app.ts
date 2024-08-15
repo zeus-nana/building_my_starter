@@ -45,7 +45,11 @@ app.use('/api', limiter);
 app.use(express.json());
 
 // Specifies the API to use CORS to prevent XSS attacks.
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // L'URL de votre frontend
+  credentials: true // Permet l'envoi de cookies
+}));
+
 
 // Data sanitization against XSS attacks
 app.use(xss());
