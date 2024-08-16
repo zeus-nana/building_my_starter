@@ -95,6 +95,11 @@ function MainNav() {
           icon: <HiOutlineLockOpen />,
           text: "Permissions",
         },
+        {
+          to: "/settings/settings-departements",
+          icon: <HiOutlineLockOpen />,
+          text: "Departements",
+        },
       ],
     },
   ];

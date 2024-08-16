@@ -11,9 +11,13 @@ const router = express.Router();
 // router.use(authController.restrictTo('support', 'admin'));
 
 router
-  .route('/')
+  .route('/users')
   .get(adminController.getAllUsers)
   .post(adminController.createUser);
+
+router.route('/departements').get(adminController.getDepartements);
+
+router.route('/permissions').get(adminController.getPermissions);
 
 router
   .route('/:id')

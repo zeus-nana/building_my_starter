@@ -13,3 +13,8 @@ export interface User {
   created_at: Date;
   updated_at: Date;
 }
+
+export type UserCreationAttributes = Pick<
+  User,
+  "login" | "username" | "email" | "phone" | "localisation" | "department"
+>;

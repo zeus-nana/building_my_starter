@@ -13,6 +13,8 @@ import bcrypt from 'bcryptjs';
 import { signToken } from '../utils/tokens';
 import validator from 'validator';
 import sendEmail from '../utils/email';
+import { Departement } from '../models/Departement';
+import { Permission } from '../models/Permission';
 
 const getUserById = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -57,6 +59,28 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
+  // Vérification de l'unicité du login et du username
+  const existingUser = await db('users')
+    .where('login', newUser.login)
+    .orWhere('username', newUser.username)
+    .orWhere('email', newUser.email)
+    .first();
+
+  if (existingUser) {
+    let errorMessage = '';
+    if (existingUser.login === newUser.login) {
+      errorMessage = 'Ce login est déjà utilisé.';
+    } else if (existingUser.username === newUser.username) {
+      errorMessage = "Ce nom d'utilisateur est déjà pris.";
+    } else if (existingUser.email === newUser.email) {
+      errorMessage = 'Cet email est déjà utilisé.';
+    }
+    return res.status(400).json({
+      status: 'fail',
+      message: errorMessage,
+    });
+  }
+
   // Generate random password
   const generatedPassword = crypto.randomBytes(10).toString('hex');
 
@@ -87,9 +111,8 @@ Nous vous recommandons de changer ce mot de passe dès votre première connexion
 
   return res.status(201).json({
     status: 'success',
-    token,
     data: {
-      user: createdUser[0],
+      userId: createdUser[0].id,
     },
   });
 });
@@ -212,10 +235,41 @@ const validateUser = async (
   return { isValid: true, message: '' };
 };
 
+// Get departements
+const getDepartements = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const departements: Departement[] = await db('departement').select('*');
+
+    res.status(200).json({
+      status: 'success',
+      results: departements.length,
+      data: {
+        departements,
+      },
+    });
+  },
+);
+
+// Get permissions
+const getPermissions = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const permissions: Permission[] = await db('permissions').select('*');
+    res.status(200).json({
+      status: 'success',
+      results: permissions.length,
+      data: {
+        permissions,
+      },
+    });
+  },
+);
+
 export default {
   getUserById,
   getAllUsers,
   createUser,
   updateUser,
   resetPassword,
+  getDepartements,
+  getPermissions,
 };

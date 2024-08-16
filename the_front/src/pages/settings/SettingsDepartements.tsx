@@ -1,12 +1,12 @@
 import Heading from "../../ui/Heading.tsx";
 import Row from "../../ui/Row.tsx";
 
-function SettingsPermissions() {
+function SettingsDepartements() {
   return (
     <Row type="horizontal">
-      <Heading type="h1">Permissions</Heading>
+      <Heading type="h1">Départements</Heading>
     </Row>
   );
 }
 
-export default SettingsPermissions;
+export default SettingsDepartements;
