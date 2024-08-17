@@ -29,7 +29,7 @@ const localisationOptions = [
   { value: "SUD", label: "SUD" },
 ];
 
-function CreateUserForm() {
+function CreateUserForm({ onCloseModal }) {
   const { register, handleSubmit, reset, formState } =
     useForm<UserCreationAttributes>({
       defaultValues: {
@@ -50,6 +50,7 @@ function CreateUserForm() {
         queryKey: ["users"],
       });
       reset();
+      onCloseModal?.();
     },
 
     onError: (error: Error | AxiosError<ErrorResponse>) => {
@@ -73,7 +74,10 @@ function CreateUserForm() {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onError)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, onError)}
+      type={onCloseModal ? "modal" : "default"}
+    >
       <FormRow label="Login" error={errors?.login?.message}>
         <Input
           type="text"
@@ -101,19 +105,23 @@ function CreateUserForm() {
           disabled={isCreating}
           {...register("email", {
             required: "Ce champ est obligatoire.",
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "Adresse email invalide.",
+            },
           })}
         />
       </FormRow>
       <FormRow label="Téléphone" error={errors?.phone?.message}>
         <Input
-          type="number"
+          type="tel"
           id="phone"
           disabled={isCreating}
           {...register("phone", {
             required: "Ce champ est obligatoire.",
-            minLength: {
-              value: 9,
-              message: "Le numéro doit contenir au moins 9 chiffres.",
+            pattern: {
+              value: /^[0-9]+$/,
+              message: "Le numéro ne doit contenir que des chiffres.",
             },
           })}
         />
@@ -141,11 +149,18 @@ function CreateUserForm() {
         />
       </FormRow>
 
-      {/* type is an HTML attribute! */}
-      <Button $variation="secondary" type="reset" disabled={isCreating}>
-        Cancel
-      </Button>
-      <Button disabled={isCreating}>Create user</Button>
+      <FormRow>
+        {/* type is an HTML attribute! */}
+        <Button
+          $variation="secondary"
+          type="reset"
+          onClick={() => onCloseModal?.()}
+          disabled={isCreating}
+        >
+          Annuler
+        </Button>
+        <Button disabled={isCreating}>Enregistrer</Button>
+      </FormRow>
     </Form>
   );
 }

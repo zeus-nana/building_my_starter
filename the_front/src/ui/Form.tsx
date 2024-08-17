@@ -7,7 +7,7 @@ interface FormProps {
 
 const Form = styled.form<FormProps>`
   ${(props) =>
-    props.type !== "modal" &&
+    props.type === "default" &&
     css`
       padding: 2.4rem 4rem;
 
@@ -26,5 +26,9 @@ const Form = styled.form<FormProps>`
   overflow: hidden;
   font-size: 1.4rem;
 `;
+
+Form.defaultProps = {
+  type: "default",
+};
 
 export default Form;

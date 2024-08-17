@@ -5,14 +5,8 @@ import AdminService from "../../services/adminService";
 import Spinner from "../../ui/Spinner";
 import UsersRow from "./UsersRow";
 import { User } from "../../types/User";
-
-const Table = styled.div`
-  border: 1px solid var(--color-grey-200);
-  font-size: 1.4rem;
-  background-color: var(--color-grey-0);
-  border-radius: 7px;
-  overflow: hidden;
-`;
+import Table from "../../ui/Table.tsx";
+import Menus from "../../ui/Menus.tsx";
 
 const TableHeader = styled.header`
   display: grid;
@@ -84,77 +78,80 @@ function UsersTable() {
   if (isLoading) return <Spinner />;
 
   return (
-    <Table role="table">
-      <TableHeader role="row">
-        <HeaderCell>
-          <div>Login</div>
-          <FilterInput
-            type="text"
-            name="login"
-            value={filters.login}
-            onChange={handleFilterChange}
-          />
-        </HeaderCell>
-        <HeaderCell>
-          <div>Nom</div>
-          <FilterInput
-            type="text"
-            name="username"
-            value={filters.username}
-            onChange={handleFilterChange}
-          />
-        </HeaderCell>
-        <HeaderCell>
-          <div>Email</div>
-          <FilterInput
-            type="text"
-            name="email"
-            value={filters.email}
-            onChange={handleFilterChange}
-          />
-        </HeaderCell>
-        <HeaderCell>
-          <div>Téléphone</div>
-          <FilterInput
-            type="text"
-            name="phone"
-            value={filters.phone}
-            onChange={handleFilterChange}
-          />
-        </HeaderCell>
-        <HeaderCell>
-          <div>Département</div>
-          <FilterInput
-            type="text"
-            name="department"
-            value={filters.department}
-            onChange={handleFilterChange}
-          />
-        </HeaderCell>
-        <HeaderCell>
-          <div>Localisation</div>
-          <FilterInput
-            type="text"
-            name="localisation"
-            value={filters.localisation}
-            onChange={handleFilterChange}
-          />
-        </HeaderCell>
-        <HeaderCell>
-          <div>Statut</div>
-          <FilterInput
-            type="text"
-            name="active"
-            value={filters.active}
-            onChange={handleFilterChange}
-          />
-        </HeaderCell>
-      </TableHeader>
+    <Menus>
+      <Table columns="0.4fr 1fr 0.8fr 0.4fr 0.5fr 0.5fr 0.3fr 0.1fr;">
+        <Table.Header>
+          <HeaderCell>
+            <div>Login</div>
+            <FilterInput
+              type="text"
+              name="login"
+              value={filters.login}
+              onChange={handleFilterChange}
+            />
+          </HeaderCell>
+          <HeaderCell>
+            <div>Nom</div>
+            <FilterInput
+              type="text"
+              name="username"
+              value={filters.username}
+              onChange={handleFilterChange}
+            />
+          </HeaderCell>
+          <HeaderCell>
+            <div>Email</div>
+            <FilterInput
+              type="text"
+              name="email"
+              value={filters.email}
+              onChange={handleFilterChange}
+            />
+          </HeaderCell>
+          <HeaderCell>
+            <div>Téléphone</div>
+            <FilterInput
+              type="text"
+              name="phone"
+              value={filters.phone}
+              onChange={handleFilterChange}
+            />
+          </HeaderCell>
+          <HeaderCell>
+            <div>Département</div>
+            <FilterInput
+              type="text"
+              name="department"
+              value={filters.department}
+              onChange={handleFilterChange}
+            />
+          </HeaderCell>
+          <HeaderCell>
+            <div>Localisation</div>
+            <FilterInput
+              type="text"
+              name="localisation"
+              value={filters.localisation}
+              onChange={handleFilterChange}
+            />
+          </HeaderCell>
+          <HeaderCell>
+            <div>Statut</div>
+            <FilterInput
+              type="text"
+              name="active"
+              value={filters.active}
+              onChange={handleFilterChange}
+            />
+          </HeaderCell>
+        </Table.Header>
 
-      {filteredUsers.map((user: User) => (
-        <UsersRow key={user.id} user={user} />
-      ))}
-    </Table>
+        <Table.Body
+          data={filteredUsers}
+          render={(user: User) => <UsersRow key={user.id} user={user} />}
+        />
+      </Table>
+    </Menus>
   );
 }
 

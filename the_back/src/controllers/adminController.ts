@@ -89,6 +89,7 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
   // Hashing password
   newUser.password = await bcrypt.hash(generatedPassword, 12);
   newUser.must_reset_password = true;
+  newUser.department = newUser.department.toLowerCase();
 
   const createdUser = await db('users').insert(newUser, '*');
 

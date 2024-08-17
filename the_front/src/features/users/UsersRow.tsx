@@ -1,20 +1,10 @@
 import styled from "styled-components";
 import { User as Users } from "../../types/User.ts";
+import Table from "../../ui/Table.tsx";
+import Menus from "../../ui/Menus.tsx";
+import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
+import { HiTrash } from "react-icons/hi";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const TableRow = styled.div`
-  display: grid;
-  grid-template-columns: 0.4fr 1fr 0.8fr 0.4fr 0.5fr 0.5fr 0.3fr 0.2fr;
-  column-gap: 2.4rem;
-  align-items: center;
-  padding: 1.4rem 2.4rem;
-
-  &:not(:last-child) {
-    border-bottom: 1px solid var(--color-grey-100);
-  }
-`;
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Img = styled.img`
   display: block;
   width: 6.4rem;
@@ -24,7 +14,6 @@ const Img = styled.img`
   transform: scale(1.5) translateX(-7px);
 `;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const User = styled.div`
   font-size: 1.6rem;
   font-weight: 600;
@@ -32,13 +21,11 @@ const User = styled.div`
   font-family: "Sono";
 `;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Price = styled.div`
   font-family: "Sono";
   font-weight: 600;
 `;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Discount = styled.div`
   font-family: "Sono";
   font-weight: 500;
@@ -47,7 +34,7 @@ const Discount = styled.div`
 
 function UsersRow({ user }: { user: Users }) {
   return (
-    <TableRow role="row">
+    <Table.Row>
       <div>{user.login}</div>
       <div>{user.username}</div>
       <div>{user.email}</div>
@@ -55,8 +42,16 @@ function UsersRow({ user }: { user: Users }) {
       <div>{user.department.toUpperCase()}</div>
       <div>{user.localisation.toUpperCase()}</div>
       <div>{user.active ? "Actif" : "Inactif"}</div>
-      <div></div>
-    </TableRow>
+      <div>
+        <Menus.Menu>
+          <Menus.Toggle id={user.id} />
+          <Menus.List id={user.id}>
+            <Menus.Button icon={<HiPencil />}>Détails</Menus.Button>
+            <Menus.Button icon={<HiTrash />}>Supprimer</Menus.Button>
+          </Menus.List>
+        </Menus.Menu>
+      </div>
+    </Table.Row>
   );
 }
 
