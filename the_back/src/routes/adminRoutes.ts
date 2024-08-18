@@ -15,10 +15,6 @@ router
   .get(adminController.getAllUsers)
   .post(adminController.createUser);
 
-router.route('/departements').get(adminController.getDepartements);
-
-router.route('/permissions').get(adminController.getPermissions);
-
 router
   .route('/:id')
   .get(adminController.getUserById)

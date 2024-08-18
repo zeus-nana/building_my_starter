@@ -25,7 +25,7 @@ const Select = React.forwardRef<HTMLSelectElement, Props>(
         <option value="">Sélectionnez une option</option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
-            {option.label}
+            {option.label.toUpperCase()}
           </option>
         ))}
       </StyledSelect>

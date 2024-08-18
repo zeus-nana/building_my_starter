@@ -5,7 +5,6 @@ import cors from 'cors';
 import morgan from 'morgan';
 import globalErrorHandler from './controllers/errorController';
 import authRoutes from './routes/authRoutes';
-import permissionRoutes from './routes/permissionRoutes';
 import adminRoutes from './routes/adminRoutes';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
@@ -45,11 +44,12 @@ app.use('/api', limiter);
 app.use(express.json());
 
 // Specifies the API to use CORS to prevent XSS attacks.
-app.use(cors({
-  origin: 'http://localhost:5173', // L'URL de votre frontend
-  credentials: true // Permet l'envoi de cookies
-}));
-
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // L'URL de votre frontend
+    credentials: true, // Permet l'envoi de cookies
+  }),
+);
 
 // Data sanitization against XSS attacks
 app.use(xss());
@@ -65,7 +65,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/users', adminRoutes);
 app.use('/api/v1/login', authRoutes);
-app.use('/api/v1/permission', permissionRoutes);
 
 // UNHANDLED ROUTE
 app.all('*', (req: Request, res: Response, next: NextFunction) => {

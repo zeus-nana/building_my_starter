@@ -2,8 +2,10 @@ import styled from "styled-components";
 import { User as Users } from "../../types/User.ts";
 import Table from "../../ui/Table.tsx";
 import Menus from "../../ui/Menus.tsx";
-import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
-import { HiTrash } from "react-icons/hi";
+import { HiLockClosed, HiPencil } from "react-icons/hi2";
+import { HiBan } from "react-icons/hi";
+import Modal from "../../ui/Modal.tsx";
+import CreateUserForm from "./CreateUserForm.tsx";
 
 const Img = styled.img`
   display: block;
@@ -39,17 +41,30 @@ function UsersRow({ user }: { user: Users }) {
       <div>{user.username}</div>
       <div>{user.email}</div>
       <div>{user.phone}</div>
-      <div>{user.department.toUpperCase()}</div>
-      <div>{user.localisation.toUpperCase()}</div>
+      <div>{user.profil?.toUpperCase()}</div>
+      <div>{user.department ? user.department.toUpperCase() : ""}</div>
+      <div>{user.localisation ? user.localisation.toUpperCase() : ""}</div>
       <div>{user.active ? "Actif" : "Inactif"}</div>
       <div>
-        <Menus.Menu>
-          <Menus.Toggle id={user.id} />
-          <Menus.List id={user.id}>
-            <Menus.Button icon={<HiPencil />}>Détails</Menus.Button>
-            <Menus.Button icon={<HiTrash />}>Supprimer</Menus.Button>
-          </Menus.List>
-        </Menus.Menu>
+        <Modal>
+          <Menus.Menu>
+            <Menus.Toggle id={user.id} />
+            <Menus.List id={user.id}>
+              <Modal.Open opens="edit">
+                <Menus.Button icon={<HiPencil />}>Éditer</Menus.Button>
+              </Modal.Open>
+
+              <Menus.Button icon={<HiLockClosed />}>
+                Réinitialiser le mot de passe
+              </Menus.Button>
+              <Menus.Button icon={<HiBan />}>Déactiver</Menus.Button>
+
+              <Modal.Window name="edit">
+                <CreateUserForm />
+              </Modal.Window>
+            </Menus.List>
+          </Menus.Menu>
+        </Modal>
       </div>
     </Table.Row>
   );

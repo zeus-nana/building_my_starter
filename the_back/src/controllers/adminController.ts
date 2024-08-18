@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 import {
   User,
   UserCreationAttributes,
+  UserLocalisation,
+  UserProfile,
   UserUpdatableFields,
   UserValidationResult,
 } from '../models/User';
@@ -13,8 +15,6 @@ import bcrypt from 'bcryptjs';
 import { signToken } from '../utils/tokens';
 import validator from 'validator';
 import sendEmail from '../utils/email';
-import { Departement } from '../models/Departement';
-import { Permission } from '../models/Permission';
 
 const getUserById = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -50,16 +50,20 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 const createUser = catchAsync(async (req: Request, res: Response) => {
   const newUser: UserCreationAttributes = req.body;
 
+  if (newUser.phone !== null && newUser.phone !== undefined) {
+    newUser.phone = newUser.phone.trim().replace(/\D/g, '');
+  }
+
   // Validation
   const validationResult = await validateUser(newUser);
   if (!validationResult.isValid) {
     return res.status(400).json({
-      status: 'fail',
+      status: 'échec',
       message: validationResult.message,
     });
   }
 
-  // Vérification de l'unicité du login et du username
+  // Vérification de l'unicité du login, username et email
   const existingUser = await db('users')
     .where('login', newUser.login)
     .orWhere('username', newUser.username)
@@ -76,26 +80,22 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
       errorMessage = 'Cet email est déjà utilisé.';
     }
     return res.status(400).json({
-      status: 'fail',
+      status: 'échec',
       message: errorMessage,
     });
   }
 
-  // Generate random password
+  // Générer un mot de passe aléatoire
   const generatedPassword = crypto.randomBytes(10).toString('hex');
-
   newUser.email = newUser.email.toLowerCase();
-
-  // Hashing password
+  // Hachage du mot de passe
   newUser.password = await bcrypt.hash(generatedPassword, 12);
-  newUser.must_reset_password = true;
-  newUser.department = newUser.department.toLowerCase();
 
   const createdUser = await db('users').insert(newUser, '*');
+  signToken(createdUser[0].id, createdUser[0].email);
 
-  const token = signToken(createdUser[0].id, createdUser[0].email);
-
-  // Send email to user
+  let emailSent = true;
+  // Envoyer un email à l'utilisateur
   try {
     await sendEmail({
       email: createdUser[0].email,
@@ -106,17 +106,108 @@ Votre compte a été créé avec succès. Voici votre mot de passe temporaire : 
 Nous vous recommandons de changer ce mot de passe dès votre première connexion.`,
     });
   } catch (err) {
-    console.error('Error while sending email', err);
-    // Note: We continue with the account creation even if the email fails
+    console.error("Erreur lors de l'envoi de l'email", err);
+    emailSent = false;
   }
 
   return res.status(201).json({
-    status: 'success',
+    status: 'succès',
+    message: `L'utilisateur a été créé ${
+      emailSent
+        ? 'et son mot de passe temporaire a été envoyé par mail.'
+        : `mais son mot de passe temporaire n'a pas pu être envoyé par mail. 
+         Vérifiez les paramètres SMTP du serveur. Assurez-vous que l'adresse email ${createdUser[0].email} est valide. 
+         Vous devrez régénérer un nouveau mot de passe pour cet utilisateur`
+    }.`,
     data: {
       userId: createdUser[0].id,
     },
   });
 });
+
+const validateUser = async (
+  body: UserCreationAttributes,
+): Promise<UserValidationResult> => {
+  if (!body.login || !validator.isLength(body.login, { min: 3, max: 255 })) {
+    return {
+      isValid: false,
+      message: 'Le login est requis et doit contenir entre 3 et 255 caractères',
+    };
+  }
+  if (
+    !body.username ||
+    !validator.isLength(body.username, { min: 3, max: 255 })
+  ) {
+    return {
+      isValid: false,
+      message:
+        "Le nom d'utilisateur est requis et doit contenir entre 3 et 255 caractères",
+    };
+  }
+  if (
+    !body.email ||
+    !validator.isEmail(body.email) ||
+    !validator.isLength(body.email, { max: 255 })
+  ) {
+    return {
+      isValid: false,
+      message:
+        'Un email valide est requis et ne doit pas dépasser 255 caractères',
+    };
+  }
+  if (body.department && !validator.isLength(body.department, { max: 255 })) {
+    return {
+      isValid: false,
+      message: 'Le département ne doit pas dépasser 255 caractères',
+    };
+  }
+  if (body.profil) {
+    const validProfiles: UserProfile[] = [
+      'gestionnaire',
+      'reporting',
+      'it_support',
+    ];
+    if (!validProfiles.includes(body.profil as UserProfile)) {
+      return {
+        isValid: false,
+        message:
+          'Le profil doit être "gestionnaire", "reporting" ou "it_support"',
+      };
+    }
+  }
+  if (
+    body.phone &&
+    (!validator.isMobilePhone(body.phone) ||
+      !validator.isLength(body.phone, { max: 255 }))
+  ) {
+    return {
+      isValid: false,
+      message: 'Le numéro de téléphone est invalide ou dépasse 255 caractères',
+    };
+  }
+  if (body.localisation) {
+    const validLocalisations: UserLocalisation[] = [
+      'siège',
+      'adamaoua',
+      'centre',
+      'est',
+      'extreme_nord',
+      'littoral',
+      'nord',
+      'nord_ouest',
+      'ouest',
+      'sud',
+      'sud_ouest',
+    ];
+    if (!validLocalisations.includes(body.localisation as UserLocalisation)) {
+      return {
+        isValid: false,
+        message: "La localisation spécifiée n'est pas valide",
+      };
+    }
+  }
+  return { isValid: true, message: '' };
+};
 
 const resetPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -207,70 +298,10 @@ const updateUser = catchAsync(
   },
 );
 
-// User Validation
-const validateUser = async (
-  body: UserCreationAttributes,
-): Promise<UserValidationResult> => {
-  if (
-    !body.username ||
-    !validator.isLength(body.username, { min: 3, max: 30 })
-  ) {
-    return {
-      isValid: false,
-      message: 'Username is required and should be between 3 and 30 characters',
-    };
-  }
-
-  if (!body.email || !validator.isEmail(body.email)) {
-    return { isValid: false, message: 'Valid email is required' };
-  }
-  if (!body.department) {
-    return { isValid: false, message: 'Department is required' };
-  }
-  if (!body.department) {
-    return { isValid: false, message: 'Role is required' };
-  }
-  if (body.phone && !validator.isMobilePhone(body.phone)) {
-    return { isValid: false, message: 'Phone number is invalid' };
-  }
-  return { isValid: true, message: '' };
-};
-
-// Get departements
-const getDepartements = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const departements: Departement[] = await db('departement').select('*');
-
-    res.status(200).json({
-      status: 'success',
-      results: departements.length,
-      data: {
-        departements,
-      },
-    });
-  },
-);
-
-// Get permissions
-const getPermissions = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const permissions: Permission[] = await db('permissions').select('*');
-    res.status(200).json({
-      status: 'success',
-      results: permissions.length,
-      data: {
-        permissions,
-      },
-    });
-  },
-);
-
 export default {
   getUserById,
   getAllUsers,
   createUser,
   updateUser,
   resetPassword,
-  getDepartements,
-  getPermissions,
 };

@@ -1,76 +1,58 @@
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import AdminService from "../../services/adminService.ts";
-import toast from "react-hot-toast";
+import { CreateUserResponse } from "../../services/adminService.ts";
 import FormRow from "../../ui/FormRow.tsx";
-import { UserCreationAttributes } from "../../types/User.ts";
+import {
+  UserCreationAttributes,
+  UserProfile,
+  UserLocalisation,
+} from "../../types/User.ts";
 import Button from "../../ui/Button.tsx";
-import axios, { AxiosError } from "axios";
 import Select from "../../ui/Select.tsx";
+import { ApiResponse } from "../../services/apiService.ts";
+import { useCreateUser } from "./useCreateUser.ts";
+import SpinnerMini from "../../ui/SpinnerMini.tsx";
 
-interface ErrorResponse {
-  status: string;
-  message: string;
-}
+const localisationOptions: { value: UserLocalisation; label: string }[] =
+  Object.values(UserLocalisation).map((value) => ({
+    value,
+    label: value.charAt(0).toUpperCase() + value.slice(1).replace("_", " "),
+  }));
 
-const departmentOptions = [
-  { value: "IT_SUPPORT", label: "IT Support" },
-  { value: "PROJECT", label: "Project" },
-  { value: "FINANCE", label: "Finance" },
-  { value: "AUDIT", label: "Audit" },
-];
+const profileOptions: { value: UserProfile; label: string }[] = Object.values(
+  UserProfile,
+).map((value) => ({
+  value,
+  label: value.charAt(0).toUpperCase() + value.slice(1),
+}));
 
-const localisationOptions = [
-  { value: "CENTRE", label: "CENTRE" },
-  { value: "OUEST", label: "OUEST" },
-  { value: "SIEGE", label: "SIEGE" },
-  { value: "SUD", label: "SUD" },
-];
-
-function CreateUserForm({ onCloseModal }) {
+function CreateUserForm({ userToEdit = {}, onCloseModal }) {
   const { register, handleSubmit, reset, formState } =
     useForm<UserCreationAttributes>({
       defaultValues: {
-        department: "",
-        localisation: "",
+        localisation: null,
+        profil: null,
       },
     });
 
   const { errors } = formState;
 
-  const queryClient = useQueryClient();
+  const { isCreating, creatingUser } = useCreateUser(onCloseModal);
 
-  const { mutate, isLoading: isCreating } = useMutation({
-    mutationFn: AdminService.createUser,
-    onSuccess: () => {
-      toast.success(`Nouvel utilisateur créé avec succès.`);
-      queryClient.invalidateQueries({
-        queryKey: ["users"],
-      });
-      reset();
-      onCloseModal?.();
-    },
-
-    onError: (error: Error | AxiosError<ErrorResponse>) => {
-      if (axios.isAxiosError(error) && error.response?.data) {
-        toast.error(`Erreur: ${error.response.data.message}`);
-      } else {
-        toast.error(`Erreur lors de la création de l'utilisateur.`);
-      }
-    },
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function onSubmit(data: UserCreationAttributes) {
-    mutate(data);
+    creatingUser(
+      { ...data },
+      {
+        onSuccess: async (data: ApiResponse<CreateUserResponse>) => {
+          reset();
+        },
+      },
+    );
   }
 
   function onError(errors: typeof formState.errors) {
-    {
-      console.log(errors.login);
-    }
+    console.log(errors);
   }
 
   return (
@@ -127,14 +109,23 @@ function CreateUserForm({ onCloseModal }) {
         />
       </FormRow>
 
-      <FormRow label="Département" error={errors?.department?.message}>
+      <FormRow label="Profil" error={errors?.profil?.message}>
         <Select
-          options={departmentOptions}
-          id="department"
+          options={profileOptions}
+          id="profil"
           disabled={isCreating}
-          {...register("department", {
+          {...register("profil", {
             required: "Ce champ est obligatoire.",
           })}
+        />
+      </FormRow>
+
+      <FormRow label="Département" error={errors?.department?.message}>
+        <Input
+          type="text"
+          id="department"
+          disabled={isCreating}
+          {...register("department")}
         />
       </FormRow>
 
@@ -150,7 +141,6 @@ function CreateUserForm({ onCloseModal }) {
       </FormRow>
 
       <FormRow>
-        {/* type is an HTML attribute! */}
         <Button
           $variation="secondary"
           type="reset"
@@ -159,7 +149,9 @@ function CreateUserForm({ onCloseModal }) {
         >
           Annuler
         </Button>
-        <Button disabled={isCreating}>Enregistrer</Button>
+        <Button disabled={isCreating}>
+          {!isCreating ? "Enregistrer" : <SpinnerMini />}
+        </Button>
       </FormRow>
     </Form>
   );

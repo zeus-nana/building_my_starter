@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import AdminService from "../../services/adminService";
@@ -41,6 +41,7 @@ function UsersTable() {
     login: "",
     username: "",
     email: "",
+    profil: "",
     phone: "",
     department: "",
     localisation: "",
@@ -56,18 +57,22 @@ function UsersTable() {
     queryFn: AdminService.getAllUsers,
   });
 
-  const users = response?.data.data.users ?? [];
+  const getUsers = useCallback(
+    () => response?.data.data.users ?? [],
+    [response],
+  );
 
   const filteredUsers = useMemo(() => {
+    const users = getUsers();
     return users.filter((user: User) =>
       Object.entries(filters).every(([key, value]) => {
         if (value === "") return true;
         const userValue =
-          user[key as keyof User]?.toString().toLowerCase() || "";
+          user[key as keyof User]?.toString().toLowerCase() ?? "";
         return userValue.includes(value.toLowerCase());
       }),
     );
-  }, [users, filters]);
+  }, [getUsers, filters]);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -79,7 +84,7 @@ function UsersTable() {
 
   return (
     <Menus>
-      <Table columns="0.4fr 1fr 0.8fr 0.4fr 0.5fr 0.5fr 0.3fr 0.1fr;">
+      <Table columns="0.4fr 1fr 0.8fr 0.4fr 0.5fr 0.5fr 0.3fr 0.3fr 0.1fr;">
         <Table.Header>
           <HeaderCell>
             <div>Login</div>
@@ -114,6 +119,15 @@ function UsersTable() {
               type="text"
               name="phone"
               value={filters.phone}
+              onChange={handleFilterChange}
+            />
+          </HeaderCell>
+          <HeaderCell>
+            <div>Profile</div>
+            <FilterInput
+              type="text"
+              name="profil"
+              value={filters.profil}
               onChange={handleFilterChange}
             />
           </HeaderCell>

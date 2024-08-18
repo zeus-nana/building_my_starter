@@ -11,8 +11,9 @@ interface GetAllUsersResponse {
   };
 }
 
-interface CreateUserResponse {
+export interface CreateUserResponse {
   status: string;
+  message: string;
   data: {
     userId: User["id"];
   };

@@ -5,6 +5,7 @@ import { API_CONFIG } from "./apiConfig.ts";
 export interface ApiResponse<T> {
   data: T;
   status: number;
+  support?: T;
   statusText: string;
   headers: Record<string, string>;
   config: AxiosRequestConfig;
