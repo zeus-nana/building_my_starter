@@ -13,13 +13,14 @@ const router = express.Router();
 router
   .route('/users')
   .get(adminController.getAllUsers)
-  .post(adminController.createUser);
+  .post(adminController.createUpdateUser);
 
-router
-  .route('/:id')
-  .get(adminController.getUserById)
-  .patch(adminController.updateUser);
+router.route('/users/:id').get(adminController.getUserById);
 
 router.route('/resetPassword').post(adminController.resetPassword);
+
+router.route('/activate-user/:id').post(adminController.activateUser);
+
+router.route('/deactivate-user/:id').post(adminController.deactivateUser);
 
 export default router;
