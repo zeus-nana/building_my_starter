@@ -2,6 +2,8 @@ import styled from "styled-components";
 import Button from "./Button";
 import Heading from "./Heading";
 import PropTypes from "prop-types";
+import { useActivateUser } from "../features/users/useActivateUser.js";
+import { useDeactivateUser } from "../features/users/useDeactivateUser.js";
 
 const StyledConfirmAction = styled.div`
   width: 40rem;
@@ -21,15 +23,16 @@ const StyledConfirmAction = styled.div`
   }
 `;
 
-function ConfirmAction({ onConfirm, disabled, onCloseModal }) {
-  const handleConfirm = async () => {
-    try {
-      await onConfirm();
-      // onCloseModal();
-    } catch (error) {
-      // Gérer l'erreur si nécessaire
-    }
-  };
+function ConfirmAction({ onConfirm, disabled, onCloseModal, action, id }) {
+  const { isActivating, activateUser } = useActivateUser(onCloseModal);
+  const { isDeactivating, deactivateUser } = useDeactivateUser(onCloseModal);
+
+  if (action === "activate") {
+    onConfirm = () => activateUser(id);
+  } else if (action === "deactivate") {
+    onConfirm = () => deactivateUser(id);
+  }
+
   return (
     <StyledConfirmAction>
       <Heading as="h3">Confirmation</Heading>
@@ -43,7 +46,11 @@ function ConfirmAction({ onConfirm, disabled, onCloseModal }) {
         >
           Annuler
         </Button>
-        <Button $variation="danger" disabled={disabled} onClick={handleConfirm}>
+        <Button
+          $variation="danger"
+          disabled={isActivating || isDeactivating}
+          onClick={onConfirm}
+        >
           Continuer
         </Button>
       </div>
@@ -56,6 +63,8 @@ ConfirmAction.propTypes = {
   onConfirm: PropTypes.func,
   disabled: PropTypes.bool,
   onCloseModal: PropTypes.func,
+  action: PropTypes.string,
+  id: PropTypes.number,
 };
 
 export default ConfirmAction;

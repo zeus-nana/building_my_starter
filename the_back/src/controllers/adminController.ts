@@ -61,6 +61,7 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 
 const createUpdateUser = catchAsync(async (req: Request, res: Response) => {
   const userData: UserCreationAttributes & { id?: number } = req.body;
+  await new Promise((resolve) => setTimeout(resolve, 2000));
 
   console.log(userData);
 

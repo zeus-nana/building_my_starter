@@ -15,9 +15,9 @@ export function useCreateUser(onCloseModal) {
       await queryClient.invalidateQueries({
         queryKey: ["users"],
       });
+
       if (onCloseModal) onCloseModal();
     },
-
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response?.data) {
         toast.error(`Erreur: ${error.response.data.message}`);

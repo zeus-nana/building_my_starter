@@ -69,8 +69,6 @@ class AdminService {
 
   async activateUser(id) {
     try {
-      console.log("id", id);
-
       return await ApiService.post(
         `${API_CONFIG.ENDPOINTS.ADMIN.ACTIVATE_USER}/${id}`,
         { active: true },

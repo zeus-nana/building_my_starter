@@ -9,33 +9,6 @@ import { useActivateUser } from "./useActivateUser.js";
 import { useDeactivateUser } from "./useDeactivateUser.js";
 import ConfirmAction from "../../ui/ConfirmAction.jsx";
 
-// const Img = styled.img`
-//   display: block;
-//   width: 6.4rem;
-//   aspect-ratio: 3 / 2;
-//   object-fit: cover;
-//   object-position: center;
-//   transform: scale(1.5) translateX(-7px);
-// `;
-//
-// const User = styled.div`
-//   font-size: 1.6rem;
-//   font-weight: 600;
-//   color: var(--color-grey-600);
-//   font-family: "Sono";
-// `;
-//
-// const Price = styled.div`
-//   font-family: "Sono";
-//   font-weight: 600;
-// `;
-//
-// const Discount = styled.div`
-//   font-family: "Sono";
-//   font-weight: 500;
-//   color: var(--color-green-700);
-// `;
-
 function UsersRow({ user }) {
   const { isActivating, activateUser } = useActivateUser();
   const { isDeactivating, deactivateUser } = useDeactivateUser();
@@ -93,6 +66,8 @@ function UsersRow({ user }) {
               <ConfirmAction
                 onConfirm={handleConfirm}
                 disabled={isActivating || isDeactivating}
+                action={active ? "deactivate" : "activate"}
+                id={id}
               />
             </Modal.Window>
 
