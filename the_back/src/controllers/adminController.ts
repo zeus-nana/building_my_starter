@@ -50,11 +50,25 @@ const getUserById = catchAsync(
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   const users: User[] = await db('users').select('*').orderBy('id', 'asc');
 
+  const sanitizedUsers = users.map((user) => ({
+    id: user.id,
+    login: user.login,
+    username: user.username,
+    email: user.email,
+    department: user.department,
+    phone: user.phone,
+    profil: user.profil,
+    localisation: user.localisation,
+    active: user.active,
+    created_at: user.created_at,
+    updated_at: user.updated_at,
+  }));
+
   return res.status(200).json({
     status: 'success',
-    results: users.length,
+    results: sanitizedUsers.length,
     data: {
-      users,
+      users: sanitizedUsers,
     },
   });
 });
@@ -63,7 +77,22 @@ const createUpdateUser = catchAsync(async (req: Request, res: Response) => {
   const userData: UserCreationAttributes & { id?: number } = req.body;
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
-  console.log(userData);
+  // Vérifier si l'utilisateur existe et est actif
+  if (userData.id) {
+    const user = await db('users').where({ id: userData.id }).first();
+    if (!user) {
+      return res.status(400).json({
+        status: 'échec',
+        message: "Cet utilisateur n'existe pas.",
+      });
+    }
+    if (!user.active) {
+      return res.status(400).json({
+        status: 'échec',
+        message: 'Cet utilisateur est inactif.',
+      });
+    }
+  }
 
   if (userData.phone !== null && userData.phone !== undefined) {
     userData.phone = userData.phone.trim().replace(/\D/g, '');
@@ -272,19 +301,24 @@ const deactivateUser = catchAsync(
   },
 );
 
-const resetPassword = catchAsync(
+const resetUserPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { email } = req.body;
+    const userId = Number(req.params.id);
     // TODO: Add authentication to ensure only support staff can access this endpoint
 
     // 1) Get user from email
-    const user = await db('users').where({ email }).first();
+    const user = await db('users').where({ id: userId }).first();
     if (!user) {
       return next(new AppError('User not found with this email.', 404));
+    } else if (user.active === false) {
+      return next(
+        new AppError("Le compte de l'utilisateur est désactivé.", 400),
+      );
     }
 
     // 2) Generate new random password
     const newPassword = crypto.randomBytes(10).toString('hex');
+    console.log(newPassword);
 
     // 3) Hash and update the password
     const hashedPassword = await bcrypt.hash(newPassword, 12);
@@ -294,22 +328,24 @@ const resetPassword = catchAsync(
     });
 
     // 4) Send new password to user's email
+    let emailSent = true;
     try {
       await sendEmail({
         email: user.email,
-        subject: 'Your new password',
-        message: `Your new password is: ${newPassword}`,
-      });
+        subject: 'Votre nouveau mot de passe',
+        message: `Bonjour !
 
-      res.status(200).json({
-        status: 'success',
-        message:
-          "Password has been reset. New password has been sent to user's email.",
+Votre nouveau mot de passe tempsoraire est "${newPassword}"`,
       });
     } catch (err) {
       console.error(err);
-      return next(new AppError('Error when trying to send email.', 500));
+      emailSent = false;
     }
+
+    res.status(200).json({
+      status: 'success',
+      message: `Le mot de passe a été réinitialisé${emailSent ? "et envoyé à l'email de l'utilisateur." : "mais n'a pas pu être envoyé à l'email de l'utilisateur."}`,
+    });
   },
 );
 
@@ -317,7 +353,7 @@ export default {
   getUserById,
   getAllUsers,
   createUpdateUser,
-  resetPassword,
+  resetUserPassword,
   activateUser,
   deactivateUser,
 };

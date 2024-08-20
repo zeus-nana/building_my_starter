@@ -5,22 +5,9 @@ import Menus from "../../ui/Menus";
 import Modal from "../../ui/Modal";
 import PropTypes from "prop-types";
 import CreateUserForm from "./CreateUserForm.jsx";
-import { useActivateUser } from "./useActivateUser.js";
-import { useDeactivateUser } from "./useDeactivateUser.js";
 import ConfirmAction from "../../ui/ConfirmAction.jsx";
 
 function UsersRow({ user }) {
-  const { isActivating, activateUser } = useActivateUser();
-  const { isDeactivating, deactivateUser } = useDeactivateUser();
-
-  const handleConfirm = () => {
-    if (active) {
-      deactivateUser(id);
-    } else {
-      activateUser(id);
-    }
-  };
-
   const {
     id,
     login,
@@ -52,9 +39,12 @@ function UsersRow({ user }) {
                 <Menus.Button icon={<HiPencil />}>Éditer</Menus.Button>
               </Modal.Open>
 
-              <Menus.Button icon={<HiLockClosed />}>
-                Réinitialiser le mot de passe
-              </Menus.Button>
+              <Modal.Open opens="resetUserPassword">
+                <Menus.Button icon={<HiLockClosed />}>
+                  Réinitialiser le mot de passe
+                </Menus.Button>
+              </Modal.Open>
+
               <Modal.Open opens="activateDeactivate">
                 <Menus.Button icon={<HiBan />}>
                   {active ? "Désactiver" : "Activer"}
@@ -64,11 +54,13 @@ function UsersRow({ user }) {
 
             <Modal.Window name="activateDeactivate">
               <ConfirmAction
-                onConfirm={handleConfirm}
-                disabled={isActivating || isDeactivating}
                 action={active ? "deactivate" : "activate"}
                 id={id}
               />
+            </Modal.Window>
+
+            <Modal.Window name="resetUserPassword">
+              <ConfirmAction action="resetUserPassword" id={id} />
             </Modal.Window>
 
             <Modal.Window name="edit">

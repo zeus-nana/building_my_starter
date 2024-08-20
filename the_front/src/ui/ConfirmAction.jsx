@@ -4,6 +4,7 @@ import Heading from "./Heading";
 import PropTypes from "prop-types";
 import { useActivateUser } from "../features/users/useActivateUser.js";
 import { useDeactivateUser } from "../features/users/useDeactivateUser.js";
+import { useResetUserPassword } from "../features/users/useResetUserPassword.js";
 
 const StyledConfirmAction = styled.div`
   width: 40rem;
@@ -26,11 +27,14 @@ const StyledConfirmAction = styled.div`
 function ConfirmAction({ onConfirm, disabled, onCloseModal, action, id }) {
   const { isActivating, activateUser } = useActivateUser(onCloseModal);
   const { isDeactivating, deactivateUser } = useDeactivateUser(onCloseModal);
+  const { isResetting, resetUserPassword } = useResetUserPassword(onCloseModal);
 
   if (action === "activate") {
     onConfirm = () => activateUser(id);
   } else if (action === "deactivate") {
     onConfirm = () => deactivateUser(id);
+  } else if (action === "resetUserPassword") {
+    onConfirm = () => resetUserPassword(id);
   }
 
   return (
@@ -48,7 +52,7 @@ function ConfirmAction({ onConfirm, disabled, onCloseModal, action, id }) {
         </Button>
         <Button
           $variation="danger"
-          disabled={isActivating || isDeactivating}
+          disabled={isActivating || isDeactivating || isResetting}
           onClick={onConfirm}
         >
           Continuer

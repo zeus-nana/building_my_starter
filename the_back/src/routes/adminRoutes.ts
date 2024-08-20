@@ -17,7 +17,9 @@ router
 
 router.route('/users/:id').get(adminController.getUserById);
 
-router.route('/resetPassword').post(adminController.resetPassword);
+router
+  .route('/reset-user-password/:id')
+  .post(adminController.resetUserPassword);
 
 router.route('/activate-user/:id').post(adminController.activateUser);
 

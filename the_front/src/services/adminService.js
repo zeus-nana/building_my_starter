@@ -100,6 +100,22 @@ class AdminService {
       }
     }
   }
+  
+  async resetUserPassword(id) {
+    try {
+      return await ApiService.post(
+        `${API_CONFIG.ENDPOINTS.ADMIN.RESET_USER_PASSWORD}/${id}`
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error(
+          "Impossible de définir le mot de passe. Veuillez réessayer plus tard.",
+        );
+      }
+    }
+  }
 }
 
 export default AdminService.getInstance();

@@ -8,15 +8,18 @@ import { jwtVerify, signToken } from '../utils/tokens';
 
 const login = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password } = req.body;
+    const { login, password } = req.body;
 
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     // 1) Check if email and password exist
-    if (!email || !password) {
-      return next(new AppError('Please provide email and password!', 400));
+
+    console.log(login, password);
+    if (!login || !password) {
+      return next(new AppError('Please provide login and password!', 400));
     }
 
     // 2) Check if user exist && password is correct
-    const user: User | undefined = await db('users').where({ email }).first();
+    const user: User | undefined = await db('users').where({ login }).first();
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return next(new AppError('Incorrect email or password', 401));
@@ -25,7 +28,7 @@ const login = catchAsync(
     // 3) Check if user is active
     if (!user.active) {
       return next(
-        new AppError('This user is not active! Please contact support.', 401),
+        new AppError('This user is not active! Please   contact support.', 401),
       );
     }
 
@@ -81,7 +84,7 @@ const protect = catchAsync(
     // 3) Check if user still exists and is active
     const currentUser = await db('users').where({ id: decoded.id }).first();
     if (!currentUser) {
-      return next(new AppError('User does not exist', 401));
+      return next(new AppError('User does  not exist', 401));
     }
     if (!currentUser.active) {
       return next(
@@ -111,4 +114,16 @@ const restrictTo = (...roles: string[]) => {
   };
 };
 
-export default { login, protect, restrictTo };
+const logout = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // Clear the JWT cookie
+    res.cookie('jwt', 'loggedout', {
+      expires: new Date(Date.now() + 10 * 1000), // 10 seconds
+      httpOnly: true,
+    });
+
+    res.status(200).json({ status: 'success' });
+  },
+);
+
+export default { login, protect, restrictTo, logout };

@@ -6,20 +6,9 @@ import Spinner from "../../ui/Spinner";
 import UsersRow from "./UsersRow";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
-
-// const TableHeader = styled.header`
-//   display: grid;
-//   grid-template-columns: 0.4fr 1fr 0.8fr 0.4fr 0.5fr 0.5fr 0.3fr 0.2fr;
-//   column-gap: 2.4rem;
-//   align-items: center;
-//   background-color: var(--color-grey-50);
-//   border-bottom: 1px solid var(--color-grey-100);
-//   text-transform: uppercase;
-//   letter-spacing: 0.4px;
-//   font-weight: 600;
-//   color: var(--color-grey-600);
-//   padding: 1.6rem 2.4rem;
-// `;
+import Pagination from "../../ui/Pagination.jsx";
+import { useSearchParams } from "react-router-dom";
+import { PAGE_SIZE } from "../../constants.js";
 
 const FilterInput = styled.input`
   width: 100%;
@@ -36,6 +25,8 @@ const HeaderCell = styled.div`
 `;
 
 function UsersTable() {
+  // const [count, setCount] = useState(0);
+
   const [filters, setFilters] = useState({
     login: "",
     username: "",
@@ -56,13 +47,27 @@ function UsersTable() {
     queryFn: AdminService.getAllUsers,
   });
 
-  const getUsers = useCallback(
-    () => response?.data.data.users ?? [],
-    [response],
-  );
+  const getUsers = useCallback(() => {
+    return {
+      users: response?.data?.data?.users ?? [],
+      results: response?.data?.results ?? 0,
+    };
+  }, [response]);
+
+  // useEffect(() => {
+  //   const { results } = getUsers();
+  //   setCount(results);
+  // }, [getUsers]);
+
+  // Pagination Logic
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = !searchParams.get("page")
+    ? 1
+    : Number(searchParams.get("page"));
 
   const filteredUsers = useMemo(() => {
-    const users = getUsers();
+    const { users } = getUsers();
+
     return users.filter((user) =>
       Object.entries(filters).every(([key, value]) => {
         if (value === "") return true;
@@ -72,9 +77,17 @@ function UsersTable() {
     );
   }, [getUsers, filters]);
 
+  // Recalculer paginatedUsers chaque fois que la page ou filteredUsers change
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    const endIndex = startIndex + PAGE_SIZE;
+    return filteredUsers.slice(startIndex, endIndex);
+  }, [filteredUsers, currentPage]);
+
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
+    setSearchParams((prev) => ({ ...prev, [name]: value, page: 1 }));
   };
 
   if (error) return <div>Error: {error.message}</div>;
@@ -82,7 +95,7 @@ function UsersTable() {
 
   return (
     <Menus>
-      <Table columns="0.4fr 1fr 0.8fr 0.4fr 0.5fr 0.5fr 0.3fr 0.3fr 0.1fr;">
+      <Table columns="0.4fr 1fr 0.8fr 0.4fr 0.5fr 0.5fr 0.5fr 0.4fr 0.1fr;">
         <Table.Header>
           <HeaderCell>
             <div>Login</div>
@@ -159,9 +172,13 @@ function UsersTable() {
         </Table.Header>
 
         <Table.Body
-          data={filteredUsers}
+          data={paginatedUsers}
           render={(user) => <UsersRow key={user.id} user={user} />}
         />
+
+        <Table.Footer>
+          <Pagination count={filteredUsers.length} />
+        </Table.Footer>
       </Table>
     </Menus>
   );
