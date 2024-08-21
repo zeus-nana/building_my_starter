@@ -31,7 +31,7 @@ function UsersTable() {
     login: "",
     username: "",
     email: "",
-    profil: "",
+    profile: "",
     phone: "",
     department: "",
     localisation: "",
@@ -137,8 +137,8 @@ function UsersTable() {
             <div>Profile</div>
             <FilterInput
               type="text"
-              name="profil"
-              value={filters.profil}
+              name="profile"
+              value={filters.profile}
               onChange={handleFilterChange}
             />
           </HeaderCell>

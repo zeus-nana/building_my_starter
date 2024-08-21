@@ -12,6 +12,7 @@ import Login from "./pages/Login.jsx";
 import PageNotFound from "./pages/PageNotFound.jsx";
 import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./ui/ProtectedRoute.jsx";
+import ChangePassword from "./pages/ChangePassword.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,7 +26,6 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-
       <GlobalStyles />
       <BrowserRouter>
         <Routes>
@@ -53,6 +53,7 @@ function App() {
           </Route>
 
           <Route path="login" element={<Login />} />
+          <Route path="change-password" element={<ChangePassword />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>

@@ -22,7 +22,7 @@ export interface User {
   email: string;
   phone: string | null;
   department: string | null;
-  profil: UserProfile | null;
+  profile: UserProfile | null;
   localisation: UserLocalisation | null;
   active: boolean;
   must_reset_password: boolean;

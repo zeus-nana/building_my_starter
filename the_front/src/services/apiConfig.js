@@ -1,12 +1,13 @@
-import { BASE_URL } from "../constants.js";
+import { BASE_API_URL } from "../constants.js";
 
 export const API_CONFIG = {
-  BASE_URL: BASE_URL,
+  BASE_URL: BASE_API_URL,
   ENDPOINTS: {
     AUTH: {
       LOGIN: "auth/login",
       LOGOUT: "auth/logout",
       VERIFY: "auth/verify",
+      CHANGE_PASSWORD: "auth/change-password",
     },
     USERS: {
       USERS: "/users",

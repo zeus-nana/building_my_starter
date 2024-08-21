@@ -33,7 +33,7 @@ const getUserById = catchAsync(
       email: user.email,
       phone: user.phone,
       department: user.department,
-      profil: user.profil,
+      profile: user.profile,
       localisation: user.localisation,
       active: user.active,
     };
@@ -57,7 +57,7 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
     email: user.email,
     department: user.department,
     phone: user.phone,
-    profil: user.profil,
+    profile: user.profile,
     localisation: user.localisation,
     active: user.active,
     created_at: user.created_at,
@@ -227,13 +227,13 @@ const validateUser = async (
       message: 'Le département ne doit pas dépasser 255 caractères',
     };
   }
-  if (body.profil) {
+  if (body.profile) {
     const validProfiles: UserProfile[] = [
       'gestionnaire',
       'reporting',
       'it_support',
     ];
-    if (!validProfiles.includes(body.profil.toLowerCase() as UserProfile)) {
+    if (!validProfiles.includes(body.profile.toLowerCase() as UserProfile)) {
       return {
         isValid: false,
         message:

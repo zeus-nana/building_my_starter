@@ -14,7 +14,7 @@ function UsersRow({ user }) {
     username,
     email,
     phone,
-    profil,
+    profile,
     department,
     localisation,
     active,
@@ -26,7 +26,7 @@ function UsersRow({ user }) {
       <div>{username}</div>
       <div>{email}</div>
       <div>{phone}</div>
-      <div>{profil?.toUpperCase()}</div>
+      <div>{profile?.toUpperCase()}</div>
       <div>{department ? department.toUpperCase() : ""}</div>
       <div>{localisation ? localisation.toUpperCase() : ""}</div>
       <div>{active ? "Actif" : "Inactif"}</div>

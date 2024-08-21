@@ -1,7 +1,7 @@
 import Heading from "../ui/Heading.jsx";
 
 function Home() {
-  return <Heading type="h1">Hello home</Heading>;
+  return <Heading type="h1">HOME</Heading>;
 }
 
 export default Home;

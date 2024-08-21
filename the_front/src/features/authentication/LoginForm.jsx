@@ -19,8 +19,7 @@ function LoginForm() {
       return toast.error("Veuillez renseigner tous les champs");
     }
 
-    console.log(login, password);
-    signIn({ email: login, password: password });
+    signIn({ login, password });
   }
 
   return (

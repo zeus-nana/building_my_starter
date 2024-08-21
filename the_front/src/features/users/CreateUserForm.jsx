@@ -48,7 +48,7 @@ function CreateUserForm({ onCloseModal, userToEdit = {} }) {
       ? editValues
       : {
           localisation: null,
-          profil: null,
+          profile: null,
         },
   });
 
@@ -128,12 +128,12 @@ function CreateUserForm({ onCloseModal, userToEdit = {} }) {
         />
       </FormRow>
 
-      <FormRow label="Profil" error={errors?.profil?.message}>
+      <FormRow label="Profil" error={errors?.profile?.message}>
         <Select
           options={profileOptions}
-          id="profil"
+          id="profile"
           disabled={isCreating}
-          {...register("profil", {
+          {...register("profile", {
             required: "Ce champ est obligatoire.",
           })}
         />

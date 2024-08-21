@@ -1,35 +1,26 @@
-import { Navigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
-import Spinner from "./Spinner.jsx";
-import AuthService from "../services/authService.js";
 
-function ProtectedRoute({ children }) {
-  const location = useLocation();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
+const ProtectedRoute = ({ children }) => {
+  // const location = useLocation();
 
-  useEffect(() => {
-    const verifyToken = async () => {
-      const authService = AuthService.getInstance(); // Déplacez la création de l'instance ici
-      const isLoggedIn = await authService.verifyToken();
-      setIsLoggedIn(isLoggedIn);
-      setIsLoading(false);
-    };
+  // if (isLoading) {
+  //   // Vous pouvez retourner un composant de chargement ici
+  //   return <Spinner />;
+  // }
+  //
+  // if (!user) {
+  //   // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+  //   return <Navigate to="/login" state={{ from: location }} replace />;
+  // }
+  //
+  // if (allowedProfiles.length > 0 && !allowedProfiles.includes(user.profile)) {
+  //   // Rediriger vers une page non autorisée si l'utilisateur n'a pas le bon profil
+  //   return <Navigate to="/unauthorized" replace />;
+  // }
 
-    verifyToken();
-  }, [location]);
-
-  if (isLoading) {
-    return <Spinner />; // Affichez le spinner pendant la vérification
-  }
-
-  if (!isLoggedIn) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
+  // Si tout est OK, afficher le contenu de la route
   return children;
-}
+};
 
 ProtectedRoute.propTypes = {
   children: PropTypes.node,

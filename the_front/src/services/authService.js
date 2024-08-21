@@ -15,7 +15,6 @@ class AuthService {
   }
 
   async login(login, password) {
-    console.log(login, password);
     try {
       const response = await ApiService.post(
         API_CONFIG.ENDPOINTS.AUTH.LOGIN,
@@ -27,12 +26,10 @@ class AuthService {
           withCredentials: true, // Important pour permettre l'envoi et la réception de cookies
         },
       );
-      console.log("user ::", response.data.user);
       // La réponse contient probablement des informations sur l'utilisateur
       return {
         success: true,
-        user: response.data.user, // Supposons que le serveur renvoie des infos utilisateur
-        message: response.data.message,
+        user: response.data.user,
       };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -50,9 +47,16 @@ class AuthService {
       const response = await axios.get(API_CONFIG.ENDPOINTS.AUTH.VERIFY, {
         withCredentials: true,
       });
-      return response.status === 200 && response.data.success;
+      console.log(response.data);
+      return response.data;
     } catch (error) {
-      return false;
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error(
+          "Impossible de se connecter. Veuillez réessayer plus tard.",
+        );
+      }
     }
   }
 
@@ -67,9 +71,6 @@ class AuthService {
         },
       );
 
-      // Le serveur devrait invalider le cookie côté serveur.
-      // Nous n'avons pas besoin de gérer manuellement la suppression du token
-
       return { success: true, message: "Déconnexion réussie" };
     } catch (error) {
       console.error("Erreur lors de la déconnexion", error);
@@ -80,7 +81,34 @@ class AuthService {
     }
   }
 
-  // Vous pouvez ajouter d'autres méthodes liées à l'authentification ici
+  async changePassword(userId, newPassword) {
+    try {
+      const response = await ApiService.post(
+        API_CONFIG.ENDPOINTS.AUTH.CHANGE_PASSWORD,
+        {
+          userId,
+          newPassword,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      return {
+        success: true,
+        message: response.data.message,
+        user: response.data.user,
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error(
+          "Impossible de changer le mot de passe. Veuillez réessayer plus tard.",
+        );
+      }
+    }
+  }
 }
 
 export default AuthService.getInstance();

@@ -8,12 +8,17 @@ export function useLogin() {
   const navigate = useNavigate();
 
   const { mutate: signIn, isLoading } = useMutation({
-    mutationFn: async ({ email, password }) => {
-      return AuthService.login(email, password);
+    mutationFn: async ({ login, password }) => {
+      return AuthService.login(login, password);
     },
-    onSuccess: async (user) => {
-      console.log(user);
-      navigate("/home");
+    onSuccess: async (data) => {
+      console.log(data);
+      if (data.user.must_reset_password) {
+        toast.success("Vous devez changer votre mot de passe");
+        navigate(`/change-password?userId=${data.user.id}`);
+      } else {
+        navigate("/home", { replace: true });
+      }
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response?.data) {

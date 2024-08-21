@@ -16,7 +16,7 @@ exports.up = async function (knex: Knex) {
     table.string('email', 255).notNullable().unique();
     table.string('phone', 255);
     table.string('department', 255);
-    table.string('profil', 255);
+    table.string('profile', 255);
     table.string('localisation', 255);
     table.boolean('must_reset_password').notNullable().defaultTo(true);
     table.boolean('active').notNullable().defaultTo(true);
