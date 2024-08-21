@@ -55,7 +55,7 @@ const login = catchAsync(
     res.status(200).json({
       status: 'success',
       token,
-      loggedUser,
+      user: loggedUser,
     });
   },
 );

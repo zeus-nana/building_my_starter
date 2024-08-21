@@ -168,7 +168,7 @@ function CreateUserForm({ onCloseModal, userToEdit = {} }) {
         >
           Annuler
         </Button>
-        <Button disabled={isCreating}>
+        <Button size="medium" disabled={isCreating}>
           {!isCreating ? "Enregistrer" : <SpinnerMini />}
         </Button>
       </FormRow>

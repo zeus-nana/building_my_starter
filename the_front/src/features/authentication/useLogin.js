@@ -17,7 +17,7 @@ export function useLogin() {
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response?.data) {
-        toast.error(`Erreur: ${error.response.data.message}`);
+        toast.error(`${error.response.data.message}`);
       } else {
         toast.error(`Erreur lors de la connexion.`);
       }

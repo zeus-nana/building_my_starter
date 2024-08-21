@@ -27,7 +27,7 @@ class AuthService {
           withCredentials: true, // Important pour permettre l'envoi et la réception de cookies
         },
       );
-
+      console.log("user ::", response.data.user);
       // La réponse contient probablement des informations sur l'utilisateur
       return {
         success: true,
@@ -36,19 +36,23 @@ class AuthService {
       };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        // Si c'est une erreur Axios avec une réponse du serveur
-        throw {
-          success: false,
-          message: error.response.data.message || "Erreur d'authentification",
-          status: error.response.status,
-        };
+        throw error;
       } else {
-        // Pour les autres types d'erreurs
-        throw {
-          success: false,
-          message: "Impossible de se connecter. Veuillez réessayer plus tard.",
-        };
+        throw new Error(
+          "Impossible de se connecter. Veuillez réessayer plus tard.",
+        );
       }
+    }
+  }
+
+  async verifyToken() {
+    try {
+      const response = await axios.get(API_CONFIG.ENDPOINTS.AUTH.VERIFY, {
+        withCredentials: true,
+      });
+      return response.status === 200 && response.data.success;
+    } catch (error) {
+      return false;
     }
   }
 
@@ -63,7 +67,7 @@ class AuthService {
         },
       );
 
-      // Le serveur devrait invalider le cookie côté serveur
+      // Le serveur devrait invalider le cookie côté serveur.
       // Nous n'avons pas besoin de gérer manuellement la suppression du token
 
       return { success: true, message: "Déconnexion réussie" };
