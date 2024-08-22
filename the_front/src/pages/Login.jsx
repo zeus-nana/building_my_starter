@@ -10,6 +10,8 @@ const LoginLayout = styled.main`
   align-content: center;
   justify-content: center;
   gap: 3.2rem;
+  background-image: url("/bkg.svg");
+  background-size: cover;
   background-color: var(--color-grey-50);
 `;
 
@@ -17,7 +19,7 @@ function Login() {
   return (
     <LoginLayout>
       <Logo />
-      <Heading as="h4">Connexion</Heading>
+      {/*<Heading as="h4">Connexion</Heading>*/}
       <LoginForm />
     </LoginLayout>
   );
