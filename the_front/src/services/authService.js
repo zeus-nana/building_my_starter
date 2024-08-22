@@ -41,6 +41,23 @@ class AuthService {
       }
     }
   }
+  async logout() {
+    try {
+      const response = await ApiService.get(API_CONFIG.ENDPOINTS.AUTH.LOGOUT, {
+        withCredentials: true,
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error(
+          "Impossible de se déconnecter. Veuillez réessayer plus tard.",
+        );
+      }
+    }
+  }
 
   async verifyToken() {
     try {
@@ -57,27 +74,6 @@ class AuthService {
           "Impossible de se connecter. Veuillez réessayer plus tard.",
         );
       }
-    }
-  }
-
-  async logout() {
-    try {
-      // Appel au endpoint de déconnexion
-      await ApiService.post(
-        API_CONFIG.ENDPOINTS.AUTH.LOGOUT,
-        {},
-        {
-          withCredentials: true,
-        },
-      );
-
-      return { success: true, message: "Déconnexion réussie" };
-    } catch (error) {
-      console.error("Erreur lors de la déconnexion", error);
-      throw {
-        success: false,
-        message: "Erreur lors de la déconnexion. Veuillez réessayer.",
-      };
     }
   }
 

@@ -125,6 +125,10 @@ const restrictTo = (...roles: string[]) => {
 
 const logout = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log('idi');
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     // Clear the JWT cookie
     res.cookie('jwt', 'loggedout', {
       expires: new Date(Date.now() + 10 * 1000), // 10 seconds

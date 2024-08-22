@@ -1,17 +1,18 @@
-import { useMutation } from "@tanstack/react-query";
-import { useUser } from "../../context/UserContext.jsx";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../../services/authService.js";
 
 export function useLogout() {
-  const { clearUser } = useUser(); // Ajoutez cette ligne
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  return useMutation({
+  const { mutate: logout, isLoading } = useMutation({
     mutationFn: AuthService.logout,
     onSuccess: () => {
-      clearUser(); // Ajoutez cette ligne
+      queryClient.removeQueries();
       navigate("/login", { replace: true });
     },
   });
+
+  return { logout, isLoading };
 }

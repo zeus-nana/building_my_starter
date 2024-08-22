@@ -30,5 +30,3 @@ export function useLogin() {
   });
   return { signIn, isLoading };
 }
-
-export function useLogout() {}

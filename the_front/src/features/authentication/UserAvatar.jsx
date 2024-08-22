@@ -19,3 +19,14 @@ const Avatar = styled.img`
   border-radius: 50%;
   outline: 2px solid var(--color-grey-100);
 `;
+
+function UserAvatar() {
+  return (
+    <StyledUserAvatar>
+      <Avatar src={"default-user.jpg"} alt="Avatar" />
+      <span>Zeus</span>
+    </StyledUserAvatar>
+  );
+}
+
+export default UserAvatar;

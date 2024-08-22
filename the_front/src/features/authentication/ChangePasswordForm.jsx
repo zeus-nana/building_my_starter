@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import Input from "../../ui/Input";
@@ -7,6 +7,7 @@ import FormRowVertical from "../../ui/FormRowVertical";
 import toast from "react-hot-toast";
 import { useChangePassword } from "./useChangePassword.js";
 import validator from "validator/es";
+import SpinnerMini from "../../ui/SpinnerMini.jsx";
 
 function ChangePasswordForm() {
   const [password, setPassword] = useState("");
@@ -65,7 +66,7 @@ function ChangePasswordForm() {
       </FormRowVertical>
       <FormRowVertical>
         <Button size="large" disabled={isLoading}>
-          Changer le mot de passe
+          {!isLoading ? "Changer le mot de passe" : <SpinnerMini />}
         </Button>
       </FormRowVertical>
     </Form>
