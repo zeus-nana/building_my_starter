@@ -8,9 +8,11 @@ import authRoutes from './routes/authRoutes';
 import adminRoutes from './routes/adminRoutes';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+
 // @ts-ignore
 import xss from 'xss-clean';
 import hpp from 'hpp';
+import cookieParser from 'cookie-parser';
 
 // Loading of the environment variables in config.env file.
 dotenv.config({ path: './config.env' });
@@ -50,6 +52,14 @@ app.use(
     credentials: true, // Permet l'envoi de cookies
   }),
 );
+
+// Ajouter le cookie-parser ici
+app.use(cookieParser());
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  // console.log(req.headers);
+  next();
+});
 
 // Data sanitization against XSS attacks
 app.use(xss());

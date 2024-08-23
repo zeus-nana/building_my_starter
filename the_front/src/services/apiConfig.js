@@ -8,6 +8,7 @@ export const API_CONFIG = {
       LOGOUT: "auth/logout",
       VERIFY: "auth/verify",
       CHANGE_PASSWORD: "auth/change-password",
+      CURRENT_USER: "auth/current-user",
     },
     USERS: {
       USERS: "/users",

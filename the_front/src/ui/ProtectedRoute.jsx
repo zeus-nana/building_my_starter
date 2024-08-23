@@ -1,25 +1,41 @@
 import PropTypes from "prop-types";
+import { useUser } from "../features/authentication/useUser.js";
+import Spinner from "./Spinner.jsx";
+import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const FullPage = styled.div`
+  height: 100vh;
+  background-color: var(--color-grey-0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const ProtectedRoute = ({ children }) => {
-  // const location = useLocation();
+  const { isAuthenticated, isLoading } = useUser();
+  const navigate = useNavigate();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
-  // if (isLoading) {
-  //   // Vous pouvez retourner un composant de chargement ici
-  //   return <Spinner />;
-  // }
-  //
-  // if (!user) {
-  //   // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
-  //   return <Navigate to="/login" state={{ from: location }} replace />;
-  // }
-  //
-  // if (allowedProfiles.length > 0 && !allowedProfiles.includes(user.profile)) {
-  //   // Rediriger vers une page non autorisée si l'utilisateur n'a pas le bon profil
-  //   return <Navigate to="/unauthorized" replace />;
-  // }
+  useEffect(() => {
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        navigate("/login");
+      }
+      setIsCheckingAuth(false);
+    }
+  }, [navigate, isAuthenticated, isLoading]);
 
-  // Si tout est OK, afficher le contenu de la route
-  return children;
+  if (isLoading || isCheckingAuth) {
+    return (
+      <FullPage>
+        <Spinner />
+      </FullPage>
+    );
+  }
+
+  return isAuthenticated ? children : null;
 };
 
 ProtectedRoute.propTypes = {

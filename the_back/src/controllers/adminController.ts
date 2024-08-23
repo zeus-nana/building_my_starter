@@ -75,8 +75,6 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 
 const createUpdateUser = catchAsync(async (req: Request, res: Response) => {
   const userData: UserCreationAttributes & { id?: number } = req.body;
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
   // Vérifier si l'utilisateur existe et est actif
   if (userData.id) {
     const user = await db('users').where({ id: userData.id }).first();
@@ -282,8 +280,6 @@ const validateUser = async (
 const activateUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = Number(req.params.id);
-    // Ajoute un délai de 2 secondes avant l'update
-    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     await db('users').where({ id: userId }).update({ active: true });
 

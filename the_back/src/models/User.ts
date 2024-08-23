@@ -30,6 +30,7 @@ export interface User {
   updated_by: number | null;
   created_at: Date;
   updated_at: Date;
+  authenticated: boolean;
 }
 
 export type UserCreationAttributes = Omit<
@@ -41,6 +42,7 @@ export type UserCreationAttributes = Omit<
   | 'updated_at'
   | 'created_by'
   | 'updated_by'
+  | 'authenticated'
 > & {
   active?: boolean;
   must_reset_password?: boolean;

@@ -17,7 +17,7 @@ import ChangePassword from "./pages/ChangePassword.jsx";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 0, // 1000 * 10,
+      staleTime: 10, // 1000 * 10,
     },
   },
 });

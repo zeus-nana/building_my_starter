@@ -10,7 +10,6 @@ import validator from 'validator';
 const login = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { login, password } = req.body;
-    await new Promise((resolve) => setTimeout(resolve, 2000));
     // 1) Check if email and password exist
     console.log(login, password);
     if (!login || !password) {
@@ -49,6 +48,7 @@ const login = catchAsync(
       must_reset_password: user.must_reset_password,
       profile: user.profile,
       created_at: user.created_at,
+      authenticated: true,
     };
 
     const token = signToken(user.id, user.email);
@@ -58,8 +58,12 @@ const login = catchAsync(
         Date.now() +
           Number(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000,
       ),
+
       secure: process.env.NODE_ENV === 'production',
     });
+
+    // console.log('res', res);
+
     res.status(200).json({
       status: 'success',
       token,
@@ -72,8 +76,13 @@ const protect = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // 1) Get the token  and check if it exists
     let token;
-
-    if (
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    // Vérifier d'abord le cookie
+    if (req.cookies.jwt) {
+      token = req.cookies.jwt;
+    }
+    // Garder la vérification de l'en-tête Authorization comme fallback
+    else if (
       req.headers.authorization &&
       req.headers.authorization.startsWith('Bearer')
     ) {
@@ -107,6 +116,7 @@ const protect = catchAsync(
     }
 
     // GRANT ACCESS TO PROTECTED ROUTE
+    currentUser.authenticated = true;
     req.user = currentUser;
     next();
   },
@@ -127,8 +137,6 @@ const logout = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     console.log('idi');
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
     // Clear the JWT cookie
     res.cookie('jwt', 'loggedout', {
       expires: new Date(Date.now() + 10 * 1000), // 10 seconds
@@ -141,7 +149,6 @@ const logout = catchAsync(
 
 const changePassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
     const { userId, newPassword } = req.body;
     const id = userId;
     console.log(newPassword, id);
@@ -245,12 +252,40 @@ const verifyToken = catchAsync(
       phone: currentUser.phone,
       department: currentUser.department,
       profile: currentUser.profile,
+      localisation: currentUser.localisation,
       created_at: currentUser.created_at,
     };
 
     res.status(200).json({
       status: 'success',
       user: userData,
+    });
+  },
+);
+
+const getCurrentUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // Récupérer l'utilisateur à partir de la requête
+    const user = req.user;
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    if (!user) {
+      return next(new AppError('User not found', 404));
+    }
+
+    // Renvoyer les informations de l'utilisateur
+    res.status(200).json({
+      status: 'success',
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        phone: user.phone,
+        department: user.department,
+        profile: user.profile,
+        localisation: user.localisation,
+        created_at: user.created_at,
+        authenticated: user.authenticated,
+      },
     });
   },
 );
@@ -262,4 +297,5 @@ export default {
   logout,
   changePassword,
   verifyToken,
+  getCurrentUser,
 };

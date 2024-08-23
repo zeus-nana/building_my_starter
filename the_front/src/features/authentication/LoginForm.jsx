@@ -19,7 +19,15 @@ function LoginForm() {
       return toast.error("Veuillez renseigner tous les champs");
     }
 
-    signIn({ login, password });
+    signIn(
+      { login, password },
+      {
+        onSettled: () => {
+          setLogin("");
+          setPassword("");
+        },
+      },
+    );
   }
 
   return (

@@ -16,16 +16,11 @@ class AuthService {
 
   async login(login, password) {
     try {
-      const response = await ApiService.post(
-        API_CONFIG.ENDPOINTS.AUTH.LOGIN,
-        {
-          login,
-          password,
-        },
-        {
-          withCredentials: true, // Important pour permettre l'envoi et la réception de cookies
-        },
-      );
+      const response = await ApiService.post(API_CONFIG.ENDPOINTS.AUTH.LOGIN, {
+        login,
+        password,
+      });
+
       // La réponse contient probablement des informations sur l'utilisateur
       return {
         success: true,
@@ -41,12 +36,12 @@ class AuthService {
       }
     }
   }
+
   async logout() {
     try {
       const response = await ApiService.get(API_CONFIG.ENDPOINTS.AUTH.LOGOUT, {
         withCredentials: true,
       });
-      console.log(response.data);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -85,9 +80,6 @@ class AuthService {
           userId,
           newPassword,
         },
-        {
-          withCredentials: true,
-        },
       );
 
       return {
@@ -101,6 +93,23 @@ class AuthService {
       } else {
         throw new Error(
           "Impossible de changer le mot de passe. Veuillez réessayer plus tard.",
+        );
+      }
+    }
+  }
+
+  async getCurrentUser() {
+    try {
+      const response = await ApiService.get(
+        API_CONFIG.ENDPOINTS.AUTH.CURRENT_USER,
+      );
+      return response.data.user;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error(
+          "Impossible de se connecter. Veuillez réessayer plus tard.",
         );
       }
     }

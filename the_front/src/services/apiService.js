@@ -11,12 +11,7 @@ class ApiService {
     this.api.interceptors.response.use(
       (response) => response,
       (error) => {
-        if (error.response?.status === 401) {
-          // Gérer la déconnexion ou redirection
-          console.log("Utilisateur non autorisé");
-          // Exemple : window.dispatchEvent(new CustomEvent('unauthorized'));
-        }
-        return Promise.reject(error);
+        throw error;
       },
     );
   }
