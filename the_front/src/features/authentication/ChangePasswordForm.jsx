@@ -16,6 +16,22 @@ const ButtonStyled = styled.div`
   justify-content: space-between;
 `;
 
+const StyledHeader = styled.header`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-bottom: 1rem;
+`;
+
+const LoginTitle = styled.h2`
+  text-align: center;
+  font-weight: 600;
+  margin-top: 0.4rem;
+`;
+
 function ChangePasswordForm({ onCloseModal, onPasswordChanged, userId }) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
@@ -74,6 +90,10 @@ function ChangePasswordForm({ onCloseModal, onPasswordChanged, userId }) {
 
   return (
     <Form onSubmit={handleSubmit}>
+      <StyledHeader>
+        <LoginTitle>Modifier le mot de passe</LoginTitle>
+      </StyledHeader>
+
       <FormRowVertical label="Ancien mot de passe">
         <Input
           type="password"
@@ -114,7 +134,7 @@ function ChangePasswordForm({ onCloseModal, onPasswordChanged, userId }) {
           >
             Annuler
           </Button>
-          <Button size="large" disabled={isLoading}>
+          <Button size="medium" disabled={isLoading}>
             {!isLoading ? "Enregistrer" : <SpinnerMini />}
           </Button>
         </ButtonStyled>

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import AdminService from "../../services/adminService";
@@ -25,8 +25,6 @@ const HeaderCell = styled.div`
 `;
 
 function UsersTable() {
-  // const [count, setCount] = useState(0);
-
   const [filters, setFilters] = useState({
     login: "",
     username: "",
@@ -54,16 +52,7 @@ function UsersTable() {
     };
   }, [response]);
 
-  // useEffect(() => {
-  //   const { results } = getUsers();
-  //   setCount(results);
-  // }, [getUsers]);
-
-  // Pagination Logic
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = !searchParams.get("page")
-    ? 1
-    : Number(searchParams.get("page"));
 
   const filteredUsers = useMemo(() => {
     const { users } = getUsers();
@@ -77,7 +66,36 @@ function UsersTable() {
     );
   }, [getUsers, filters]);
 
-  // Recalculer paginatedUsers chaque fois que la page ou filteredUsers change
+  const pageCount = Math.ceil(filteredUsers.length / PAGE_SIZE);
+
+  // Validation et correction de la page courante
+  const currentPage = useMemo(() => {
+    const pageParam = searchParams.get("page");
+    let page = 1;
+
+    if (pageParam) {
+      page = parseInt(pageParam, 10);
+      if (isNaN(page) || page < 1) {
+        page = 1;
+      } else if (page > pageCount) {
+        page = pageCount;
+      }
+    }
+
+    return page;
+  }, [searchParams, pageCount]);
+
+  // Mise à jour des paramètres de recherche si nécessaire
+  useEffect(() => {
+    const pageParam = searchParams.get("page");
+    if (pageParam !== currentPage.toString()) {
+      setSearchParams((prev) => {
+        prev.set("page", currentPage.toString());
+        return prev;
+      });
+    }
+  }, [currentPage, searchParams, setSearchParams]);
+
   const paginatedUsers = useMemo(() => {
     const startIndex = (currentPage - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
@@ -178,7 +196,11 @@ function UsersTable() {
         />
 
         <Table.Footer>
-          <Pagination count={filteredUsers.length} />
+          <Pagination
+            count={filteredUsers.length}
+            currentPage={currentPage}
+            pageCount={pageCount}
+          />
         </Table.Footer>
       </Table>
     </Menus>

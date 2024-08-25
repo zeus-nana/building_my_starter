@@ -49,7 +49,7 @@ app.use(express.json());
 // Specifies the API to use CORS to prevent XSS attacks.
 app.use(
   cors({
-    origin: 'http://localhost:5173', // L'URL de votre frontend
+    origin: 'http://localhost:5174', // L'URL de votre frontend
     credentials: true, // Permet l'envoi de cookies
   }),
 );

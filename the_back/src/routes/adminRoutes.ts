@@ -1,14 +1,10 @@
-import express, { NextFunction, Request } from 'express';
+import express from 'express';
 import adminController from '../controllers/adminController';
 import authController from '../controllers/authController';
-import AppError from '../utils/appError';
 
 const router = express.Router();
 
-// router.use(authController.protect);
-
-// Support/Admin routes
-// router.use(authController.restrictTo('support', 'admin'));
+router.use(authController.protect);
 
 router
   .route('/users')

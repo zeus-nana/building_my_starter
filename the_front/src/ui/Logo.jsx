@@ -5,12 +5,12 @@ const StyledLogo = styled.div`
 `;
 
 const Img = styled.img`
-  height: 9.6rem;
+  height: 10rem;
   width: auto;
 `;
 
 function Logo() {
-  const src = "/logo.png";
+  const src = "/logo-cera.svg";
 
   return (
     <StyledLogo>

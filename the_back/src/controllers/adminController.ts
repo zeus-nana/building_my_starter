@@ -5,7 +5,6 @@ import {
   UserCreationAttributes,
   UserLocalisation,
   UserProfile,
-  UserUpdatableFields,
   UserValidationResult,
 } from '../models/User';
 import db from '../database/connection';
@@ -75,6 +74,7 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 
 const createUpdateUser = catchAsync(async (req: Request, res: Response) => {
   const userData: UserCreationAttributes & { id?: number } = req.body;
+
   // Vérifier si l'utilisateur existe et est actif
   if (userData.id) {
     const user = await db('users').where({ id: userData.id }).first();
@@ -140,7 +140,13 @@ const createUpdateUser = catchAsync(async (req: Request, res: Response) => {
   if (userData.id) {
     const updatedUser = await db('users')
       .where('id', userData.id)
-      .update(userData, '*');
+      .update(
+        {
+          ...userData,
+          updated_by: req.user!.id,
+        },
+        '*',
+      );
 
     return res.status(200).json({
       status: 'succès',
@@ -155,6 +161,7 @@ const createUpdateUser = catchAsync(async (req: Request, res: Response) => {
   const generatedPassword = crypto.randomBytes(10).toString('hex');
   userData.email = userData.email.toLowerCase();
   userData.password = await bcrypt.hash(generatedPassword, 12);
+  userData.created_by = req.user?.id;
 
   const createdUser = await db('users').insert(userData, '*');
   signToken(createdUser[0].id, createdUser[0].email);
@@ -277,25 +284,25 @@ const validateUser = async (
   return { isValid: true, message: '' };
 };
 
-const activateUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const userId = Number(req.params.id);
+const activateUser = catchAsync(async (req: Request, res: Response) => {
+  const userId = Number(req.params.id);
 
-    await db('users').where({ id: userId }).update({ active: true });
+  await db('users')
+    .where({ id: userId })
+    .update({ active: true, updated_by: req.user!.id });
 
-    res.status(200).json({ status: 'succès', message: 'Compte activé' });
-  },
-);
+  res.status(200).json({ status: 'succès', message: 'Compte activé' });
+});
 
-const deactivateUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const userId = Number(req.params.id);
+const deactivateUser = catchAsync(async (req: Request, res: Response) => {
+  const userId = Number(req.params.id);
 
-    await db('users').where({ id: userId }).update({ active: false });
+  await db('users')
+    .where({ id: userId })
+    .update({ active: false, updated_by: req.user!.id });
 
-    res.status(200).json({ status: 'succès', message: 'Compte désactivé' });
-  },
-);
+  res.status(200).json({ status: 'succès', message: 'Compte désactivé' });
+});
 
 const resetUserPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -321,6 +328,7 @@ const resetUserPassword = catchAsync(
     await db('users').where({ id: user.id }).update({
       password: hashedPassword,
       must_reset_password: true,
+      updated_by: req.user!.id,
     });
 
     // 4) Send new password to user's email

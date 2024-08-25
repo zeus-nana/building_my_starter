@@ -1,23 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import db from '../database/connection';
-import {
-  User,
-  UserCreationAttributes,
-  UserValidationResult,
-} from '../models/User';
+import { User } from '../models/User';
 import { catchAsync } from '../utils/catchAsync';
 import AppError from '../utils/appError';
 import { signToken } from '../utils/tokens';
-import crypto from 'crypto';
 
 // Check if user already exists
-const checkUserEmailExists = async (email: string): Promise<boolean> => {
-  const user: User | undefined = await db('users').where({ email }).first();
-  return user !== undefined;
-};
+// const checkUserEmailExists = async (email: string): Promise<boolean> => {
+//   const user: User | undefined = await db('users').where({ email }).first();
+//   return user !== undefined;
+// };
 
 const changePassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -78,7 +72,11 @@ const changePassword = catchAsync(
     const hashedNewPassword = await bcrypt.hash(newPassword, 12);
     await db('users')
       .where({ id: userId })
-      .update({ password: hashedNewPassword, must_reset_password: false });
+      .update({
+        password: hashedNewPassword,
+        must_reset_password: false,
+        updated_by: req.user!.id,
+      });
 
     res.status(200).json({
       status: 'succès',

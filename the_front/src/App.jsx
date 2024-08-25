@@ -16,7 +16,7 @@ import ProtectedRoute from "./ui/ProtectedRoute.jsx";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 10, // 1000 * 10,
+      staleTime: 5 * 60 * 1000, // 5 minutes
     },
   },
 });

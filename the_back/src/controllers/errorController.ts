@@ -51,6 +51,7 @@ const handlePostgresError = (
 };
 
 const sendErrorDev = (error: any, res: Response) => {
+  console.error(error);
   // Gestion des erreurs de base de données PostgreSQL
   if (error instanceof DatabaseError) {
     console.error('Database Error:', error);

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 const StyledFormRow = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 0.4rem;
   padding: 1.2rem 0;
 `;
 

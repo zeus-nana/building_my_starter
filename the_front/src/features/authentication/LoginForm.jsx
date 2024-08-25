@@ -7,6 +7,35 @@ import Button from "../../ui/Button";
 import SpinnerMini from "../../ui/SpinnerMini";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
+import Logo from "../../ui/Logo.jsx";
+import styled from "styled-components";
+
+const StyledHeader = styled.header`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-bottom: 3rem;
+  margin-top: 3rem;
+`;
+
+const LoginTitle = styled.h2`
+  text-align: center;
+  font-size: 30px;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+`;
+
+const TitleContainer = styled.div`
+  border-radius: 5px;
+  background-color: var(--color-grey-200);
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+`;
 
 function LoginForm({ onResetPassword }) {
   const [login, setLogin] = useState("");
@@ -33,6 +62,14 @@ function LoginForm({ onResetPassword }) {
 
   return (
     <Form onSubmit={handleSubmit}>
+      <Logo />
+
+      <StyledHeader>
+        <TitleContainer>
+          <LoginTitle>Bienvenu</LoginTitle>
+        </TitleContainer>
+      </StyledHeader>
+
       <FormRowVertical label="Login">
         <Input
           type="text"
