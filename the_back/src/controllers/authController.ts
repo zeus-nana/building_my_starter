@@ -26,6 +26,7 @@ const login = catchAsync(
         new AppError('This user is not active! Please contact support.', 401),
       );
     }
+
     // 4) Check if user must reset password
     if (user.must_reset_password) {
       return res.status(200).json({
@@ -38,6 +39,7 @@ const login = catchAsync(
         },
       });
     }
+
     // 5) If ok, send token to client
     const loggedUser = {
       id: user.id,
@@ -58,7 +60,6 @@ const login = catchAsync(
         Date.now() +
           Number(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000,
       ),
-
       secure: process.env.NODE_ENV === 'production',
     });
 
@@ -111,7 +112,7 @@ const protect = catchAsync(
     }
 
     // 4) Check if user record has been updated after token was issued
-    if (currentUser.updated_at.getTime() > decoded.iat * 1000) {
+    if (currentUser.updated_at.getTime() > decoded.iat * 1000 + 10000) {
       return next(new AppError('Le compte a été mis a jour', 401));
     }
 

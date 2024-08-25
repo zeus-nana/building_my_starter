@@ -111,7 +111,7 @@ function Toggle({ id }) {
 }
 
 Toggle.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
 };
 
 function List({ id, children }) {
@@ -133,17 +133,19 @@ List.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-function Button({ children, icon, onClick }) {
+function Button({ children, icon, onClick, disabled }) {
   const { close } = useContext(MenusContext);
 
   function handleClick() {
-    onClick?.();
-    close();
+    if (!disabled) {
+      onClick?.();
+      close();
+    }
   }
 
   return (
     <li>
-      <StyledButton onClick={handleClick}>
+      <StyledButton onClick={handleClick} disabled={disabled}>
         {icon}
         <span>{children}</span>
       </StyledButton>
@@ -155,6 +157,7 @@ Button.propTypes = {
   children: PropTypes.node,
   icon: PropTypes.node,
   onClick: PropTypes.func,
+  disabled: PropTypes.bool,
 };
 
 Menus.Menu = Menu;

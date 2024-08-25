@@ -21,13 +21,14 @@ const checkUserEmailExists = async (email: string): Promise<boolean> => {
 
 const changePassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { currentPassword, newPassword } = req.body;
-    const userId = req.user?.id;
+    const { userId, currentPassword, newPassword } = req.body;
+
+    console.log(userId);
 
     // 1) Get user from database
     const user = await db('users').where({ id: userId }).first();
     if (!user) {
-      return next(new AppError('User not found.', 404));
+      return next(new AppError('Utilisateur non trouvé.', 404));
     }
 
     // 2) Check if current password is correct
@@ -35,24 +36,54 @@ const changePassword = catchAsync(
       currentPassword,
       user.password,
     );
+
     if (!isPasswordCorrect) {
-      return next(new AppError('Current password is incorrect.', 401));
+      return next(new AppError('Le mot de passe actuel est incorrect.', 401));
     }
 
-    // 3) Validate new password
+    // 3) Check if new password is different from old password
+    const isNewPasswordDifferent = await bcrypt.compare(
+      newPassword,
+      user.password,
+    );
+    if (isNewPasswordDifferent) {
+      return next(
+        new AppError(
+          "Le nouveau mot de passe doit être différent de l'ancien.",
+          400,
+        ),
+      );
+    }
+
+    // 4) Validate new password
     if (!validator.isStrongPassword(newPassword)) {
-      return next(new AppError('New password is not strong enough.', 400));
+      return next(
+        new AppError("Le nouveau mot de passe n'est pas assez fort.", 400),
+      );
     }
 
-    // 4) Update password
+    // 5) Generate new token
+    const newToken = signToken(user.id, user.email);
+    res.cookie('jwt', newToken, {
+      httpOnly: true,
+      expires: new Date(
+        Date.now() +
+          Number(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000,
+      ),
+
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    // 6) Update password
     const hashedNewPassword = await bcrypt.hash(newPassword, 12);
     await db('users')
       .where({ id: userId })
-      .update({ password: hashedNewPassword });
+      .update({ password: hashedNewPassword, must_reset_password: false });
 
     res.status(200).json({
-      status: 'success',
-      message: 'Password changed successfully.',
+      status: 'succès',
+      message: 'Mot de passe changé avec succès.',
+      token: newToken,
     });
   },
 );

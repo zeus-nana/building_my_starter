@@ -13,6 +13,7 @@ import helmet from 'helmet';
 import xss from 'xss-clean';
 import hpp from 'hpp';
 import cookieParser from 'cookie-parser';
+import userRoutes from './routes/userRoutes';
 
 // Loading of the environment variables in config.env file.
 dotenv.config({ path: './config.env' });
@@ -74,7 +75,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 // ROUTES
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/admin', adminRoutes);
-app.use('/api/v1/users', adminRoutes);
+app.use('/api/v1/users', userRoutes);
 
 // UNHANDLED ROUTE
 app.all('*', (req: Request, res: Response, next: NextFunction) => {

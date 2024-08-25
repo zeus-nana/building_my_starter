@@ -1,6 +1,7 @@
 import ApiService from "./apiService.js";
 import { API_CONFIG } from "./apiConfig.js";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 class AuthService {
   static instance = null;
@@ -59,7 +60,7 @@ class AuthService {
       const response = await axios.get(API_CONFIG.ENDPOINTS.AUTH.VERIFY, {
         withCredentials: true,
       });
-      console.log(response.data);
+
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -72,20 +73,19 @@ class AuthService {
     }
   }
 
-  async changePassword(userId, newPassword) {
+  async changePassword(userId, currentPassword, newPassword) {
     try {
       const response = await ApiService.post(
-        API_CONFIG.ENDPOINTS.AUTH.CHANGE_PASSWORD,
+        API_CONFIG.ENDPOINTS.USERS.CHANGE_PASSWORD,
         {
           userId,
+          currentPassword,
           newPassword,
         },
       );
-
       return {
         success: true,
         message: response.data.message,
-        user: response.data.user,
       };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

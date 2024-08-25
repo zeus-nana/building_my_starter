@@ -12,7 +12,7 @@ export const API_CONFIG = {
     },
     USERS: {
       USERS: "/users",
-      RESET_USER_PASSWORD: "/reset-user-password",
+      CHANGE_PASSWORD: "users/change-password",
     },
     ADMIN: {
       USERS: "/admin/users",

@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import LoginForm from "../features/authentication/LoginForm.jsx";
 import Logo from "../ui/Logo.jsx";
-import Heading from "../ui/Heading.jsx";
+import ChangePasswordForm from "../features/authentication/ChangePasswordForm.jsx";
+import { useState } from "react";
+import Modal from "../ui/Modal.jsx";
 
 const LoginLayout = styled.main`
   min-height: 100vh;
@@ -16,11 +18,27 @@ const LoginLayout = styled.main`
 `;
 
 function Login() {
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [userId, setUserId] = useState(null);
+
+  const handleResetPassword = (id) => {
+    setShowResetPassword(true);
+    setUserId(id);
+  };
+
   return (
     <LoginLayout>
-      <Logo />
-      {/*<Heading as="h4">Connexion</Heading>*/}
-      <LoginForm />
+      <Modal>
+        <Logo />
+        {showResetPassword ? (
+          <ChangePasswordForm
+            userId={userId}
+            onPasswordChanged={() => setShowResetPassword(false)}
+          />
+        ) : (
+          <LoginForm onResetPassword={handleResetPassword} />
+        )}
+      </Modal>
     </LoginLayout>
   );
 }

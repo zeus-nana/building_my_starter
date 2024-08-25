@@ -10,5 +10,9 @@ export function useUser() {
     retry: false,
   });
 
-  return { isLoading, isAuthenticated: user?.authenticated };
+  return {
+    isLoading,
+    isAuthenticated: user?.authenticated,
+    user: user ?? null,
+  };
 }

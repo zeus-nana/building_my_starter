@@ -1,21 +1,27 @@
-import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import Button from "../../ui/Button";
-import Form from "../../ui/Form";
-import Input from "../../ui/Input";
-import FormRowVertical from "../../ui/FormRowVertical";
+import Form from "../../ui/Form.jsx";
+import FormRowVertical from "../../ui/FormRowVertical.jsx";
+import Input from "../../ui/Input.jsx";
+import Button from "../../ui/Button.jsx";
+import SpinnerMini from "../../ui/SpinnerMini.jsx";
 import toast from "react-hot-toast";
+import { useState } from "react";
 import { useChangePassword } from "./useChangePassword.js";
 import validator from "validator/es";
-import SpinnerMini from "../../ui/SpinnerMini.jsx";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
-function ChangePasswordForm() {
+const ButtonStyled = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+function ChangePasswordForm({ onCloseModal, onPasswordChanged, userId }) {
+  const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { isLoading, changePass } = useChangePassword();
-
-  const [searchParams] = useSearchParams();
-  const userId = Number(searchParams.get("userId"));
+  const { isLoading, changePass } = useChangePassword(onCloseModal);
+  const navigate = useNavigate();
 
   const validatePassword = (password) => {
     return validator.isStrongPassword(password, {
@@ -27,9 +33,23 @@ function ChangePasswordForm() {
     });
   };
 
+  function handleCancel() {
+    if (!onCloseModal) {
+      if (typeof window !== "undefined") {
+        // eslint-disable-next-line no-undef
+        window.location.reload();
+      } else {
+        // Si window n'est pas défini, utilisez navigate pour recharger la page
+        navigate(0);
+      }
+    } else {
+      onCloseModal();
+    }
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
-    if (!password || !confirmPassword) {
+    if (!currentPassword || !password || !confirmPassword) {
       return toast.error("Veuillez renseigner tous les champs");
     }
     if (password !== confirmPassword) {
@@ -41,18 +61,37 @@ function ChangePasswordForm() {
         "Le mot de passe n'est pas assez fort. Il doit contenir au moins 8 caractères, dont une minuscule, une majuscule, un chiffre et un symbole.",
       );
     }
-    changePass({ userId, password });
+
+    changePass(
+      { userId, currentPassword, newPassword: password },
+      {
+        onSuccess: () => {
+          onPasswordChanged();
+        },
+      },
+    );
   }
 
   return (
     <Form onSubmit={handleSubmit}>
+      <FormRowVertical label="Ancien mot de passe">
+        <Input
+          type="password"
+          id="oldPassword"
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+          disabled={isLoading}
+          autoComplete="current-password"
+        />
+      </FormRowVertical>
       <FormRowVertical label="Nouveau mot de passe">
         <Input
           type="password"
-          id="password"
+          id="newPassword"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={isLoading}
+          autoComplete="new-password"
         />
       </FormRowVertical>
       <FormRowVertical label="Confirmer le mot de passe">
@@ -62,15 +101,32 @@ function ChangePasswordForm() {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           disabled={isLoading}
+          autoComplete="new-password"
         />
       </FormRowVertical>
       <FormRowVertical>
-        <Button size="large" disabled={isLoading}>
-          {!isLoading ? "Changer le mot de passe" : <SpinnerMini />}
-        </Button>
+        <ButtonStyled>
+          <Button
+            $variation="secondary"
+            type="reset"
+            onClick={handleCancel}
+            disabled={isLoading}
+          >
+            Annuler
+          </Button>
+          <Button size="large" disabled={isLoading}>
+            {!isLoading ? "Enregistrer" : <SpinnerMini />}
+          </Button>
+        </ButtonStyled>
       </FormRowVertical>
     </Form>
   );
 }
+
+ChangePasswordForm.propTypes = {
+  onPasswordChanged: PropTypes.func,
+  onCloseModal: PropTypes.func,
+  userId: PropTypes.number,
+};
 
 export default ChangePasswordForm;

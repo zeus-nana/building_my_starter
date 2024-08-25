@@ -1,10 +1,10 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import AuthService from "../../services/authService.js";
-import axios from "axios";
 import toast from "react-hot-toast";
+import axios from "axios";
+import AuthService from "../../services/authService.js";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export function useLogin() {
+export function useLogin(onResetPassword) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -15,7 +15,7 @@ export function useLogin() {
     onSuccess: async (data) => {
       if (data.user.must_reset_password) {
         toast.success("Vous devez changer votre mot de passe");
-        navigate(`/change-password?userId=${data.user.id}`);
+        onResetPassword(data.user.id);
       } else {
         queryClient.setQueryData(["user"], data.user);
         navigate("/home", { replace: true });

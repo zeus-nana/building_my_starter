@@ -1,7 +1,11 @@
 import styled from "styled-components";
-// import ButtonIcon from "./ButtonIcon.jsx";
-// import { HiOutlineUser } from "react-icons/hi2";
-import LogoutForm from "../features/authentication/LogoutForm.jsx";
+import { useUser } from "../features/authentication/useUser.js";
+
+import { useLogout } from "../features/authentication/useLogout.js";
+import Modal from "./Modal.jsx";
+import Menus from "./Menus.jsx";
+import { HiArrowRightOnRectangle, HiPencil } from "react-icons/hi2";
+import ChangePasswordForm from "../features/authentication/ChangePasswordForm.jsx";
 
 const StyledHeaderMenu = styled.ul`
   display: flex;
@@ -9,16 +13,38 @@ const StyledHeaderMenu = styled.ul`
 `;
 
 function HeaderMenu() {
+  const { user } = useUser();
+  const { logout, isLoading } = useLogout();
+
   return (
     <StyledHeaderMenu>
-      {/*<li>*/}
-      {/*  <ButtonIcon>*/}
-      {/*    <HiOutlineUser />*/}
-      {/*  </ButtonIcon>*/}
-      {/*</li>*/}
-      <li>
-        <LogoutForm />
-      </li>
+      <Modal>
+        <Menus.Menu>
+          <Menus.Toggle id={user.id.toString()} />
+          <Menus.List id={user.id.toString()}>
+            <Modal.Open opens="editPassword">
+              <Menus.Button icon={<HiPencil />}>
+                Modifier mon mot de passe
+              </Menus.Button>
+            </Modal.Open>
+
+            <Menus.Button
+              icon={<HiArrowRightOnRectangle />}
+              onClick={() => logout()}
+              disabled={isLoading}
+            >
+              Se déconnecter
+            </Menus.Button>
+          </Menus.List>
+
+          <Modal.Window name="editPassword">
+            <ChangePasswordForm
+              userId={user.id}
+              onPasswordChanged={() => console.log("Changement mot de passe")}
+            />
+          </Modal.Window>
+        </Menus.Menu>
+      </Modal>
     </StyledHeaderMenu>
   );
 }

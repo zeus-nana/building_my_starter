@@ -14,7 +14,7 @@ const FullPage = styled.div`
 `;
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, isLoading } = useUser();
+  const { isAuthenticated, isLoading, user } = useUser();
   const navigate = useNavigate();
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 

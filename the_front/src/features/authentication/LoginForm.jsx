@@ -1,17 +1,18 @@
 import { useState } from "react";
-import Button from "../../ui/Button";
+import { useLogin } from "./useLogin";
 import Form from "../../ui/Form";
-import Input from "../../ui/Input";
 import FormRowVertical from "../../ui/FormRowVertical";
+import Input from "../../ui/Input";
+import Button from "../../ui/Button";
+import SpinnerMini from "../../ui/SpinnerMini";
 import toast from "react-hot-toast";
-import SpinnerMini from "../../ui/SpinnerMini.jsx";
-import { useLogin } from "./useLogin.js";
+import PropTypes from "prop-types";
 
-function LoginForm() {
+function LoginForm({ onResetPassword }) {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
 
-  const { signIn, isLoading } = useLogin();
+  const { signIn, isLoading } = useLogin(onResetPassword);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -34,10 +35,9 @@ function LoginForm() {
     <Form onSubmit={handleSubmit}>
       <FormRowVertical label="Login">
         <Input
-          type="login"
+          type="text"
           id="login"
-          // For password managers
-          autoComplete="login"
+          autoComplete="username"
           value={login}
           onChange={(e) => setLogin(e.target.value)}
           disabled={isLoading}
@@ -61,5 +61,9 @@ function LoginForm() {
     </Form>
   );
 }
+
+LoginForm.propTypes = {
+  onResetPassword: PropTypes.func,
+};
 
 export default LoginForm;

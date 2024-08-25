@@ -1,8 +1,9 @@
 import styled from "styled-components";
+import { useUser } from "./useUser.js";
 
 const StyledUserAvatar = styled.div`
   display: flex;
-  gap: 1.2rem;
+  gap: 2rem;
   align-items: center;
   font-weight: 500;
   font-size: 1.4rem;
@@ -11,7 +12,6 @@ const StyledUserAvatar = styled.div`
 
 const Avatar = styled.img`
   display: block;
-  width: 4rem;
   width: 3.6rem;
   aspect-ratio: 1;
   object-fit: cover;
@@ -21,10 +21,12 @@ const Avatar = styled.img`
 `;
 
 function UserAvatar() {
+  const { user } = useUser();
+
   return (
     <StyledUserAvatar>
       <Avatar src={"default-user.jpg"} alt="Avatar" />
-      <span>Zeus</span>
+      <span>{user.username}</span>
     </StyledUserAvatar>
   );
 }

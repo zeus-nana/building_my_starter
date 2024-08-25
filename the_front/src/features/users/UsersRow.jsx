@@ -6,8 +6,24 @@ import Modal from "../../ui/Modal";
 import PropTypes from "prop-types";
 import CreateUserForm from "./CreateUserForm.jsx";
 import ConfirmAction from "../../ui/ConfirmAction.jsx";
+import styled from "styled-components";
+import { useUser } from "../authentication/useUser.js";
+
+const Avatar = styled.img`
+  width: 2.4rem;
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  outline: 2px solid var(--color-grey-100);
+  display: flex; /* Ajouté */
+  align-items: center; /* Ajouté */
+  margin-right: 0.5rem; /* Espacement entre l'avatar et le login */
+`;
 
 function UsersRow({ user }) {
+  const { user: currentUser } = useUser();
+
   const {
     id,
     login,
@@ -22,6 +38,9 @@ function UsersRow({ user }) {
 
   return (
     <Table.Row>
+      <div>
+        <Avatar src={"default-user.jpg"} alt="Avatar" />
+      </div>
       <div>{login}</div>
       <div>{username}</div>
       <div>{email}</div>
@@ -36,7 +55,12 @@ function UsersRow({ user }) {
             <Menus.Toggle id={id.toString()} />
             <Menus.List id={id.toString()}>
               <Modal.Open opens="edit">
-                <Menus.Button icon={<HiPencil />}>Éditer</Menus.Button>
+                <Menus.Button
+                  icon={<HiPencil />}
+                  disabled={currentUser.id === id}
+                >
+                  Éditer
+                </Menus.Button>
               </Modal.Open>
 
               <Modal.Open opens="resetUserPassword">

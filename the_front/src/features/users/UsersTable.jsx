@@ -95,8 +95,9 @@ function UsersTable() {
 
   return (
     <Menus>
-      <Table columns="0.4fr 1fr 0.8fr 0.4fr 0.5fr 0.5fr 0.5fr 0.4fr 0.1fr;">
+      <Table columns="0.1fr 0.4fr 1fr 0.8fr 0.4fr 0.5fr 0.5fr 0.5fr 0.4fr 0.1fr;">
         <Table.Header>
+          <div></div>
           <HeaderCell>
             <div>Login</div>
             <FilterInput
