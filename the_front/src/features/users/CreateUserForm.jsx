@@ -10,23 +10,23 @@ import SpinnerMini from "../../ui/SpinnerMini";
 
 // Définition des énumérations
 const UserProfile = {
-  GESTIONNAIRE: "GESTIONNAIRE",
-  REPORTING: "REPORTING",
-  IT_SUPPORT: "IT_SUPPORT",
+  GESTIONNAIRE: "gestionnaire",
+  REPORTING: "reporting",
+  IT_SUPPORT: "it_support",
 };
 
 const UserLocalisation = {
-  SIEGE: "SIÈGE",
-  ADAMAOUA: "ADAMAOUA",
-  CENTRE: "CENTRE",
-  EST: "EST",
-  EXTREME_NORD: "EXTREME_NORD",
-  LITTORAL: "LITTORAL",
-  NORD: "NORD",
-  NORD_OUEST: "NORD_OUEST",
-  OUEST: "OUEST",
-  SUD: "SUD",
-  SUD_OUEST: "SUD_OUEST",
+  SIEGE: "siège",
+  ADAMAOUA: "adamaoua",
+  CENTRE: "centre",
+  EST: "est",
+  EXTREME_NORD: "extreme_nord",
+  LITTORAL: "littoral",
+  NORD: "nord",
+  NORD_OUEST: "nord_ouest",
+  OUEST: "ouest",
+  SUD: "sud",
+  SUD_OUEST: "sud_ouest",
 };
 
 const localisationOptions = Object.values(UserLocalisation).map((value) => ({
