@@ -20,7 +20,7 @@ const StyledToggle = styled.button`
   transition: all 0.2s;
 
   &:hover {
-    background-color: var(--color-grey-100);
+    background-color: var(--color-grey-200);
   }
 
   & svg {
@@ -55,7 +55,7 @@ const StyledButton = styled.button`
   gap: 1.6rem;
 
   &:hover {
-    background-color: var(--color-grey-100);
+    background-color: var(--color-grey-200);
   }
 
   & svg {
