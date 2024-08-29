@@ -46,7 +46,6 @@ export type UserCreationAttributes = Omit<
 > & {
   active?: boolean;
   must_reset_password?: boolean;
-  created_by?: number;
 };
 
 export type UserUpdatableFields = Partial<

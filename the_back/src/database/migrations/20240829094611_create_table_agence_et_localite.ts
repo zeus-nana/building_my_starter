@@ -43,7 +43,7 @@ export async function up(knex: Knex): Promise<void> {
   // 4. Création de la table 'agence'
   await knex.schema.createTable('agence', (table) => {
     table.increments('id').primary();
-    table.string('code', 5);
+    table.string('code_agence', 5);
     table.string('agence', 255);
     table.string('gesuni', 255);
     table.string('reseau', 255);
@@ -67,6 +67,11 @@ export async function up(knex: Knex): Promise<void> {
     table.string('id_western_ecobank', 255);
     table.string('id_afrik_com_wafacash', 255);
     table.string('id_western_emi', 255);
+    table.string('id_hop_international', 255);
+    table.string('id_emi_ecobank', 255);
+    table.string('id_uba', 255);
+    table.string('id_ria', 255);
+    table.string('id_axa', 255);
     table.integer('created_by').unsigned().references('id').inTable('users');
     table.integer('updated_by').unsigned().references('id').inTable('users');
     table.timestamps(true, true);
@@ -78,7 +83,7 @@ export async function up(knex: Knex): Promise<void> {
     CREATE VIEW agence_localite AS
     SELECT 
       a.id,
-      a.code,
+      a.code_agence,
       a.agence,
       a.gesuni,
       a.reseau,
