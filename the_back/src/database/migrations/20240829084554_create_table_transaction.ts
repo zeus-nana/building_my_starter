@@ -1,0 +1,66 @@
+import { Knex } from 'knex';
+import { onUpdateTrigger } from '../../../knexfile';
+
+export async function up(knex: Knex): Promise<void> {
+  await knex.schema.createTable('transaction', (table) => {
+    table.increments('id').primary();
+    table
+      .integer('chargement_id')
+      .notNullable()
+      .unsigned()
+      .references('id')
+      .inTable('chargement');
+    table.string('produit', 255).notNullable();
+    table.string('service', 255);
+    table.string('reference', 255);
+    table.date('date_operation').notNullable();
+    table
+      .string('sens', 1)
+      .notNullable()
+      .comment('soit e pour entrée ou s pour sortie');
+    table.integer('montant').notNullable();
+    table.integer('frais_ht');
+    table.integer('tta');
+    table.integer('tva');
+    table.integer('frais_ttc');
+    table.integer('commission');
+    table.string('statut_operation', 50);
+    table.string('id_operation', 255);
+    table.string('expediteur', 255);
+    table.string('beneficiaire', 255);
+    table.string('guichet', 255);
+    table.string('agence', 255);
+    table.string('compagnie', 255);
+    table.string('pays', 255);
+    table.string('guichet_decharge', 255);
+    table.string('agence_decharge', 255);
+    table.string('compagnie_decharge', 255);
+    table.string('pays_decharge', 255);
+    table.string('partenaire', 255);
+    table.string('categorie', 50);
+    table.string('sous_categorie', 50);
+    table.string('responsable', 50);
+    table.string('application', 100);
+    table.string('v_hv', 3);
+    table.string('region', 50);
+    table.string('departement', 50);
+    table.string('commune', 50);
+    table.string('code_agence', 4);
+    table.string('pole', 50);
+
+    // Champs extra
+    for (let i = 1; i <= 20; i++) {
+      table.string(`extra_${i}`, 255);
+    }
+
+    // timestamps
+    table.timestamps(true, true);
+  });
+
+  // Assurez-vous que la fonction onUpdateTrigger est définie et importée correctement
+  return knex.raw(onUpdateTrigger('transaction'));
+}
+
+export async function down(knex: Knex): Promise<void> {
+  await knex.schema.dropTable('transaction');
+}
