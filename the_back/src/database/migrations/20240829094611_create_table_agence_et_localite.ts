@@ -80,7 +80,7 @@ export async function up(knex: Knex): Promise<void> {
 
   // 5. Création de la vue 'agence_details'
   await knex.raw(`
-    CREATE VIEW agence_localite AS
+    CREATE VIEW vw_agence_localite AS
     SELECT 
       a.id,
       a.code_agence,
@@ -109,7 +109,7 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
   // Suppression de la vue
-  await knex.raw('DROP VIEW IF EXISTS agence_localite');
+  await knex.raw('DROP VIEW IF EXISTS vw_agence_localite');
 
   // Suppression des tables dans l'ordre inverse de leur création
   await knex.schema.dropTableIfExists('agence');
