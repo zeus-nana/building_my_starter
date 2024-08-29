@@ -13,17 +13,17 @@ export async function up(knex: Knex): Promise<void> {
     table.string('produit', 255).notNullable();
     table.string('service', 255);
     table.string('reference', 255);
-    table.date('date_operation').notNullable();
+    table.timestamp('date_operation').notNullable();
     table
       .string('sens', 1)
       .notNullable()
       .comment('soit e pour entrée ou s pour sortie');
-    table.integer('montant').notNullable();
-    table.integer('frais_ht');
-    table.integer('tta');
-    table.integer('tva');
-    table.integer('frais_ttc');
-    table.integer('commission');
+    table.decimal('montant', 65, 6).notNullable();
+    table.decimal('frais_ht', 65, 6);
+    table.decimal('tta', 65, 6);
+    table.decimal('tva', 65, 6);
+    table.decimal('frais_ttc', 65, 6);
+    table.decimal('commission', 65, 6);
     table.string('statut_operation', 50);
     table.string('id_operation', 255);
     table.string('expediteur', 255);
