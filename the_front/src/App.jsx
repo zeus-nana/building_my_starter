@@ -12,6 +12,7 @@ import Login from "./pages/Login.jsx";
 import PageNotFound from "./pages/PageNotFound.jsx";
 import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./ui/ProtectedRoute.jsx";
+import Chargement from "./pages/Chargement.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,6 +39,7 @@ function App() {
             <Route index element={<Navigate replace to="/home" />} />
             <Route path="home" element={<Home />} />
             <Route path="users" element={<Users />} />
+            <Route path="chargement" element={<Chargement />} />
             <Route path="settings" element={<Settings />}>
               <Route index element={<Navigate replace to="/settings" />} />
               <Route

@@ -8,6 +8,7 @@ import {
 } from "react-icons/hi2";
 import SubNav from "./SubNav";
 import PropTypes from "prop-types";
+import { HiOutlineUpload } from "react-icons/hi";
 
 const NavList = styled.ul`
   display: flex;
@@ -85,6 +86,7 @@ NavItem.propTypes = {
 function MainNav() {
   const navItems = [
     { icon: <HiOutlineHome />, text: "Accueil", to: "/" },
+    { icon: <HiOutlineUpload />, text: "Chargement", to: "/chargement" },
     { icon: <HiOutlineUsers />, text: "Utilisateurs", to: "/users" },
     {
       icon: <HiOutlineCog6Tooth />,

@@ -6,6 +6,7 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('chargement', (table) => {
     table.increments('id').primary();
     table.string('etat', 255).notNullable();
+    table.string('type', 255).notNullable();
     table.integer('nombre_succes').notNullable().defaultTo(0);
     table.integer('nombre_echec').notNullable().defaultTo(0);
     table

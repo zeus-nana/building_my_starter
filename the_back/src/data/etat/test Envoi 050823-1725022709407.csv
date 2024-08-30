@@ -1,0 +1,14 @@
+Nom;Prenom;Adresse;Telephone;pays Destination;Montant;compte;canal;membre;description
+YOMI;JEAN;Yaounde;237677660028;CMR;12500;237677660028;CASH;-;paiement salaire
+NANFAC JAZET;Romain;Yaounde;237677660028;CMR;21000;237677660028;CASH;-;paiement salaire
+DJOMO;Marie;Douala;237677660029;CMR;17800;237677660029;CASH;-;paiement fournisseur
+MBARGA;Jacques;Bamenda;237677660030;CMR;11200;237677660030;CASH;-;remboursement prêt
+TOUKAM;Evelyne;Yaounde;237677660031;CMR;14500;237677660031;CASH;-;paiement facture
+NGUELE;Jean-Pierre;Bafoussam;237677660032;CMR;19900;237677660032;CASH;-;achat matériel
+NGALE;Esther;Limbe;237677660033;CMR;12400;237677660033;CASH;-;paiement loyer
+TCHOFFO;Paul;Bamenda;237677660034;CMR;15000;237677660034;CASH;-;achat alimentation
+KAMDEM;Sophie;Douala;237677660035;CMR;10300;237677660035;CASH;-;paiement services
+ESSOMBA;Louis;Yaounde;237677660036;CMR;17800;237677660036;CASH;-;paiement frais médicaux
+MBELLA;Catherine;Bamenda;237677660037;CMR;18900;237677660037;CASH;-;paiement transport
+MAHOP;Emmanuel;Bafoussam;237677660038;CMR;13500;237677660038;CASH;-;achat vêtements
+NZE;Juliette;Limbe;237677660039;CMR;15200;237677660039;CASH;-;paiement facture
