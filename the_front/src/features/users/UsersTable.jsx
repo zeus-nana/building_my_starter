@@ -1,5 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
-import styled from "styled-components";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import AdminService from "../../services/adminService";
 import Spinner from "../../ui/Spinner";
@@ -10,31 +9,10 @@ import Pagination from "../../ui/Pagination.jsx";
 import { useSearchParams } from "react-router-dom";
 import { PAGE_SIZE } from "../../constants.js";
 
-const FilterInput = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.5rem;
-  border: 1px solid var(--color-grey-200);
-  border-radius: 8px;
-  font-size: 1.2rem;
-`;
-
-const HeaderCell = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
 function UsersTable() {
-  const [filters, setFilters] = useState({
-    login: "",
-    username: "",
-    email: "",
-    profile: "",
-    phone: "",
-    department: "",
-    localisation: "",
-    active: "",
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = parseInt(searchParams.get("page") || "1", 10);
+  const [filters, setFilters] = useState({});
 
   const {
     isLoading,
@@ -45,57 +23,19 @@ function UsersTable() {
     queryFn: AdminService.getAllUsers,
   });
 
-  const getUsers = useCallback(() => {
-    return {
-      users: response?.data?.data?.users ?? [],
-      results: response?.data?.results ?? 0,
-    };
-  }, [response]);
-
-  const [searchParams, setSearchParams] = useSearchParams();
+  const allUsers = response?.data?.data?.users ?? [];
 
   const filteredUsers = useMemo(() => {
-    const { users } = getUsers();
-
-    return users.filter((user) =>
+    return allUsers.filter((user) =>
       Object.entries(filters).every(([key, value]) => {
-        if (value === "") return true;
-        const userValue = user[key]?.toString().toLowerCase() ?? "";
-        return userValue.includes(value.toLowerCase());
+        if (!value) return true;
+        return user[key]
+          ?.toString()
+          .toLowerCase()
+          .includes(value.toLowerCase());
       }),
     );
-  }, [getUsers, filters]);
-
-  const pageCount = Math.ceil(filteredUsers.length / PAGE_SIZE);
-
-  // Validation et correction de la page courante
-  const currentPage = useMemo(() => {
-    const pageParam = searchParams.get("page");
-    let page = 1;
-
-    if (pageParam) {
-      page = parseInt(pageParam, 10);
-      if (isNaN(page) || page < 1) {
-        page = 1;
-      } else if (page > pageCount && pageCount > 0) {
-        // Add this check
-        page = pageCount;
-      }
-    }
-
-    return page;
-  }, [searchParams, pageCount]);
-
-  // Mise à jour des paramètres de recherche si nécessaire
-  useEffect(() => {
-    const pageParam = searchParams.get("page");
-    if (pageParam !== currentPage.toString()) {
-      setSearchParams((prev) => {
-        prev.set("page", currentPage.toString());
-        return prev;
-      });
-    }
-  }, [currentPage, searchParams, setSearchParams]);
+  }, [allUsers, filters]);
 
   const paginatedUsers = useMemo(() => {
     const startIndex = (currentPage - 1) * PAGE_SIZE;
@@ -103,10 +43,26 @@ function UsersTable() {
     return filteredUsers.slice(startIndex, endIndex);
   }, [filteredUsers, currentPage]);
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
-    setSearchParams((prev) => ({ ...prev, [name]: value, page: 1 }));
+  const totalCount = filteredUsers.length;
+  const pageCount = Math.ceil(totalCount / PAGE_SIZE);
+
+  const filterableColumns = [
+    "login",
+    "username",
+    "email",
+    "phone",
+    "profile",
+    "department",
+    "localisation",
+    "active",
+  ];
+
+  const handleFilterChange = (columnName, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [columnName]: value,
+    }));
+    setSearchParams({ page: "1" }); // Reset to first page when filter changes
   };
 
   if (error) return <div>Error: {error.message}</div>;
@@ -114,96 +70,35 @@ function UsersTable() {
 
   return (
     <Menus>
-      <Table columns="0.1fr 0.4fr 0.8fr 0.8fr 0.4fr 0.5fr 0.5fr 0.5fr 0.4fr 0.1fr;">
+      <Table
+        columns="0.1fr 0.4fr 0.8fr 0.8fr 0.4fr 0.5fr 0.5fr 0.5fr 0.4fr 0.1fr"
+        data={paginatedUsers}
+        filterableColumns={filterableColumns}
+        onFilterChange={handleFilterChange}
+      >
         <Table.Header>
           <div></div>
-          <HeaderCell>
-            <div>Login</div>
-            <FilterInput
-              type="text"
-              name="login"
-              value={filters.login}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Nom</div>
-            <FilterInput
-              type="text"
-              name="username"
-              value={filters.username}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Email</div>
-            <FilterInput
-              type="text"
-              name="email"
-              value={filters.email}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Téléphone</div>
-            <FilterInput
-              type="text"
-              name="phone"
-              value={filters.phone}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Profile</div>
-            <FilterInput
-              type="text"
-              name="profile"
-              value={filters.profile}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Département</div>
-            <FilterInput
-              type="text"
-              name="department"
-              value={filters.department}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Localisation</div>
-            <FilterInput
-              type="text"
-              name="localisation"
-              value={filters.localisation}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Statut</div>
-            <FilterInput
-              type="text"
-              name="active"
-              value={filters.active}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
+          <div name="login">Login</div>
+          <div name="username">Nom</div>
+          <div name="email">Email</div>
+          <div name="phone">Téléphone</div>
+          <div name="profile">Profile</div>
+          <div name="department">Département</div>
+          <div name="localisation">Localisation</div>
+          <div name="active">Statut</div>
+          <div></div>
         </Table.Header>
 
-        <Table.Body
-          data={paginatedUsers}
-          render={(user) => <UsersRow key={user.id} user={user} />}
-        />
+        <Table.Body render={(user) => <UsersRow key={user.id} user={user} />} />
 
         <Table.Footer>
-          {pageCount > 0 && ( // Add this check
-            <Pagination
-              count={filteredUsers.length}
-              currentPage={currentPage}
-              pageCount={pageCount}
-            />
-          )}
+          <Pagination
+            count={totalCount}
+            pageSize={PAGE_SIZE}
+            currentPage={currentPage}
+            pageCount={pageCount}
+            onPageChange={(page) => setSearchParams({ page: page.toString() })}
+          />
         </Table.Footer>
       </Table>
     </Menus>

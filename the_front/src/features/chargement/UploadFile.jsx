@@ -7,7 +7,7 @@ function UploadFile() {
     <div>
       <Modal>
         <Modal.Open opens="newUser-form">
-          <Button>Charger un état</Button>
+          <Button>Nouvelle charge</Button>
         </Modal.Open>
         <Modal.Window name="newUser-form">
           <UploadFileForm />

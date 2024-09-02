@@ -4,7 +4,6 @@ export async function up(knex: Knex): Promise<void> {
   await knex.raw(`
     CREATE VIEW vw_transaction_agrege AS
     SELECT 
-        produit,
         categorie,
         sous_categorie,
         statut_operation AS statut,
@@ -27,7 +26,6 @@ export async function up(knex: Knex): Promise<void> {
     FROM 
         transaction
     GROUP BY 
-        produit,
         categorie,
         sous_categorie,
         statut_operation,

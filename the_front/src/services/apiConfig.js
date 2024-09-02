@@ -21,5 +21,8 @@ export const API_CONFIG = {
       RESET_USER_PASSWORD: "/admin/reset-user-password",
       LOGIN: "/admin/login",
     },
+    FILE_PROCESSING: {
+      UPLOADS: "/fileProcessing/upload",
+    },
   },
 };

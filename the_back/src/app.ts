@@ -14,7 +14,7 @@ import xss from 'xss-clean';
 import hpp from 'hpp';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes';
-import fileProcessRoutes from './routes/fileProcessRoutes';
+import fileProcessingRoutes from './routes/fileProcessingRoutes';
 
 // Loading of the environment variables in config.env file.
 dotenv.config({ path: './config.env' });
@@ -77,7 +77,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/fileProcess', fileProcessRoutes);
+app.use('/api/v1/fileProcessing', fileProcessingRoutes);
 
 // UNHANDLED ROUTE
 app.all('*', (req: Request, res: Response, next: NextFunction) => {

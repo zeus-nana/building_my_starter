@@ -1,112 +1,70 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
-import styled from "styled-components";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import AdminService from "../../services/adminService";
 import Spinner from "../../ui/Spinner";
-import UsersRow from "./UsersRow";
+import UploadRow from "./UploadRow";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import Pagination from "../../ui/Pagination.jsx";
 import { useSearchParams } from "react-router-dom";
 import { PAGE_SIZE } from "../../constants.js";
 
-const FilterInput = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.5rem;
-  border: 1px solid var(--color-grey-200);
-  border-radius: 8px;
-  font-size: 1.2rem;
-`;
-
-const HeaderCell = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-function UsersTable() {
-  const [filters, setFilters] = useState({
-    login: "",
-    username: "",
-    email: "",
-    profile: "",
-    phone: "",
-    department: "",
-    localisation: "",
-    active: "",
-  });
+function UploadTable() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = parseInt(searchParams.get("page") || "1", 10);
+  const [filters, setFilters] = useState({});
 
   const {
     isLoading,
     data: response,
     error,
   } = useQuery({
-    queryKey: ["users"],
-    queryFn: AdminService.getAllUsers,
+    queryKey: ["uploads"],
+    queryFn: AdminService.getAllUploads,
   });
 
-  const getUsers = useCallback(() => {
-    return {
-      users: response?.data?.data?.users ?? [],
-      results: response?.data?.results ?? 0,
-    };
-  }, [response]);
+  const allUploads = response?.data?.data?.uploads ?? [];
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const filteredUsers = useMemo(() => {
-    const { users } = getUsers();
-
-    return users.filter((user) =>
+  const filteredUploads = useMemo(() => {
+    return allUploads.filter((upload) =>
       Object.entries(filters).every(([key, value]) => {
-        if (value === "") return true;
-        const userValue = user[key]?.toString().toLowerCase() ?? "";
-        return userValue.includes(value.toLowerCase());
+        if (!value) return true;
+        if (key === "statut") {
+          return upload[key] === value;
+        }
+        return upload[key]
+          ?.toString()
+          .toLowerCase()
+          .includes(value.toLowerCase());
       }),
     );
-  }, [getUsers, filters]);
+  }, [allUploads, filters]);
 
-  const pageCount = Math.ceil(filteredUsers.length / PAGE_SIZE);
-
-  // Validation et correction de la page courante
-  const currentPage = useMemo(() => {
-    const pageParam = searchParams.get("page");
-    let page = 1;
-
-    if (pageParam) {
-      page = parseInt(pageParam, 10);
-      if (isNaN(page) || page < 1) {
-        page = 1;
-      } else if (page > pageCount && pageCount > 0) {
-        // Add this check
-        page = pageCount;
-      }
-    }
-
-    return page;
-  }, [searchParams, pageCount]);
-
-  // Mise à jour des paramètres de recherche si nécessaire
-  useEffect(() => {
-    const pageParam = searchParams.get("page");
-    if (pageParam !== currentPage.toString()) {
-      setSearchParams((prev) => {
-        prev.set("page", currentPage.toString());
-        return prev;
-      });
-    }
-  }, [currentPage, searchParams, setSearchParams]);
-
-  const paginatedUsers = useMemo(() => {
+  const paginatedUploads = useMemo(() => {
     const startIndex = (currentPage - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
-    return filteredUsers.slice(startIndex, endIndex);
-  }, [filteredUsers, currentPage]);
+    return filteredUploads.slice(startIndex, endIndex);
+  }, [filteredUploads, currentPage]);
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
-    setSearchParams((prev) => ({ ...prev, [name]: value, page: 1 }));
+  const totalCount = filteredUploads.length;
+  const pageCount = Math.ceil(totalCount / PAGE_SIZE);
+
+  const filterableColumns = [
+    "id",
+    "dateUpload",
+    "etat",
+    "nombreTraite",
+    "nombreEchec",
+    "creePar",
+    "statut",
+  ];
+
+  const handleFilterChange = (columnName, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [columnName]: value,
+    }));
+    setSearchParams({ page: "1" });
   };
 
   if (error) return <div>Error: {error.message}</div>;
@@ -114,100 +72,38 @@ function UsersTable() {
 
   return (
     <Menus>
-      <Table columns="0.1fr 0.4fr 0.8fr 0.8fr 0.4fr 0.5fr 0.5fr 0.5fr 0.4fr 0.1fr;">
+      <Table
+        columns="0.5fr 1fr 1fr 1fr 1fr 1fr 1fr"
+        data={paginatedUploads}
+        filterableColumns={filterableColumns}
+        onFilterChange={handleFilterChange}
+      >
         <Table.Header>
-          <div></div>
-          <HeaderCell>
-            <div>Login</div>
-            <FilterInput
-              type="text"
-              name="login"
-              value={filters.login}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Nom</div>
-            <FilterInput
-              type="text"
-              name="username"
-              value={filters.username}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Email</div>
-            <FilterInput
-              type="text"
-              name="email"
-              value={filters.email}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Téléphone</div>
-            <FilterInput
-              type="text"
-              name="phone"
-              value={filters.phone}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Profile</div>
-            <FilterInput
-              type="text"
-              name="profile"
-              value={filters.profile}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Département</div>
-            <FilterInput
-              type="text"
-              name="department"
-              value={filters.department}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Localisation</div>
-            <FilterInput
-              type="text"
-              name="localisation"
-              value={filters.localisation}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
-          <HeaderCell>
-            <div>Statut</div>
-            <FilterInput
-              type="text"
-              name="active"
-              value={filters.active}
-              onChange={handleFilterChange}
-            />
-          </HeaderCell>
+          <div name="id">ID</div>
+          <div name="dateUpload">Date Upload</div>
+          <div name="etat">État</div>
+          <div name="nombreTraite">Nombre Traité</div>
+          <div name="nombreEchec">Nombre Échec</div>
+          <div name="creePar">Créé Par</div>
+          <div name="statut">Statut</div>
         </Table.Header>
 
         <Table.Body
-          data={paginatedUsers}
-          render={(user) => <UsersRow key={user.id} user={user} />}
+          render={(upload) => <UploadRow key={upload.id} upload={upload} />}
         />
 
         <Table.Footer>
-          {pageCount > 0 && ( // Add this check
-            <Pagination
-              count={filteredUsers.length}
-              currentPage={currentPage}
-              pageCount={pageCount}
-            />
-          )}
+          <Pagination
+            count={totalCount}
+            pageSize={PAGE_SIZE}
+            currentPage={currentPage}
+            pageCount={pageCount}
+            onPageChange={(page) => setSearchParams({ page: page.toString() })}
+          />
         </Table.Footer>
       </Table>
     </Menus>
   );
 }
 
-export default UsersTable;
+export default UploadTable;

@@ -9,6 +9,11 @@ export async function up(knex: Knex): Promise<void> {
     table.string('type', 255).notNullable();
     table.integer('nombre_succes').notNullable().defaultTo(0);
     table.integer('nombre_echec').notNullable().defaultTo(0);
+    table.string('chemin_fichier', 255).notNullable();
+    table
+      .string('statut', 1)
+      .notNullable()
+      .comment('e pour encours, t pour terminé');
     table
       .integer('created_by')
       .unsigned()

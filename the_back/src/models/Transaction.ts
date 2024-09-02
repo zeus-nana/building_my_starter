@@ -1,7 +1,7 @@
 export interface Transaction {
   id: number;
   chargement_id: number;
-  produit: string;
+  etat: string;
   service: string | null;
   reference: string | null;
   date_operation: Date;
@@ -55,6 +55,16 @@ export interface Transaction {
   extra_18?: string;
   extra_19?: string;
   extra_20?: string;
+  extra_21?: string;
+  extra_22?: string;
+  extra_23?: string;
+  extra_24?: string;
+  extra_25?: string;
+  extra_26?: string;
+  extra_27?: string;
+  extra_28?: string;
+  extra_29?: string;
+  extra_30?: string;
   created_at: Date;
   updated_at: Date;
 }

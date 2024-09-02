@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
 import AppError from '../utils/appError';
+import { catchAsync } from '../utils/catchAsync';
 
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -40,18 +41,19 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-const uploadFile = upload.array('file');
+const uploadFile = upload.array('files');
 
-const processData = async (req: Request, res: Response, next: NextFunction) => {
+const processData = catchAsync(async (req: Request, res: Response) => {
+  await new Promise((resolve) => setTimeout(resolve, 2000));
   // const { file } = req.file;
   // const { id: userId } = req.user;
   console.log(req.files);
   console.log(req.user);
   res.status(200).json({
     status: 'succès',
-    message: 'Fichiers traités avec succès.',
+    message: 'Fichiers chargés avec succès.',
   });
-};
+});
 
 export default {
   processData,

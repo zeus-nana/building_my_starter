@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
       .unsigned()
       .references('id')
       .inTable('chargement');
-    table.string('produit', 255).notNullable();
+    table.string('etat', 255).notNullable();
     table.string('service', 255);
     table.string('reference', 255);
     table.timestamp('date_operation').notNullable();
@@ -49,7 +49,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('pole', 50);
 
     // Champs extra
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 30; i++) {
       table.string(`extra_${i}`, 255);
     }
 

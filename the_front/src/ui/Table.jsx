@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
@@ -83,11 +83,52 @@ const StyledHeaderCell = styled(StyledCell)`
   }
 `;
 
+const HeaderCell = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const FilterInput = styled.input`
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border: 1px solid var(--color-grey-200);
+  border-radius: 8px;
+  font-size: 1.2rem;
+`;
+
 const TableContext = createContext();
 
-function Table({ columns, children }) {
+function Table({ columns, data, children, filterableColumns, onFilterChange }) {
+  const [filters, setFilters] = useState({});
+
+  const handleFilterChange = (name, value) => {
+    setFilters((prev) => ({ ...prev, [name]: value }));
+    if (onFilterChange) {
+      onFilterChange(name, value);
+    }
+  };
+
+  const filteredData = useMemo(() => {
+    return data.filter((item) =>
+      Object.entries(filters).every(([key, value]) => {
+        if (value === "") return true;
+        const itemValue = item[key]?.toString().toLowerCase() ?? "";
+        return itemValue.includes(value.toLowerCase());
+      }),
+    );
+  }, [data, filters]);
+
+  const contextValue = {
+    columns,
+    filteredData,
+    handleFilterChange,
+    filters,
+    filterableColumns,
+  };
+
   return (
-    <TableContext.Provider value={{ columns }}>
+    <TableContext.Provider value={contextValue}>
       <StyledTable role="table">{children}</StyledTable>
     </TableContext.Provider>
   );
@@ -95,15 +136,31 @@ function Table({ columns, children }) {
 
 Table.propTypes = {
   columns: PropTypes.string,
+  onFilterChange: PropTypes.func,
+  data: PropTypes.array.isRequired,
   children: PropTypes.node.isRequired,
+  filterableColumns: PropTypes.arrayOf(PropTypes.string),
 };
 
 function Header({ children }) {
-  const { columns } = useContext(TableContext);
+  const { columns, handleFilterChange, filters, filterableColumns } =
+    useContext(TableContext);
   return (
     <StyledHeader role="row" $columns={columns} as="header">
       {React.Children.map(children, (child) => (
-        <StyledHeaderCell>{child}</StyledHeaderCell>
+        <HeaderCell>
+          <StyledHeaderCell>{child}</StyledHeaderCell>
+          {filterableColumns.includes(child.props.name) && (
+            <FilterInput
+              type="text"
+              name={child.props.name}
+              value={filters[child.props.name] || ""}
+              onChange={(e) =>
+                handleFilterChange(child.props.name, e.target.value)
+              }
+            />
+          )}
+        </HeaderCell>
       ))}
     </StyledHeader>
   );
@@ -128,13 +185,13 @@ Row.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-function Body({ data, render }) {
-  if (!data.length) return <Empty>Aucun utilisateur à afficher</Empty>;
-  return <StyledBody>{data.map(render)}</StyledBody>;
+function Body({ render }) {
+  const { filteredData } = useContext(TableContext);
+  if (!filteredData.length) return <Empty>Aucun élément à afficher</Empty>;
+  return <StyledBody>{filteredData.map(render)}</StyledBody>;
 }
 
 Body.propTypes = {
-  data: PropTypes.array.isRequired,
   render: PropTypes.func.isRequired,
 };
 
