@@ -161,7 +161,7 @@ const createUpdateUser = catchAsync(async (req: Request, res: Response) => {
   const generatedPassword = crypto.randomBytes(10).toString('hex');
   userData.email = userData.email.toLowerCase();
   userData.password = await bcrypt.hash(generatedPassword, 12);
-  userData.created_by = req.user?.id;
+  userData.created_by = req.user!.id;
 
   const createdUser = await db('users').insert(userData, '*');
   signToken(createdUser[0].id, createdUser[0].email);

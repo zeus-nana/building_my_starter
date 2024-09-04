@@ -8,6 +8,7 @@ import authRoutes from './routes/authRoutes';
 import adminRoutes from './routes/adminRoutes';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import './controllers/tasks';
 
 // @ts-ignore
 import xss from 'xss-clean';

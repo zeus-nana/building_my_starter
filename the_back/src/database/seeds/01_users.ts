@@ -91,6 +91,7 @@ export async function seed(knex: Knex): Promise<void> {
     localisation: 'siège',
     must_reset_password: false,
     active: true,
+    created_by: null,
   };
 
   // Insérer le superadmin
