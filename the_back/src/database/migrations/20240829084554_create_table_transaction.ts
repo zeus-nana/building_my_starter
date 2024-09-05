@@ -36,17 +36,17 @@ export async function up(knex: Knex): Promise<void> {
     table.string('agence_decharge', 255);
     table.string('compagnie_decharge', 255);
     table.string('pays_decharge', 255);
-    table.string('partenaire', 255);
-    table.string('categorie', 50);
-    table.string('sous_categorie', 50);
-    table.string('responsable', 50);
-    table.string('application', 100);
-    table.string('v_hv', 3);
-    table.string('region', 50);
-    table.string('departement', 50);
-    table.string('commune', 50);
-    table.string('code_agence', 4);
-    table.string('pole', 50);
+    table.string('partenaire', 255).notNullable();
+    table.string('categorie', 50).notNullable();
+    table.string('sous_categorie', 50).notNullable();
+    table.string('responsable', 50).notNullable();
+    table.string('application', 100).notNullable();
+    table.string('v_hv', 3).notNullable();
+    table.string('region', 50).notNullable();
+    table.string('departement', 50).notNullable();
+    table.string('commune', 50).notNullable();
+    table.string('code_agence', 4).notNullable();
+    table.string('pole', 50).notNullable();
 
     // Champs extra
     for (let i = 1; i <= 30; i++) {

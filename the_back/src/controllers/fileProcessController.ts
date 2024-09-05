@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
 import AppError from '../utils/appError';
 import { catchAsync } from '../utils/catchAsync';
@@ -10,13 +10,7 @@ const multerStorage = multer.diskStorage({
     cb(null, './src/data/etat/');
   },
   filename: (req, file, cb) => {
-    let ext = file.mimetype.split('/')[1];
-    // Correction pour les fichiers Excel
-    if (ext === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-      ext = 'xlsx';
-    } else if (ext === 'vnd.ms-excel') {
-      ext = 'xls';
-    }
+    const ext = file.originalname.split('.').pop();
     cb(null, `${file.originalname.split('.')[0]}-${Date.now()}.${ext}`);
   },
 });
@@ -68,7 +62,7 @@ const processData = catchAsync(async (req: Request, res: Response) => {
         'processFile',
         {
           filePath: file.path,
-          chargement_id: id,
+          chargement_id: id.id,
           fileName: file.originalname.split('.')[0],
         },
         defaultJobOptions,

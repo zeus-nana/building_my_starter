@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTableIfNotExists('erreur_chargement_log', (table) => {
     table.increments('id').primary();
     table.string('ligne_conflictuelle', 1000).notNullable();
-    table.string('message_erreur', 255).notNullable();
+    table.string('message_erreur', 1000).notNullable();
     table
       .integer('chargement_id')
       .unsigned()
