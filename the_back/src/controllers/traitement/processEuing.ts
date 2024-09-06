@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import { Job } from 'bull';
 import { Transaction } from '../../models/Transaction';
-import csvToJsonParser from './csvToJsonParser';
 import db from '../../database/connection';
 
 /*
@@ -128,6 +127,7 @@ import db from '../../database/connection';
 
 import { parse } from 'csv-parse';
 import { replaceEmptyWithNull } from '../../utils/replaceEmptyWithNull';
+import logError from './insertErrorLogger';
 
 interface JobData {
   filePath: string;
@@ -358,50 +358,12 @@ function determineSousCategorie(service: string): string {
   return service in sousCategorieMap ? sousCategorieMap[service] : '-';
 }
 
-async function logError(
-  chargementId: number,
-  ligneConflictuelle: string, // JSON string
-  codeErreur: string,
-  descriptionErreur: string,
-  numeroLigne: number,
-  pgCode?: string, // Optional parameter for PostgreSQL error code
-): Promise<void> {
-  try {
-    // Parse the JSON string to extract the values
-    const jsonParsed = JSON.parse(ligneConflictuelle);
-    const ligneValues = Object.values(jsonParsed).join(', '); // Join the values into a string
-
-    const ligneInfo = `LIGNE : ${numeroLigne} => ${ligneValues}`;
-    const messageErreurComplet = pgCode
-      ? `(CODE ERREUR : ${pgCode}): ${descriptionErreur}`
-      : `${descriptionErreur}`;
-
-    await db('erreur_chargement_log')
-      .insert({
-        chargement_id: chargementId,
-        ligne_conflictuelle: db.raw('substr(?, 1, 1000)', [ligneInfo]),
-        message_erreur: db.raw('substr(?, 1, 1000)', [messageErreurComplet]),
-      })
-      .catch((err) => {
-        const pgError = err.code || 'UNKNOWN';
-        const pgMessage = err.message || 'Unknown PostgreSQL error';
-        console.error(`PostgreSQL Error: ${pgError} - ${pgMessage}`);
-        throw new Error(`${pgError}: ${pgMessage}`);
-      });
-  } catch (error) {
-    console.error('Error logging to erreur_chargement_log:', error);
-    throw error;
-  }
-}
-
-async function processEUING(job: Job<JobData>): Promise<void> {
+async function processEuing(job: Job<JobData>): Promise<void> {
   const { fileName, filePath, chargement_id } = job.data;
 
   try {
     const agenceLocaliteData = await db.select('*').from('vw_agence_localite');
     const records = await processCSV(filePath);
-
-    console.log(`Starting file processing. Total records: ${records.length}`);
 
     let successCount = 0;
     let failureCount = 0;
@@ -437,48 +399,14 @@ async function processEUING(job: Job<JobData>): Promise<void> {
         await db('transaction').insert(transactionToInsert);
 
         successCount++;
-        console.log(
-          `Record ${i + 1} (Line ${lineNumber}): Processed successfully`,
-        );
       } catch (error: unknown) {
         failureCount++;
-        let codeErreur = 'ERR_UNKNOWN';
-        let descriptionErreur = 'An unknown error occurred';
-        let pgCode: string | undefined;
-
-        if (error instanceof Error) {
-          console.error('erreur :::', JSON.stringify(error));
-
-          codeErreur = error.name || 'ERR_UNKNOWN';
-          descriptionErreur = error.message || 'An unknown error occurred';
-          if ('code' in error && typeof error.code === 'string') {
-            pgCode = error.code;
-          }
-          if ('detail' in error && typeof error.detail === 'string') {
-            descriptionErreur = error.detail;
-          }
-
-          if (pgCode === '23502') {
-            codeErreur = 'ERR_NULL_VALUE';
-            descriptionErreur = `Valeur imcompatible à la colonne ${error.column.toUpperCase()}`;
-          }
-        } else if (typeof error === 'string') {
-          console.error('erreur :::', JSON.stringify(error));
-          descriptionErreur = error;
-        }
-
-        console.error(
-          `Error in record ${i + 1} (Line ${lineNumber}): ${codeErreur} - ${descriptionErreur}`,
-        );
-
-        await logError(
-          chargement_id,
-          JSON.stringify(record),
-          codeErreur,
-          descriptionErreur,
-          lineNumber,
-          pgCode,
-        );
+        await logError({
+          chargementId: chargement_id,
+          ligneConflictuelle: JSON.stringify(record),
+          numeroLigne: lineNumber,
+          error: error,
+        });
       }
     }
 
@@ -492,7 +420,6 @@ async function processEUING(job: Job<JobData>): Promise<void> {
       nombre_succes: successCount,
       nombre_echec: failureCount,
     });
-    console.log(`Chargement status and counts updated for ID ${chargement_id}`);
   } catch (error) {
     console.error('Error processing EUING file:', error);
     throw error;
@@ -504,4 +431,4 @@ function extractCodeAgence(guichet: string): string {
   return parts.length > 2 ? parts[2] : '';
 }
 
-export default processEUING;
+export default processEuing;

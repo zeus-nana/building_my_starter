@@ -82,15 +82,7 @@ export async function up(knex: Knex): Promise<void> {
   await knex.raw(`
     CREATE VIEW vw_agence_localite AS
     SELECT 
-      a.id,
-      a.code_agence,
-      a.agence,
-      a.gesuni,
-      a.reseau,
-      a.pole,
-      a.type_agence,
-      a.v_hv,
-      a.telephone,
+      a.*,
       ca.commune,
       ca.arrondissement,
       d.departement,
