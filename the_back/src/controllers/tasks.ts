@@ -1,6 +1,7 @@
 import { fileProcessingQueue } from '../../bullConfig';
 import processEuing from './traitement/processEuing';
 import processGraphicSystemOM from './traitement/processGraphicSystemOM';
+import { TypeEtat } from '../type/TypeEtat';
 
 fileProcessingQueue.process('processFile', async (job) => {
   const { filePath, chargement_id, fileName } = job.data;
@@ -13,14 +14,14 @@ fileProcessingQueue.process('processFile', async (job) => {
   let message;
 
   try {
-    switch (fileName.toLowerCase()) {
-      case 'euing':
+    switch (fileName as TypeEtat) {
+      case TypeEtat.EUING:
         result = await processEuing(job);
         message = 'Fichier EUING traité avec succès';
         console.log(`Traitement EUING terminé pour le fichier: ${filePath}`);
         break;
 
-      case 'graphic_system_om':
+      case TypeEtat.GRAPHIC_SYSTEM_OM:
         result = await processGraphicSystemOM(job);
         message = 'Fichier Graphic System OM traité avec succès';
         console.log(

@@ -1,18 +1,25 @@
+import ChargementTable from "../features/chargement/ChargementTable.jsx";
 import Row from "../ui/Row.jsx";
+import ReportingFilter from "../features/reporting/reportingFilter.jsx";
 import Heading from "../ui/Heading.jsx";
-import UsersTable from "../features/users/UsersTable.jsx";
+import ReportingService from "../services/reportingService.js";
+import { useReporting } from "../features/reporting/useReporting.js";
 import UploadFile from "../features/chargement/UploadFile.jsx";
-import ChargementFilter from "../features/chargement/chargementFilter.jsx";
 
 function Chargement() {
+  const { data, isLoading, error, dateRange, handleFilter } = useReporting(
+    "chargements",
+    ReportingService.getChargementByDate,
+  );
+
   return (
     <>
       <Row type="horizontal">
-        <Heading type="h1">Changements</Heading>
-        <ChargementFilter />
+        <Heading type="h1">Chargements</Heading>
+        <ReportingFilter onFilter={handleFilter} initialDateRange={dateRange} />
       </Row>
       <Row>
-        <UsersTable />
+        <ChargementTable data={data} isLoading={isLoading} error={error} />
         <UploadFile />
       </Row>
     </>

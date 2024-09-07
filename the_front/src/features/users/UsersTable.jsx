@@ -46,6 +46,19 @@ function UsersTable() {
   const totalCount = filteredUsers.length;
   const pageCount = Math.ceil(totalCount / PAGE_SIZE);
 
+  const columns = [
+    { name: "avatar", width: "60px" },
+    { name: "login", width: "150px" },
+    { name: "username", width: "200px" },
+    { name: "email", width: "250px" },
+    { name: "phone", width: "150px" },
+    { name: "profile", width: "150px" },
+    { name: "department", width: "200px" },
+    { name: "localisation", width: "200px" },
+    { name: "active", width: "100px" },
+    { name: "actions", width: "50px" },
+  ];
+
   const filterableColumns = [
     "login",
     "username",
@@ -62,22 +75,33 @@ function UsersTable() {
       ...prev,
       [columnName]: value,
     }));
-    setSearchParams({ page: "1" }); // Reset to first page when filter changes
+    setSearchParams({ page: "1" });
   };
 
   if (error) return <div>Error: {error.message}</div>;
   if (isLoading) return <Spinner />;
 
+  const footer = (
+    <Pagination
+      count={totalCount}
+      pageSize={PAGE_SIZE}
+      currentPage={currentPage}
+      pageCount={pageCount}
+      onPageChange={(page) => setSearchParams({ page: page.toString() })}
+    />
+  );
+
   return (
     <Menus>
       <Table
-        columns="0.1fr 0.4fr 0.8fr 0.8fr 0.4fr 0.5fr 0.5fr 0.5fr 0.4fr 0.1fr"
+        columns={columns}
         data={paginatedUsers}
         filterableColumns={filterableColumns}
         onFilterChange={handleFilterChange}
+        footer={footer}
       >
         <Table.Header>
-          <div></div>
+          <div name=".">Avatar</div>
           <div name="login">Login</div>
           <div name="username">Nom</div>
           <div name="email">Email</div>
@@ -86,20 +110,10 @@ function UsersTable() {
           <div name="department">Département</div>
           <div name="localisation">Localisation</div>
           <div name="active">Statut</div>
-          <div></div>
+          <div name=".">Actions</div>
         </Table.Header>
 
         <Table.Body render={(user) => <UsersRow key={user.id} user={user} />} />
-
-        <Table.Footer>
-          <Pagination
-            count={totalCount}
-            pageSize={PAGE_SIZE}
-            currentPage={currentPage}
-            pageCount={pageCount}
-            onPageChange={(page) => setSearchParams({ page: page.toString() })}
-          />
-        </Table.Footer>
       </Table>
     </Menus>
   );

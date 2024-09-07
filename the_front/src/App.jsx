@@ -5,14 +5,14 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import AppLayout from "./ui/AppLayout.jsx";
 import Home from "./pages/Home.jsx";
 import Users from "./pages/Users.jsx";
-import Settings from "./pages/settings/Settings.jsx";
-import SettingsPermissions from "./pages/settings/SettingsPermissions.jsx";
-import SettingsDepartements from "./pages/settings/SettingsDepartements.jsx";
 import Login from "./pages/Login.jsx";
 import PageNotFound from "./pages/PageNotFound.jsx";
 import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./ui/ProtectedRoute.jsx";
 import Chargement from "./pages/Chargement.jsx";
+import Reporting from "./pages/reports/Reporting.jsx";
+import ReportingTransaction from "./pages/reports/ReportingTransactionGlobal.jsx";
+import ReportingTransactionAgrege from "./pages/reports/ReportingTransactionAgrege.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,15 +40,12 @@ function App() {
             <Route path="home" element={<Home />} />
             <Route path="users" element={<Users />} />
             <Route path="chargement" element={<Chargement />} />
-            <Route path="settings" element={<Settings />}>
-              <Route index element={<Navigate replace to="/settings" />} />
+            <Route path="reporting" element={<Reporting />}>
+              <Route index element={<Navigate replace to="/reporting" />} />
+              <Route path="transactions" element={<ReportingTransaction />} />
               <Route
-                path="settings-permissions"
-                element={<SettingsPermissions />}
-              />
-              <Route
-                path="settings-departements"
-                element={<SettingsDepartements />}
+                path="transactions-agrege"
+                element={<ReportingTransactionAgrege />}
               />
             </Route>
           </Route>

@@ -1,18 +1,17 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 
-const StyledSettings = styled.div`
+const StyledReport = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2.4rem;
 `;
-
-function Settings() {
+function Reporting() {
   return (
-    <StyledSettings>
+    <StyledReport>
       <Outlet />
-    </StyledSettings>
+    </StyledReport>
   );
 }
 
-export default Settings;
+export default Reporting;

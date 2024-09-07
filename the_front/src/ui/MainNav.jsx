@@ -1,14 +1,9 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
-import {
-  HiOutlineCog6Tooth,
-  HiOutlineHome,
-  HiOutlineLockOpen,
-  HiOutlineUsers,
-} from "react-icons/hi2";
+import { HiOutlineHome, HiOutlineUsers } from "react-icons/hi2";
 import SubNav from "./SubNav";
 import PropTypes from "prop-types";
-import { HiOutlineUpload } from "react-icons/hi";
+import { HiOutlineChartBar, HiOutlineUpload } from "react-icons/hi";
 
 const NavList = styled.ul`
   display: flex;
@@ -71,13 +66,13 @@ function NavItem({ icon, text, to, subItems }) {
 }
 
 NavItem.propTypes = {
-  icon: PropTypes.element.isRequired,
+  icon: PropTypes.element,
   text: PropTypes.string.isRequired,
   to: PropTypes.string,
   subItems: PropTypes.arrayOf(
     PropTypes.shape({
       to: PropTypes.string.isRequired,
-      icon: PropTypes.element.isRequired,
+      icon: PropTypes.element,
       text: PropTypes.string.isRequired,
     }),
   ),
@@ -89,18 +84,16 @@ function MainNav() {
     { icon: <HiOutlineUpload />, text: "Chargement", to: "/chargement" },
     { icon: <HiOutlineUsers />, text: "Utilisateurs", to: "/users" },
     {
-      icon: <HiOutlineCog6Tooth />,
-      text: "Settings",
+      icon: <HiOutlineChartBar />,
+      text: "Reporting",
       subItems: [
         {
-          to: "/settings/settings-permissions",
-          icon: <HiOutlineLockOpen />,
-          text: "Permissions",
+          to: "/reporting/transactions",
+          text: "Globale",
         },
         {
-          to: "/settings/settings-departements",
-          icon: <HiOutlineLockOpen />,
-          text: "Departements",
+          to: "/reporting/transactions-agrege",
+          text: "Agrégées",
         },
       ],
     },

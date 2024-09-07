@@ -107,7 +107,6 @@ async function processGraphicSystemOM(job: Job<JobData>): Promise<void> {
             frais_ttc: parseNumber(row['__EMPTY_16']),
             categorie: 'Mobile Money',
             sous_categorie: 'Orange Money',
-            statut_operation: 'ACTIF',
             responsable: 'DCM-DMP',
             partenaire: 'GRAPHIC SYSTEM',
             application: 'PUCES PARTENAIRES',
@@ -121,6 +120,7 @@ async function processGraphicSystemOM(job: Job<JobData>): Promise<void> {
 
           if (agenceInfo) {
             transaction.v_hv = agenceInfo.v_hv;
+            transaction.agence = agenceInfo.agence;
             transaction.region = agenceInfo.region;
             transaction.departement = agenceInfo.departement;
             transaction.commune = agenceInfo.commune;

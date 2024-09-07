@@ -20,6 +20,7 @@ export function useUploadFile(onCloseModal) {
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response?.data) {
+        console.log("ici");
         toast.error(`Erreur: ${error.response.data.message}`);
       } else {
         toast.error(`Erreur lors du téléchargement des fichiers.`);

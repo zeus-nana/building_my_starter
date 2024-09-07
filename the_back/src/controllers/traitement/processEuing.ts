@@ -128,6 +128,7 @@ import db from '../../database/connection';
 import { parse } from 'csv-parse';
 import { replaceEmptyWithNull } from '../../utils/replaceEmptyWithNull';
 import logError from './insertErrorLogger';
+import { el } from '@faker-js/faker';
 
 interface JobData {
   filePath: string;
@@ -275,6 +276,7 @@ function mapCsvToTransaction(
 
 function determinePartenaire(service: string): string {
   const partenaireMap: { [key: string]: string } = {
+    ENVOI_C2C_NAT: 'ERA',
     ENVOI_C2B_BGFI_CMR: 'BGFI',
     ENVOI_C2B_ECOB_CMR: 'ECOBANK',
     ENVOI_C2B_OPI_MFS: 'MFS',
@@ -282,6 +284,7 @@ function determinePartenaire(service: string): string {
     ENVOI_C2C_OPI_MFS: 'MFS',
     ENVOI_C2C_OPI_THUNES: 'THUNES',
     ENVOI_C2W_OPI_MFS: 'MFS',
+    PAIEMENT_C2C_NAT: 'ERA',
     PAIEMENT_C2C_INTL_OPI_BDE: 'BDE',
     PAIEMENT_C2C_INTL_OPI_CSCH: 'CSCH',
     PAIEMENT_C2C_INTL_OPI_CXCH: 'CXCH',
@@ -370,7 +373,7 @@ async function processEuing(job: Job<JobData>): Promise<void> {
 
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
-      const lineNumber = i + 2; // Adding 2 to account for the header line and 0-based index
+      const lineNumber = i + 2;
 
       try {
         const transaction: Partial<Transaction> = mapCsvToTransaction(record);
@@ -395,10 +398,28 @@ async function processEuing(job: Job<JobData>): Promise<void> {
         // Remplace les valeurs vides par NULL
         const transactionToInsert = replaceEmptyWithNull({ ...transaction });
 
-        // Insertion dans la base de données
-        await db('transaction').insert(transactionToInsert);
+        try {
+          // Insertion dans la base de données
+          await db('transaction').insert(transactionToInsert);
 
-        successCount++;
+          successCount++;
+        } catch (error: any) {
+          if (error.code === '23505') {
+            // PostgreSQL unique violation error code
+            // If it's a uniqueness error, update the existing transaction
+            await db('transaction')
+              .where({
+                reference: transactionToInsert.reference,
+                service: transaction.service,
+              })
+              .update({
+                statut_operation: transactionToInsert.statut_operation,
+              });
+            successCount++;
+          } else {
+            throw error;
+          }
+        }
       } catch (error: unknown) {
         failureCount++;
         await logError({

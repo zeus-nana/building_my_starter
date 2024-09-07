@@ -312,7 +312,9 @@ const resetUserPassword = catchAsync(
     // 1) Get user from email
     const user = await db('users').where({ id: userId }).first();
     if (!user) {
-      return next(new AppError('User not found with this email.', 404));
+      return next(
+        new AppError('Aucun utilisateur correspondant à cet ID.', 404),
+      );
     } else if (user.active === false) {
       return next(
         new AppError("Le compte de l'utilisateur est désactivé.", 400),

@@ -6,19 +6,14 @@ import Modal from "../../ui/Modal";
 import PropTypes from "prop-types";
 import CreateUserForm from "./CreateUserForm.jsx";
 import ConfirmAction from "../../ui/ConfirmAction.jsx";
-import styled from "styled-components";
 import { useUser } from "../authentication/useUser.js";
+import styled from "styled-components";
 
 const Avatar = styled.img`
-  width: 2.4rem;
-  aspect-ratio: 1;
-  object-fit: cover;
-  object-position: center;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  outline: 2px solid var(--color-grey-100);
-  display: flex; /* Ajouté */
-  align-items: center; /* Ajouté */
-  margin-right: 0.5rem; /* Espacement entre l'avatar et le login */
+  object-fit: cover;
 `;
 
 function UsersRow({ user }) {
@@ -34,22 +29,31 @@ function UsersRow({ user }) {
     department,
     localisation,
     active,
+    avatar,
   } = user;
+
+  const avatarUrl = "default-user.jpg"; // Remplacez par le chemin de votre avatar par défaut
 
   return (
     <Table.Row>
-      <div>
-        <Avatar src={"default-user.jpg"} alt="Avatar" />
-      </div>
-      <div>{login}</div>
-      <div>{username}</div>
-      <div>{email}</div>
-      <div>{phone}</div>
-      <div>{profile?.toUpperCase()}</div>
-      <div>{department ? department.toUpperCase() : ""}</div>
-      <div>{localisation ? localisation.toUpperCase() : ""}</div>
-      <div>{active ? "Actif" : "Inactif"}</div>
-      <div>
+      <span name="avatar" alignment="center">
+        <Avatar src={avatarUrl} alt={`Avatar de ${username}`} />
+      </span>
+      <span name="login">{login}</span>
+      <span name="username">{username}</span>
+      <span name="email">{email}</span>
+      <span name="phone">{phone}</span>
+      <span name="profile">{profile?.toUpperCase()}</span>
+      <span name="department">
+        {department ? department.toUpperCase() : ""}
+      </span>
+      <span name="localisation">
+        {localisation ? localisation.toUpperCase() : ""}
+      </span>
+      <span name="active" alignment="center">
+        {active ? "Actif" : "Inactif"}
+      </span>
+      <span name="actions" alignment="center">
         <Modal>
           <Menus.Menu>
             <Menus.Toggle id={id.toString()} />
@@ -92,7 +96,7 @@ function UsersRow({ user }) {
             </Modal.Window>
           </Menus.Menu>
         </Modal>
-      </div>
+      </span>
     </Table.Row>
   );
 }

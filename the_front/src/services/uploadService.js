@@ -37,9 +37,7 @@ class UploadService {
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        throw new Error(
-          `Erreur ${error.response.status}: ${error.response.statusText}`,
-        );
+        throw error;
       } else {
         throw new Error(
           "Impossible de télécharger les fichiers. Veuillez réessayer plus tard.",

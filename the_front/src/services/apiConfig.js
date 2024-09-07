@@ -24,5 +24,11 @@ export const API_CONFIG = {
     FILE_PROCESSING: {
       UPLOADS: "/fileProcessing/upload",
     },
+    REPORTING: {
+      TRANSACTIONS: "/reporting/transactions",
+      TRANSACTIONS_AGREGE: "/reporting/transactions-agrege",
+      ERREURS_CHARGEMENT: "/reporting/erreurs-chargement",
+      CHARGEMENTS: "/reporting/chargements",
+    },
   },
 };
