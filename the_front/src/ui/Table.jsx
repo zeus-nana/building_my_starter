@@ -10,7 +10,9 @@ const TableContainer = styled.div`
 `;
 
 const StyledTable = styled.div`
-  border: 1px solid var(--color-grey-200);
+  border-top: 1px solid var(--color-grey-200);
+  border-right: 1px solid var(--color-grey-200);
+  border-left: 1px solid var(--color-grey-200);
   font-size: 1.4rem;
   background-color: var(--color-grey-0);
   border-radius: 7px 7px 0 0;
@@ -100,7 +102,7 @@ const StyledBody = styled.div`
 const StyledFooter = styled.div`
   background-color: var(--color-grey-50);
   padding: 1.2rem;
-  border-top: 1px solid var(--color-grey-200);
+  border: 1px solid var(--color-grey-200);
   border-radius: 0 0 7px 7px;
 `;
 

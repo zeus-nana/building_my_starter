@@ -134,6 +134,7 @@ const getChargementByDate = catchAsync(async (req: Request, res: Response) => {
       'chargement.type',
       'chargement.nombre_succes',
       'chargement.nombre_echec',
+      'chargement.chemin_fichier',
       db.raw(
         `CASE WHEN statut = 'e' THEN 'en cours' WHEN statut = 't' THEN 'Terminé' END AS statut`,
       ),
