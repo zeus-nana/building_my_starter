@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import Spinner from "../../ui/Spinner";
 import Table from "../../ui/Table";
+import Menus from "../../ui/Menus";
 import { useSearchParams } from "react-router-dom";
 import { PAGE_SIZE } from "../../constants.js";
 import PropTypes from "prop-types";
@@ -18,8 +19,6 @@ function ChargementTable({ data, isLoading, error }) {
     }
     return [];
   }, [data]);
-
-  console.log("all ::", allChargements);
 
   const filteredChargements = useMemo(() => {
     return allChargements.filter((chargement) =>
@@ -39,8 +38,6 @@ function ChargementTable({ data, isLoading, error }) {
     return filteredChargements.slice(startIndex, endIndex);
   }, [filteredChargements, currentPage]);
 
-  console.log("page", paginatedChargements);
-
   const totalCount = filteredChargements.length;
   const pageCount = Math.ceil(totalCount / PAGE_SIZE);
 
@@ -56,13 +53,14 @@ function ChargementTable({ data, isLoading, error }) {
   if (isLoading) return <Spinner />;
 
   const columns = [
-    { name: "etat", width: "200px" },
-    { name: "type", width: "170px" },
-    { name: "nombre_succes", width: "170px" },
-    { name: "nombre_echec", width: "170px" },
-    { name: "date_creation", width: "170px" },
-    { name: "charge_par", width: "200px" },
-    { name: "statut", width: "200px" },
+    { name: "etat", width: "170px" },
+    { name: "type", width: "120px" },
+    { name: "nombre_succes", width: "120px" },
+    { name: "nombre_echec", width: "120px" },
+    { name: "statut", width: "150px" },
+    { name: "date_chargement", width: "120px" },
+    { name: "charge_par", width: "120px" },
+    { name: "actions", width: "20px", filterable: false },
   ];
 
   const footer = (
@@ -76,25 +74,27 @@ function ChargementTable({ data, isLoading, error }) {
   );
 
   return (
-    <Table
-      columns={columns}
-      data={paginatedChargements}
-      onFilterChange={handleFilterChange}
-      footer={footer}
-    >
-      <Table.Header>
-        {columns.map((column) => (
-          <div key={column.name} name={column.name}>
-            {column.name}
-          </div>
-        ))}
-      </Table.Header>
-      <Table.Body
-        render={(chargement) => (
-          <ChargementRow key={`${chargement.id}`} chargement={chargement} />
-        )}
-      />
-    </Table>
+    <Menus>
+      <Table
+        columns={columns}
+        data={paginatedChargements}
+        onFilterChange={handleFilterChange}
+        footer={footer}
+      >
+        <Table.Header>
+          {columns.map((column) => (
+            <div key={column.name} name={column.name}>
+              {column.name === "actions" ? "" : column.name.replace(/_/g, " ")}
+            </div>
+          ))}
+        </Table.Header>
+        <Table.Body
+          render={(chargement) => (
+            <ChargementRow key={chargement.id} chargement={chargement} />
+          )}
+        />
+      </Table>
+    </Menus>
   );
 }
 

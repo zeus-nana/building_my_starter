@@ -137,7 +137,7 @@ const getChargementByDate = catchAsync(async (req: Request, res: Response) => {
       db.raw(
         `CASE WHEN statut = 'e' THEN 'en cours' WHEN statut = 't' THEN 'Terminé' END AS statut`,
       ),
-      db.raw('DATE(chargement.created_at) as date_creation'),
+      db.raw('DATE(chargement.created_at) as date_chargement'),
     )
     .join('users', 'chargement.created_by', '=', 'users.id')
     .where(db.raw('DATE(chargement.created_at)'), '>=', startDate as string)

@@ -1,12 +1,14 @@
+/*eslint-disable no-undef*/
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-const STORAGE_KEY = "reportingDateRange";
+const STORAGE_KEY_PREFIX = "reportingDateRange_";
 
-export function useReporting(queryKey, fetchFunction) {
+export function useReporting(queryKey, fetchFunction, reportType) {
+  const storageKey = `${STORAGE_KEY_PREFIX}${reportType}`;
+
   const [dateRange, setDateRange] = useState(() => {
-    // eslint-disable-next-line no-undef
-    const savedDateRange = localStorage.getItem(STORAGE_KEY);
+    const savedDateRange = localStorage.getItem(storageKey);
     if (savedDateRange) {
       return JSON.parse(savedDateRange);
     }
@@ -19,15 +21,14 @@ export function useReporting(queryKey, fetchFunction) {
   });
 
   useEffect(() => {
-    // eslint-disable-next-line no-undef
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(dateRange));
-  }, [dateRange]);
+    localStorage.setItem(storageKey, JSON.stringify(dateRange));
+  }, [dateRange, storageKey]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [queryKey, dateRange],
     queryFn: () => fetchFunction(dateRange.startDate, dateRange.endDate),
     enabled: !!dateRange.startDate && !!dateRange.endDate,
-    staleTime: 30 * 60 * 1000, // This will keep the data fresh indefinitely
+    staleTime: 30 * 60 * 1000,
   });
 
   useEffect(() => {

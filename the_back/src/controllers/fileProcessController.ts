@@ -90,7 +90,7 @@ const processData = catchAsync(
       );
     }
 
-    // Tous les fichiers sont valides, procède au traitement
+    // Tous les fichiers sont valides, on procède au traitement
     const fileProcessingPromises = req.files.map(
       async (file: Express.Multer.File) => {
         const fileName = file.originalname.split('.')[0].toLowerCase();

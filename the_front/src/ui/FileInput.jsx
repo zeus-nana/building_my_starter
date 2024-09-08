@@ -87,7 +87,7 @@ const FileInfo = styled.span`
 const FileInput = React.forwardRef((props, ref) => {
   const { extensions, onChange, ...rest } = props;
   const accept = extensions && extensions.map((ext) => `.${ext}`).join(", ");
-  const [fileInfo, setFileInfo] = useState("Aucun fichier choisi");
+  const [fileInfo, setFileInfo] = useState("Aucun fichier selectionné");
 
   const handleChange = (event) => {
     const fileCount = event.target.files.length;
@@ -96,7 +96,7 @@ const FileInput = React.forwardRef((props, ref) => {
         `${fileCount} fichier${fileCount > 1 ? "s" : ""} sélectionné${fileCount > 1 ? "s" : ""}`,
       );
     } else {
-      setFileInfo("Aucun fichier choisi");
+      setFileInfo("Aucun fichier sélectionné");
     }
     onChange && onChange(event);
   };

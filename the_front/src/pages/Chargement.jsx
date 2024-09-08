@@ -10,6 +10,7 @@ function Chargement() {
   const { data, isLoading, error, dateRange, handleFilter } = useReporting(
     "chargements",
     ReportingService.getChargementByDate,
+    "chargements",
   );
 
   return (

@@ -38,8 +38,9 @@ import { useReporting } from "../../features/reporting/useReporting.js";
 
 function ReportingTransactionAgrege() {
   const { data, isLoading, error, dateRange, handleFilter } = useReporting(
-    "transactionsAgrege",
+    "transactionsAgregees",
     ReportingService.getTransactionsAgregeByDate,
+    "transactionsAgregees",
   );
 
   return (

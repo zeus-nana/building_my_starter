@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import { HiLockClosed, HiPencil } from "react-icons/hi2";
 import { HiBan } from "react-icons/hi";
 import Table from "../../ui/Table";
@@ -7,20 +8,13 @@ import PropTypes from "prop-types";
 import CreateUserForm from "./CreateUserForm.jsx";
 import ConfirmAction from "../../ui/ConfirmAction.jsx";
 import { useUser } from "../authentication/useUser.js";
-import styled from "styled-components";
-
-const Avatar = styled.img`
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-`;
 
 function UsersRow({ user }) {
   const { user: currentUser } = useUser();
 
   const {
     id,
+    avatar,
     login,
     username,
     email,
@@ -29,15 +23,23 @@ function UsersRow({ user }) {
     department,
     localisation,
     active,
-    avatar,
   } = user;
 
-  const avatarUrl = "default-user.jpg"; // Remplacez par le chemin de votre avatar par défaut
+  const avatarUrl = avatar || "default-user.jpg";
 
   return (
     <Table.Row>
       <span name="avatar" alignment="center">
-        <Avatar src={avatarUrl} alt={`Avatar de ${username}`} />
+        <img
+          src={avatarUrl}
+          alt={`Avatar de ${username}`}
+          style={{
+            width: "32px",
+            height: "32px",
+            borderRadius: "50%",
+            objectFit: "cover",
+          }}
+        />
       </span>
       <span name="login">{login}</span>
       <span name="username">{username}</span>
@@ -66,13 +68,11 @@ function UsersRow({ user }) {
                   Éditer
                 </Menus.Button>
               </Modal.Open>
-
               <Modal.Open opens="resetUserPassword">
                 <Menus.Button icon={<HiLockClosed />}>
                   Réinitialiser le mot de passe
                 </Menus.Button>
               </Modal.Open>
-
               <Modal.Open opens="activateDeactivate">
                 <Menus.Button icon={<HiBan />}>
                   {active ? "Désactiver" : "Activer"}
@@ -86,11 +86,9 @@ function UsersRow({ user }) {
                 id={id}
               />
             </Modal.Window>
-
             <Modal.Window name="resetUserPassword">
               <ConfirmAction action="resetUserPassword" id={id} />
             </Modal.Window>
-
             <Modal.Window name="edit">
               <CreateUserForm userToEdit={user} />
             </Modal.Window>
@@ -102,7 +100,18 @@ function UsersRow({ user }) {
 }
 
 UsersRow.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    avatar: PropTypes.string,
+    login: PropTypes.string,
+    username: PropTypes.string,
+    email: PropTypes.string,
+    phone: PropTypes.string,
+    profile: PropTypes.string,
+    department: PropTypes.string,
+    localisation: PropTypes.string,
+    active: PropTypes.bool,
+  }).isRequired,
 };
 
 export default UsersRow;

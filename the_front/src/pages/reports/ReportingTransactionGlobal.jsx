@@ -7,8 +7,9 @@ import { useReporting } from "../../features/reporting/useReporting.js";
 
 function ReportingTransactionGlobal() {
   const { data, isLoading, error, dateRange, handleFilter } = useReporting(
-    "transactionsGlobal",
+    "transactionsGlobales",
     ReportingService.getTransactionsByDate,
+    "transactionsGlobales",
   );
 
   return (
