@@ -47,11 +47,6 @@ async function processGraphicSystemOM(job: Job<JobData>): Promise<void> {
   const { filePath, chargement_id } = job.data;
 
   try {
-    const fileExtension = path.extname(filePath).toLowerCase();
-    if (!['.xlsx', '.xls'].includes(fileExtension)) {
-      throw new Error(`Format de fichier non pris en charge: ${fileExtension}`);
-    }
-
     const workbook = XLSX.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];

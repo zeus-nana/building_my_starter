@@ -76,7 +76,7 @@ function TransactionAgregeTable({ data, isLoading, error }) {
     { name: "commune", width: "200px" },
     { name: "statut_operation", width: "175px" },
     { name: "responsable", width: "150px" },
-    { name: "application", width: "150px" },
+    { name: "application", width: "300px" },
   ];
 
   const footer = (

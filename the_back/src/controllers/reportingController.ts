@@ -136,7 +136,7 @@ const getChargementByDate = catchAsync(async (req: Request, res: Response) => {
       'chargement.nombre_echec',
       'chargement.chemin_fichier',
       db.raw(
-        `CASE WHEN statut = 'e' THEN 'en cours' WHEN statut = 't' THEN 'Terminé' END AS statut`,
+        `CASE WHEN statut = 'e' THEN 'en_cours' WHEN statut = 't' THEN 'termine' END AS statut`,
       ),
       db.raw('DATE(chargement.created_at) as date_chargement'),
     )

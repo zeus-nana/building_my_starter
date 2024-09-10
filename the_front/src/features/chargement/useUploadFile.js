@@ -1,10 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import UploadService from "../../services/uploadService";
 import toast from "react-hot-toast";
 import axios from "axios";
 
 export function useUploadFile(onCloseModal) {
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   const { mutate: uploadingFiles, isLoading: isUploading } = useMutation({
     mutationFn: async (files) => {
@@ -12,9 +12,9 @@ export function useUploadFile(onCloseModal) {
     },
     onSuccess: async (data) => {
       toast.success(data.message);
-      // await queryClient.invalidateQueries({
-      //   queryKey: ["files"], // Assurez-vous que cette clé correspond à celle utilisée pour récupérer la liste des fichiers
-      // });
+      await queryClient.invalidateQueries({
+        queryKey: ["chargements"],
+      });
 
       if (onCloseModal) onCloseModal();
     },

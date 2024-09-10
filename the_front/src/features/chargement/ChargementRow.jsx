@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useDownloadFile } from "./useDownloadFile.js";
 import { HiOutlineDownload } from "react-icons/hi";
+import Tag from "../../ui/Tag.jsx";
 
 function ChargementRow({ chargement }) {
   const navigate = useNavigate();
@@ -23,6 +24,11 @@ function ChargementRow({ chargement }) {
     date_chargement,
     chemin_fichier,
   } = chargement;
+
+  const statusToTagName = {
+    termine: "green",
+    en_cours: "grey",
+  };
 
   // Formater la date en dd/mm/aaaa
   const formattedDate = new Date(date_chargement).toLocaleDateString("fr-FR");
@@ -52,9 +58,11 @@ function ChargementRow({ chargement }) {
       <span name="nombre_echec" alignment="right">
         {nombre_echec}
       </span>
+
       <span name="statut" alignment="center">
-        {statut}
+        <Tag type={statusToTagName[statut]}>{statut.replace("_", " ")}</Tag>
       </span>
+
       <span name="date_chargement" alignment="center">
         {formattedDate}
       </span>
