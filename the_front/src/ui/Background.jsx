@@ -8,7 +8,7 @@ const StyledBackground = styled.div`
 `;
 
 const Img = styled.img`
-  height: 4 0rem;
+  height: 40rem;
   width: auto;
 `;
 

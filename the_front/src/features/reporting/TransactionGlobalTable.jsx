@@ -6,6 +6,7 @@ import { PAGE_SIZE } from "../../constants.js";
 import PropTypes from "prop-types";
 import TransactionRow from "./TransactionGlobalRow.jsx";
 import Pagination from "../../ui/Pagination.jsx";
+import ExportButton from "../../ui/ExportButton.jsx";
 
 function TransactionGlobalTable({ data, isLoading, error }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -92,25 +93,39 @@ function TransactionGlobalTable({ data, isLoading, error }) {
   );
 
   return (
-    <Table
-      columns={columns}
-      data={paginatedTransactions}
-      onFilterChange={handleFilterChange}
-      footer={footer}
-    >
-      <Table.Header>
-        {columns.map((column) => (
-          <div key={column.name} name={column.name}>
-            {column.name}
-          </div>
-        ))}
-      </Table.Header>
-      <Table.Body
-        render={(transaction) => (
-          <TransactionRow key={`${transaction.id}`} transaction={transaction} />
+    <>
+      <Table
+        columns={columns}
+        data={paginatedTransactions}
+        onFilterChange={handleFilterChange}
+        footer={footer}
+      >
+        <Table.Header>
+          {columns.map((column) => (
+            <div key={column.name} name={column.name}>
+              {column.name}
+            </div>
+          ))}
+        </Table.Header>
+        <Table.Body
+          render={(transaction) => (
+            <TransactionRow
+              key={`${transaction.id}`}
+              transaction={transaction}
+            />
+          )}
+        />
+      </Table>
+      <div>
+        {filteredTransactions.length > 0 && (
+          <ExportButton
+            data={filteredTransactions}
+            columns={columns}
+            filename="transactions_globales"
+          />
         )}
-      />
-    </Table>
+      </div>
+    </>
   );
 }
 
