@@ -3,6 +3,7 @@ import processEuing from './traitement/processEuing';
 import processGraphicSystemOM from './traitement/processGraphicSystemOM';
 import { TypeEtat } from '../type/TypeEtat';
 import processDiool from './traitement/processDiool';
+import processIntouch from './traitement/processIntouch';
 
 fileProcessingQueue.process('processFile', async (job) => {
   const { filePath, chargement_id, fileName } = job.data;
@@ -32,6 +33,12 @@ fileProcessingQueue.process('processFile', async (job) => {
 
       case TypeEtat.DIOOL:
         result = await processDiool(job);
+        message = 'Fichier DIOOL traité avec succès';
+        console.log(`Traitement DIOOL terminé pour le fichier: ${filePath}`);
+        break;
+
+      case TypeEtat.INTOUCH:
+        result = await processIntouch(job);
         message = 'Fichier DIOOL traité avec succès';
         console.log(`Traitement DIOOL terminé pour le fichier: ${filePath}`);
         break;

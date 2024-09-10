@@ -2,6 +2,7 @@ export const TypeEtat = {
   EUING: 'euing',
   GRAPHIC_SYSTEM_OM: 'graphic_system_om',
   DIOOL: 'diool',
+  INTOUCH: 'intouch',
 } as const;
 
 export type TypeEtat = (typeof TypeEtat)[keyof typeof TypeEtat];

@@ -33,7 +33,7 @@ function parseExcelDate(serialDate: number): Date {
   return date;
 }
 
-function parseDate(dateValue: any): Date | null {
+function parseDate(dateValue: any): Date | undefined {
   if (typeof dateValue === 'number') {
     return parseExcelDate(dateValue);
   } else if (typeof dateValue === 'string') {
@@ -58,7 +58,6 @@ function parseDate(dateValue: any): Date | null {
   }
 
   console.warn(`Invalid date value: ${dateValue}`);
-  return null;
 }
 
 function parseNumber(value: any): number | null {
@@ -130,6 +129,7 @@ async function processDiool(job: Job<JobData>): Promise<void> {
             console.warn(`Invalid date at row ${lineNumber}: ${row['col_4']}`);
           }
 
+          // @ts-ignore
           const transaction: Partial<Transaction> = {
             reference: row['col_7'],
             service: getService(tdt),
@@ -277,11 +277,10 @@ function getService(tdt: string): string {
   return '';
 }
 
-function getSens(tdt: string, montant: number): string {
+function getSens(tdt: string, montant: number): 'e' | 's' | undefined {
   if (tdt.includes('retrait')) return 's';
   if (tdt.includes('depot')) return 'e';
   if (tdt.includes('transfert')) return montant < 0 ? 's' : 'e';
-  return '';
 }
 
 function findCommissionRow(
