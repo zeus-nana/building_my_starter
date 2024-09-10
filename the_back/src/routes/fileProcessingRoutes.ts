@@ -10,4 +10,6 @@ router
   .route('/upload')
   .post(fileProcessController.uploadFile, fileProcessController.processData);
 
+router.get('/download', fileProcessController.downloadFile);
+
 export default router;

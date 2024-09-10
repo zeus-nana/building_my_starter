@@ -22,7 +22,8 @@ export const API_CONFIG = {
       LOGIN: "/admin/login",
     },
     FILE_PROCESSING: {
-      UPLOADS: "/fileProcessing/upload",
+      UPLOAD: "/fileProcessing/upload",
+      DOWNLOAD: "/fileProcessing/download",
     },
     REPORTING: {
       TRANSACTIONS: "/reporting/transactions",

@@ -135,7 +135,34 @@ const processData = catchAsync(
   },
 );
 
+const downloadFile = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const filePath = req.query.path as string;
+
+    if (!filePath) {
+      return next(new AppError('Le chemin du fichier est requis.', 400));
+    }
+
+    // Construire le chemin absolu
+    const absolutePath = path.resolve(process.cwd(), filePath);
+
+    // Vérifier si le fichier existe
+    try {
+      await fs.access(absolutePath);
+    } catch (error) {
+      return next(new AppError('Fichier non trouvé.', 404));
+    }
+
+    // Envoyer le fichier
+    res.sendFile(absolutePath, (err) => {
+      if (err) {
+        next(new AppError('Erreur lors du téléchargement du fichier.', 500));
+      }
+    });
+  },
+);
 export default {
   processData,
   uploadFile,
+  downloadFile,
 };

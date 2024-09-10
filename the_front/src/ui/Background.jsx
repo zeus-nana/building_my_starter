@@ -4,7 +4,7 @@ const StyledBackground = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 70vh; /* Prend toute la hauteur de la fenêtre */
+  height: 60vh; /* Prend toute la hauteur de la fenêtre */
 `;
 
 const Img = styled.img`

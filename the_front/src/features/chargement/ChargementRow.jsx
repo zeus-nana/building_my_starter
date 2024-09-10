@@ -4,9 +4,13 @@ import PropTypes from "prop-types";
 import Menus from "../../ui/Menus";
 import { HiEye } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useDownloadFile } from "./useDownloadFile.js";
+import { HiOutlineDownload } from "react-icons/hi";
 
 function ChargementRow({ chargement }) {
   const navigate = useNavigate();
+  const { downloadFile, isDownloading } = useDownloadFile();
 
   const {
     id,
@@ -17,13 +21,22 @@ function ChargementRow({ chargement }) {
     nombre_echec,
     statut,
     date_chargement,
+    chemin_fichier,
   } = chargement;
 
   // Formater la date en dd/mm/aaaa
   const formattedDate = new Date(date_chargement).toLocaleDateString("fr-FR");
 
   const handleDetailsClick = () => {
-    navigate(`/chargements/${id}`); // Assurez-vous que cette route existe dans votre application
+    navigate(`/chargements/${id}`);
+  };
+
+  const handleDownloadClick = () => {
+    if (chemin_fichier) {
+      downloadFile(chemin_fichier);
+    } else {
+      toast.error("Chemin du fichier non disponible");
+    }
   };
 
   return (
@@ -52,6 +65,13 @@ function ChargementRow({ chargement }) {
             <Menus.Button icon={<HiEye />} onClick={handleDetailsClick}>
               Détails
             </Menus.Button>
+            <Menus.Button
+              icon={<HiOutlineDownload />}
+              onClick={handleDownloadClick}
+              disabled={isDownloading}
+            >
+              {isDownloading ? "Téléchargement..." : "Télécharger le fichier"}
+            </Menus.Button>
           </Menus.List>
         </Menus.Menu>
       </span>
@@ -69,6 +89,7 @@ ChargementRow.propTypes = {
     nombre_echec: PropTypes.number,
     statut: PropTypes.string,
     date_chargement: PropTypes.string,
+    chemin_fichier: PropTypes.string,
   }).isRequired,
 };
 

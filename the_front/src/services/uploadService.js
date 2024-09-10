@@ -29,7 +29,7 @@ class UploadService {
       };
 
       const response = await ApiService.post(
-        API_CONFIG.ENDPOINTS.FILE_PROCESSING.UPLOADS,
+        API_CONFIG.ENDPOINTS.FILE_PROCESSING.UPLOAD,
         formData,
         config,
       );
