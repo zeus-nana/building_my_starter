@@ -27,7 +27,7 @@ function ChargementRow({ chargement }) {
 
   const statusToTagName = {
     termine: "green",
-    en_cours: "grey",
+    en_cours: "blue",
   };
 
   // Formater la date en dd/mm/aaaa
@@ -51,7 +51,6 @@ function ChargementRow({ chargement }) {
         {charge_par}
       </span>
       <span name="etat">{etat}</span>
-      <span name="type">{type}</span>
       <span name="nombre_succes" alignment="right">
         {nombre_succes}
       </span>

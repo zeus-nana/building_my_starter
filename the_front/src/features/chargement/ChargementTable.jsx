@@ -53,14 +53,13 @@ function ChargementTable({ data, isLoading, error }) {
   if (isLoading) return <Spinner />;
 
   const columns = [
+    { name: "date_chargement", width: "120px" },
     { name: "etat", width: "170px" },
-    { name: "type", width: "120px" },
+    { name: "statut", width: "150px" },
     { name: "nombre_succes", width: "120px" },
     { name: "nombre_echec", width: "120px" },
-    { name: "statut", width: "150px" },
-    { name: "date_chargement", width: "120px" },
     { name: "charge_par", width: "120px" },
-    { name: "actions", width: "20px", filterable: false },
+    { name: "actions", width: "30px", filterable: false },
   ];
 
   const footer = (

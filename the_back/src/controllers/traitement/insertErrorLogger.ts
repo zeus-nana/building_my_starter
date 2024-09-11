@@ -58,6 +58,11 @@ async function logError({
         codeErreur = 'ERR_INVALID_TEXT_REPRESENTATION';
         descriptionErreur = `Représentation textuelle invalide: ${(error as any).detail || 'Type de données incompatible'}`;
         break;
+      case '23514':
+        codeErreur = 'ERR_CHECK_VIOLATION';
+        // console.log('contraintes :::', (error as any).detail);
+        descriptionErreur = `Violation de contrainte: ${(error as any).constraint || 'Valeur invalide'}`;
+        break;
       case '42601':
         codeErreur = 'ERR_SYNTAX_ERROR';
         descriptionErreur = `Erreur de syntaxe SQL: ${(error as any).position || 'Position inconnue'}`;
