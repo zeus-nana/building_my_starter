@@ -89,8 +89,8 @@ async function logError({
   try {
     const jsonParsed = JSON.parse(ligneConflictuelle);
     const ligneValues = Object.values(jsonParsed).join(', ');
-
-    const ligneInfo = `LIGNE : ${numeroLigne} => ${ligneValues}`;
+    const line = numeroLigne;
+    const ligneInfo = ligneValues;
     const messageErreurComplet = pgCode
       ? `(CODE ERREUR : ${pgCode}): ${descriptionErreur}`
       : `${descriptionErreur}`;
@@ -98,7 +98,8 @@ async function logError({
     await db('erreur_chargement_log')
       .insert({
         chargement_id: chargementId,
-        ligne_conflictuelle: db.raw('substr(?, 1, 1000)', [ligneInfo]),
+        ligne: line,
+        contenu: db.raw('substr(?, 1, 1000)', [ligneInfo]),
         message_erreur: db.raw('substr(?, 1, 1000)', [messageErreurComplet]),
       })
       .catch((err) => {

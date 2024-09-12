@@ -143,7 +143,7 @@ const getChargementByDate = catchAsync(async (req: Request, res: Response) => {
     .join('users', 'chargement.created_by', '=', 'users.id')
     .where(db.raw('DATE(chargement.created_at)'), '>=', startDate as string)
     .andWhere(db.raw('DATE(chargement.created_at)'), '<=', endDate as string)
-    .orderBy('chargement.created_at', 'desc');
+    .orderBy('chargement.id', 'desc');
 
   console.log(chargements.length);
   return res.status(200).json({

@@ -77,7 +77,7 @@ export async function up(knex: Knex): Promise<void> {
                                 GET STACKED DIAGNOSTICS 
                                     v_error_code = RETURNED_SQLSTATE,
                                     v_error_message = MESSAGE_TEXT;
-                                INSERT INTO erreur_chargement_log (ligne_conflictuelle, message_erreur, chargement_id)
+                                INSERT INTO erreur_chargement_log (contenu, message_erreur, chargement_id)
                                 VALUES (v_transaction::TEXT, v_error_code || ': ' || v_error_message, v_chargement_id);
                                 v_error := TRUE;
                             END IF;
@@ -86,7 +86,7 @@ export async function up(knex: Knex): Promise<void> {
                             GET STACKED DIAGNOSTICS 
                                 v_error_code = RETURNED_SQLSTATE,
                                 v_error_message = MESSAGE_TEXT;
-                            INSERT INTO erreur_chargement_log (ligne_conflictuelle, message_erreur, chargement_id)
+                            INSERT INTO erreur_chargement_log (contenu, message_erreur, chargement_id)
                             VALUES (v_transaction::TEXT, v_error_code || ': ' || v_error_message, v_chargement_id);
                             v_error := TRUE;
                     END;

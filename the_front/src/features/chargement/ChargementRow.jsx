@@ -17,7 +17,6 @@ function ChargementRow({ chargement }) {
     id,
     charge_par,
     etat,
-    type,
     nombre_succes,
     nombre_echec,
     statut,
@@ -34,7 +33,7 @@ function ChargementRow({ chargement }) {
   const formattedDate = new Date(date_chargement).toLocaleDateString("fr-FR");
 
   const handleDetailsClick = () => {
-    navigate(`/chargements/${id}`);
+    navigate(`/chargement/${id}`);
   };
 
   const handleDownloadClick = () => {
@@ -69,8 +68,12 @@ function ChargementRow({ chargement }) {
         <Menus.Menu>
           <Menus.Toggle id={id.toString()} />
           <Menus.List id={id.toString()}>
-            <Menus.Button icon={<HiEye />} onClick={handleDetailsClick}>
-              Détails
+            <Menus.Button
+              icon={<HiEye />}
+              onClick={handleDetailsClick}
+              disabled={nombre_echec === 0}
+            >
+              Détails sur les erreurs
             </Menus.Button>
             <Menus.Button
               icon={<HiOutlineDownload />}
@@ -91,7 +94,6 @@ ChargementRow.propTypes = {
     id: PropTypes.number.isRequired,
     charge_par: PropTypes.string,
     etat: PropTypes.string,
-    type: PropTypes.string,
     nombre_succes: PropTypes.number,
     nombre_echec: PropTypes.number,
     statut: PropTypes.string,

@@ -13,6 +13,7 @@ import Chargement from "./pages/Chargement.jsx";
 import Reporting from "./pages/reports/Reporting.jsx";
 import ReportingTransaction from "./pages/reports/ReportingTransactionGlobal.jsx";
 import ReportingTransactionAgrege from "./pages/reports/ReportingTransactionAgrege.jsx";
+import ChargementDetail from "./pages/ChargementDetail.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,6 +41,10 @@ function App() {
             <Route path="home" element={<Home />} />
             <Route path="users" element={<Users />} />
             <Route path="chargement" element={<Chargement />} />
+            <Route
+              path="chargement/:chargement_id"
+              element={<ChargementDetail />}
+            />
             <Route path="reporting" element={<Reporting />}>
               <Route index element={<Navigate replace to="/reporting" />} />
               <Route path="transactions" element={<ReportingTransaction />} />

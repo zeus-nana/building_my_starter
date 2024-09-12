@@ -44,6 +44,7 @@ import Row from "../../ui/Row.jsx";
 import { useState, useEffect } from "react";
 import Button from "../../ui/Button.jsx";
 import PropTypes from "prop-types";
+import toast from "react-hot-toast";
 
 function ReportingFilter({ onFilter, initialDateRange }) {
   const [startDate, setStartDate] = useState(initialDateRange.startDate);
@@ -55,6 +56,10 @@ function ReportingFilter({ onFilter, initialDateRange }) {
   }, [initialDateRange]);
 
   const handleFilter = () => {
+    if (!startDate || !endDate) {
+      toast.error("Veuillez sélectionner les deux dates");
+      return;
+    }
     onFilter(startDate, endDate);
   };
 

@@ -34,8 +34,8 @@ function UsersRow({ user }) {
           src={avatarUrl}
           alt={`Avatar de ${username}`}
           style={{
-            width: "32px",
-            height: "32px",
+            width: "25px",
+            height: "25px",
             borderRadius: "50%",
             objectFit: "cover",
           }}
