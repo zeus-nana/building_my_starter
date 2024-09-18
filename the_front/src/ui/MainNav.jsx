@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
-import { HiOutlineHome, HiOutlineUsers } from "react-icons/hi2";
+import { HiOutlineBars4, HiOutlineHome, HiOutlineUsers } from "react-icons/hi2";
 import SubNav from "./SubNav";
 import PropTypes from "prop-types";
 import { HiOutlineChartBar, HiOutlineUpload } from "react-icons/hi";
@@ -81,10 +81,11 @@ NavItem.propTypes = {
 function MainNav() {
   const navItems = [
     { icon: <HiOutlineHome />, text: "Accueil", to: "/" },
+    { icon: <HiOutlineChartBar />, text: "Tableau de bord", to: "/dashboard" },
     { icon: <HiOutlineUpload />, text: "Chargement", to: "/chargement" },
     { icon: <HiOutlineUsers />, text: "Utilisateurs", to: "/users" },
     {
-      icon: <HiOutlineChartBar />,
+      icon: <HiOutlineBars4 />,
       text: "Reporting",
       subItems: [
         {

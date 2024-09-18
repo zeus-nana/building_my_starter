@@ -14,6 +14,7 @@ import Reporting from "./pages/reports/Reporting.jsx";
 import ReportingTransaction from "./pages/reports/ReportingTransactionGlobal.jsx";
 import ReportingTransactionAgrege from "./pages/reports/ReportingTransactionAgrege.jsx";
 import ChargementDetail from "./pages/ChargementDetail.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,6 +40,7 @@ function App() {
           >
             <Route index element={<Navigate replace to="/home" />} />
             <Route path="home" element={<Home />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="users" element={<Users />} />
             <Route path="chargement" element={<Chargement />} />
             <Route
