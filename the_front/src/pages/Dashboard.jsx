@@ -6,7 +6,7 @@ function Dashboard() {
   return (
     <>
       <Row type="horizontal">
-        <Heading as="h1">Tableau de bord</Heading>
+        <Heading type="h1">Tableau de bord</Heading>
         <p>Diagram</p>
       </Row>
       <DashboardLayout />

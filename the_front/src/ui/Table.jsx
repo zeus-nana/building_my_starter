@@ -7,6 +7,10 @@ const TableContainer = styled.div`
   flex-direction: column;
   height: 100%;
   width: 100%;
+
+  @media (max-width: 1366px) {
+    font-size: 0.9em;
+  }
 `;
 
 const StyledTable = styled.div`
@@ -18,6 +22,10 @@ const StyledTable = styled.div`
   border-radius: 7px 7px 0 0;
   overflow: hidden;
   flex-grow: 1;
+
+  @media (max-width: 1366px) {
+    font-size: 1.26rem;
+  }
 `;
 
 const TableWrapper = styled.div`
@@ -43,7 +51,7 @@ const HeaderRow = styled.div`
 `;
 
 const HeaderCell = styled.div`
-  padding: 0.8rem 1.2rem 0.4rem; // Réduit le padding en bas
+  padding: 0.8rem 1.2rem 0.4rem;
   text-transform: uppercase;
   letter-spacing: 0.4px;
   font-weight: 600;
@@ -61,15 +69,25 @@ const HeaderCell = styled.div`
   &:last-child {
     border-right: none;
   }
+
+  @media (max-width: 1366px) {
+    padding: 0.72rem 1.08rem 0.36rem;
+  }
 `;
 
 const FilterInput = styled.input`
   width: calc(100% - 0.5rem);
-  padding: 0.4rem; // Réduit le padding
-  margin: 0.2rem 0.25rem 0.4rem; // Ajuste les marges
+  padding: 0.4rem;
+  margin: 0.2rem 0.25rem 0.4rem;
   border: 1px solid var(--color-grey-200);
   border-radius: 8px;
   font-size: 1.2rem;
+
+  @media (max-width: 1366px) {
+    font-size: 1.08rem;
+    padding: 0.36rem;
+    margin: 0.18rem 0.225rem 0.36rem;
+  }
 `;
 
 const StyledRow = styled.div`
@@ -93,10 +111,18 @@ const StyledCell = styled.div`
   &:last-child {
     border-right: none;
   }
+
+  @media (max-width: 1366px) {
+    padding: 0.36rem 1.08rem;
+  }
 `;
 
 const StyledBody = styled.div`
   margin: 0.4rem 0;
+
+  @media (max-width: 1366px) {
+    margin: 0.36rem 0;
+  }
 `;
 
 const StyledFooter = styled.div`
@@ -104,6 +130,10 @@ const StyledFooter = styled.div`
   padding: 1.2rem;
   border: 1px solid var(--color-grey-200);
   border-radius: 0 0 7px 7px;
+
+  @media (max-width: 1366px) {
+    padding: 1.08rem;
+  }
 `;
 
 const Empty = styled.p`
@@ -111,6 +141,11 @@ const Empty = styled.p`
   font-weight: 500;
   text-align: start;
   margin: 2.4rem;
+
+  @media (max-width: 1366px) {
+    font-size: 1.44rem;
+    margin: 2.16rem;
+  }
 `;
 
 const TableContext = createContext();

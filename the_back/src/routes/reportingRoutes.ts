@@ -13,5 +13,6 @@ router.get(
 );
 router.get('/erreurs-chargement', reportingController.getErrorChargementById);
 router.get('/chargements', reportingController.getChargementByDate);
+router.get('/dashboard-data', reportingController.getDashboardData);
 
 export default router;
