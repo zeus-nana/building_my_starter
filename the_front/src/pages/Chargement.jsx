@@ -16,7 +16,7 @@ function Chargement() {
   return (
     <>
       <Row type="horizontal">
-        <Heading type="h1">Chargements</Heading>
+        <Heading as="h1">Chargements</Heading>
         <ReportingFilter onFilter={handleFilter} initialDateRange={dateRange} />
       </Row>
       <Row>

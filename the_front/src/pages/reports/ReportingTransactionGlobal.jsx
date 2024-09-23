@@ -15,7 +15,7 @@ function ReportingTransactionGlobal() {
   return (
     <>
       <Row type="horizontal">
-        <Heading type="h1">Transactions Globales</Heading>
+        <Heading as="h1">Transactions Globales</Heading>
         <ReportingFilter onFilter={handleFilter} initialDateRange={dateRange} />
       </Row>
       <Row>

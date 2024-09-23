@@ -46,7 +46,7 @@ function ReportingTransactionAgrege() {
   return (
     <>
       <Row type="horizontal">
-        <Heading type="h">Transactions Agrégées</Heading>
+        <Heading as="h1">Transactions Agrégées</Heading>
         <ReportingFilter onFilter={handleFilter} initialDateRange={dateRange} />
       </Row>
       <Row>

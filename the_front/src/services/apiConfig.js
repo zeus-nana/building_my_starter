@@ -26,6 +26,7 @@ export const API_CONFIG = {
       DOWNLOAD: "/fileProcessing/download",
     },
     REPORTING: {
+      DASHBOARD_DATA: "/reporting/dashboard-data",
       TRANSACTIONS: "/reporting/transactions",
       TRANSACTIONS_AGREGE: "/reporting/transactions-agrege",
       ERREURS_CHARGEMENT: "/reporting/erreurs-chargement",

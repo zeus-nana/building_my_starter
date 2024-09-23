@@ -81,7 +81,7 @@ NavItem.propTypes = {
 function MainNav() {
   const navItems = [
     { icon: <HiOutlineHome />, text: "Accueil", to: "/" },
-    { icon: <HiOutlineChartBar />, text: "Tableau de bord", to: "/dashboard" },
+    { icon: <HiOutlineChartBar />, text: "Dashboard", to: "/dashboard" },
     { icon: <HiOutlineUpload />, text: "Chargement", to: "/chargement" },
     { icon: <HiOutlineUsers />, text: "Utilisateurs", to: "/users" },
     {

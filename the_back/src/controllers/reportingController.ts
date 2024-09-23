@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { catchAsync } from '../utils/catchAsync';
 import db from '../database/connection';
 import { Transaction } from '../models/Transaction';
@@ -155,122 +155,156 @@ const getChargementByDate = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getDashboardData = catchAsync(async (req: Request, res: Response) => {
-  const { startDate, endDate } = req.query;
+const getDashboardData = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { startDate, endDate } = req.query;
 
-  if (!startDate || !endDate) {
-    throw new AppError('Les dates de début et de fin sont requises', 400);
-  }
-
-  // Fonction pour créer une date de début (00:00:00)
-  const createStartDate = (dateString: string) =>
-    new Date(`${dateString}T00:00:00.000Z`);
-
-  // Fonction pour créer une date de fin (23:59:59.999)
-  const createEndDate = (dateString: string) =>
-    new Date(`${dateString}T23:59:59.999Z`);
-
-  // Créer les objets Date pour le début et la fin de la période courante
-  const startDateObj = createStartDate(startDate as string);
-  const endDateObj = createEndDate(endDate as string);
-
-  // Calculer la durée exacte en millisecondes
-  const duration = endDateObj.getTime() - startDateObj.getTime();
-
-  // Calculer la période précédente
-  const previousEndDate = new Date(startDateObj.getTime() - 1); // 1 milliseconde avant le début de la période courante
-  const previousStartDate = new Date(previousEndDate.getTime() - duration);
-
-  // Fonction pour générer une série de dates
-  const generateDateSeries = (start: Date, end: Date) => {
-    const dates = [];
-    let currentDate = new Date(start);
-    while (currentDate <= end) {
-      dates.push(currentDate.toISOString().split('T')[0]);
-      currentDate.setDate(currentDate.getDate() + 1);
+    if (!startDate || !endDate) {
+      return next(
+        new AppError('Les dates de début et de fin sont requises', 400),
+      );
     }
-    return dates;
-  };
 
-  // Générer les séries de dates
-  const currentDateSeries = generateDateSeries(startDateObj, endDateObj);
-  const previousDateSeries = generateDateSeries(
-    previousStartDate,
-    previousEndDate,
-  );
+    const createStartDate = (dateString: string) =>
+      new Date(`${dateString}T00:00:00.000Z`);
+    const createEndDate = (dateString: string) =>
+      new Date(`${dateString}T23:59:59.999Z`);
 
-  // Requête pour obtenir les commissions totales
-  const [commissionTotal] = await db('transaction').select([
-    db.raw(
-      'SUM(CASE WHEN date_operation >= ? AND date_operation <= ? THEN commission ELSE 0 END) as periode_courante',
-      [startDateObj.toISOString(), endDateObj.toISOString()],
-    ),
-    db.raw(
-      'SUM(CASE WHEN date_operation >= ? AND date_operation <= ? THEN commission ELSE 0 END) as periode_precedente',
-      [previousStartDate.toISOString(), previousEndDate.toISOString()],
-    ),
-  ]);
+    const startDateObj = createStartDate(startDate as string);
+    const endDateObj = createEndDate(endDate as string);
+    const duration = endDateObj.getTime() - startDateObj.getTime();
 
-  // Fonction pour obtenir les commissions par jour
-  const getCommissionParJour = async (
-    startDate: Date,
-    endDate: Date,
-    dateSeries: string[],
-  ) => {
-    const commissions = await db('transaction')
+    const previousEndDate = new Date(startDateObj.getTime() - 1);
+    const previousStartDate = new Date(previousEndDate.getTime() - duration);
+
+    const generateDateSeries = (start: Date, end: Date): string[] => {
+      const dates: string[] = [];
+      let currentDate = new Date(start);
+      while (currentDate <= end) {
+        dates.push(currentDate.toISOString().split('T')[0]);
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      return dates;
+    };
+
+    const currentDateSeries = generateDateSeries(startDateObj, endDateObj);
+    const previousDateSeries = generateDateSeries(
+      previousStartDate,
+      previousEndDate,
+    );
+
+    const [commissionTotal] = await db('transaction')
       .select([
         db.raw(
-          "TO_CHAR(DATE(date_operation AT TIME ZONE 'UTC'), 'YYYY-MM-DD') as date",
+          'SUM(CASE WHEN date_operation >= ? AND date_operation <= ? THEN COALESCE(commission, 0) ELSE 0 END) as periode_courante',
+          [startDateObj.toISOString(), endDateObj.toISOString()],
         ),
-        db.raw('SUM(commission) as commission'),
+        db.raw(
+          'SUM(CASE WHEN date_operation >= ? AND date_operation <= ? THEN COALESCE(commission, 0) ELSE 0 END) as periode_precedente',
+          [previousStartDate.toISOString(), previousEndDate.toISOString()],
+        ),
       ])
-      .whereBetween('date_operation', [
-        startDate.toISOString(),
-        endDate.toISOString(),
-      ])
-      .groupBy(db.raw("DATE(date_operation AT TIME ZONE 'UTC')"))
-      .orderBy('date');
+      .where('statut_operation', '<>', 'Annulé');
 
-    // Créer un objet avec toutes les dates et des commissions à 0
-    const commissionsMap = dateSeries.reduce((acc, date) => {
-      acc[date] = { date, commission: '0' };
-      return acc;
-    }, {});
+    interface Commission {
+      date: string;
+      commission: string;
+    }
 
-    // Mettre à jour avec les vraies valeurs
-    commissions.forEach(({ date, commission }) => {
-      commissionsMap[date] = { date, commission: commission.toString() };
+    const getCommissionParJour = async (
+      startDate: Date,
+      endDate: Date,
+      dateSeries: string[],
+    ): Promise<Commission[]> => {
+      const commissions: Commission[] = await db('transaction')
+        .select([
+          db.raw(
+            "TO_CHAR(DATE(date_operation AT TIME ZONE 'UTC'), 'YYYY-MM-DD') as date",
+          ),
+          db.raw('SUM(COALESCE(commission, 0)) as commission'),
+        ])
+        .whereBetween('date_operation', [
+          startDate.toISOString(),
+          endDate.toISOString(),
+        ])
+        .whereNotNull('commission')
+        .where('statut_operation', '<>', 'Annulé')
+        .groupBy(db.raw("DATE(date_operation AT TIME ZONE 'UTC')"))
+        .orderBy('date');
+
+      const commissionsMap: Record<string, Commission> = dateSeries.reduce(
+        (acc, date) => {
+          acc[date] = { date, commission: '0' };
+          return acc;
+        },
+        {} as Record<string, Commission>,
+      );
+
+      commissions.forEach(({ date, commission }) => {
+        commissionsMap[date] = { date, commission: commission.toString() };
+      });
+      return Object.values(commissionsMap);
+    };
+
+    const commission_par_jour = await getCommissionParJour(
+      startDateObj,
+      endDateObj,
+      currentDateSeries,
+    );
+
+    interface TopItem {
+      name: string;
+      commission: string;
+    }
+
+    const getTop10Items = async (
+      startDate: Date,
+      endDate: Date,
+      groupByField: string,
+    ): Promise<TopItem[]> => {
+      return db('transaction')
+        .select([
+          `${groupByField} as name`,
+          db.raw('SUM(commission) as commission'),
+        ])
+        .whereBetween('date_operation', [
+          startDate.toISOString(),
+          endDate.toISOString(),
+        ])
+        .whereNotNull('commission')
+        .whereNot('commission', 0)
+        .where('statut_operation', '<>', 'Annulé')
+        .groupBy(groupByField)
+        .orderBy('commission', 'desc')
+        .limit(10);
+    };
+
+    const top_10_partenaires = await getTop10Items(
+      startDateObj,
+      endDateObj,
+      'partenaire',
+    );
+
+    const top_10_services = await getTop10Items(
+      startDateObj,
+      endDateObj,
+      'service',
+    );
+
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        commission_total: {
+          periode_courante: commissionTotal.periode_courante,
+          periode_precedente: commissionTotal.periode_precedente,
+        },
+        commission_par_jour,
+        top_10_partenaires,
+        top_10_services,
+      },
     });
-
-    // Convertir l'objet en tableau
-    return Object.values(commissionsMap);
-  };
-
-  const commissionParJour = await getCommissionParJour(
-    startDateObj,
-    endDateObj,
-    currentDateSeries,
-  );
-  const commissionParJourPrecedent = await getCommissionParJour(
-    previousStartDate,
-    previousEndDate,
-    previousDateSeries,
-  );
-
-  return res.status(200).json({
-    status: 'success',
-    data: {
-      commission_total: {
-        periode_courante: commissionTotal.periode_courante,
-        periode_precedente: commissionTotal.periode_precedente,
-      },
-      commission_par_jour: {
-        periode_courante: commissionParJour,
-        periode_precedente: commissionParJourPrecedent,
-      },
-    },
-  });
-});
+  },
+);
 
 export default {
   getTransactionByDate,
@@ -279,3 +313,9 @@ export default {
   getChargementByDate,
   getDashboardData,
 };
+
+// const commissionParJourPrecedent = await getCommissionParJour(
+//   previousStartDate,
+//   previousEndDate,
+//   previousDateSeries,
+// );

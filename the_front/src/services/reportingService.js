@@ -100,6 +100,28 @@ class ReportingService {
       }
     }
   }
+
+  async getDashboardData(startDate, endDate) {
+    console.log("date filtre : ", startDate, endDate);
+    try {
+      return await ApiService.get(
+        `${API_CONFIG.ENDPOINTS.REPORTING.DASHBOARD_DATA}`,
+        {
+          params: { startDate, endDate },
+        },
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(
+          `Erreur ${error.response.status}: ${error.response.statusText}`,
+        );
+      } else {
+        throw new Error(
+          "Impossible de récupérer les transactions agrégées. Veuillez réessayer plus tard.",
+        );
+      }
+    }
+  }
 }
 
 export default ReportingService.getInstance();
