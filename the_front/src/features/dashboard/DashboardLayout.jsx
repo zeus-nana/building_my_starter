@@ -2,7 +2,8 @@ import styled from "styled-components";
 import Stats from "./Stats.jsx";
 import CommissionsChart from "./CommissionsChart.jsx";
 import PropTypes from "prop-types";
-import CommissionPartenaire from "./CommissionPartenaire.jsx";
+import CommissionPartenaireChart from "./CommissionPartenaireChart.jsx";
+import TopTenPartenaireTable from "./TopTenPartenaireTable.jsx";
 
 const StyledDashboardLayout = styled.div`
   display: grid;
@@ -17,7 +18,8 @@ function DashboardLayout({ data }) {
       <Stats commission_total={data.commission_total} />
       <div></div>
       <CommissionsChart data={data} />
-      <CommissionPartenaire data={data} />
+      <CommissionPartenaireChart data={data} />
+      <TopTenPartenaireTable data={data.top_10_partenaires} />
     </StyledDashboardLayout>
   );
 }

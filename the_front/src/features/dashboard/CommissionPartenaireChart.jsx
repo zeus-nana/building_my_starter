@@ -23,7 +23,7 @@ const StyledCommissionPartenaire = styled(DashboardBox)`
   }
 `;
 
-const CommissionPartenaire = ({ data }) => {
+const CommissionPartenaireChart = ({ data }) => {
   const colors = {
     bar: "#0369a1",
     text: "#374151",
@@ -74,10 +74,10 @@ const CommissionPartenaire = ({ data }) => {
   return (
     <StyledCommissionPartenaire>
       <Heading as="h2">Top 10 Partenaires</Heading>
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={300}>
         <BarChart
           data={sortedData}
-          margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
+          margin={{ top: 0, right: 30, left: 0, bottom: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
@@ -105,4 +105,4 @@ const CommissionPartenaire = ({ data }) => {
   );
 };
 
-export default CommissionPartenaire;
+export default CommissionPartenaireChart;
