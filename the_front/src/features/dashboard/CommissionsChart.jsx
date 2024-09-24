@@ -15,7 +15,7 @@ import { formatDate, formatLargeNumber, formatNumber } from "../../helper.js";
 import PropTypes from "prop-types";
 
 const StyledSalesChart = styled(DashboardBox)`
-  grid-column: 1 / 4;
+  grid-column: 1 / 3;
   height: 100%;
 
   /* Hack to change grid line colors */

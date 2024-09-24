@@ -44,6 +44,25 @@ function Stats({ commission_total }) {
         value={`${formatNumber(Math.abs(percentageChange))}\u00A0%`}
         color={percentageColor}
       />
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
     </>
   );
 }

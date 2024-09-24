@@ -204,7 +204,11 @@ const getDashboardData = catchAsync(
           [previousStartDate.toISOString(), previousEndDate.toISOString()],
         ),
       ])
-      .where('statut_operation', '<>', 'Annulé');
+      .where(function () {
+        this.where('statut_operation', '<>', 'Annulé').orWhereNull(
+          'statut_operation',
+        );
+      });
 
     interface Commission {
       date: string;
@@ -228,7 +232,11 @@ const getDashboardData = catchAsync(
           endDate.toISOString(),
         ])
         .whereNotNull('commission')
-        .where('statut_operation', '<>', 'Annulé')
+        .where(function () {
+          this.where('statut_operation', '<>', 'Annulé').orWhereNull(
+            'statut_operation',
+          );
+        })
         .groupBy(db.raw("DATE(date_operation AT TIME ZONE 'UTC')"))
         .orderBy('date');
 
@@ -273,10 +281,13 @@ const getDashboardData = catchAsync(
         ])
         .whereNotNull('commission')
         .whereNot('commission', 0)
-        .where('statut_operation', '<>', 'Annulé')
+        .where(function () {
+          this.where('statut_operation', '<>', 'Annulé').orWhereNull(
+            'statut_operation',
+          );
+        })
         .groupBy(groupByField)
-        .orderBy('commission', 'desc')
-        .limit(10);
+        .orderBy('commission', 'desc');
     };
 
     const top_10_partenaires = await getTop10Items(
@@ -291,6 +302,33 @@ const getDashboardData = catchAsync(
       'service',
     );
 
+    // Nouvelle fonction pour obtenir les commissions par catégorie
+    const getCommissionParCategorie = async (
+      startDate: Date,
+      endDate: Date,
+    ): Promise<TopItem[]> => {
+      return db('transaction')
+        .select(['categorie as name', db.raw('SUM(commission) as commission')])
+        .whereBetween('date_operation', [
+          startDate.toISOString(),
+          endDate.toISOString(),
+        ])
+        .whereNotNull('commission')
+        .whereNot('commission', 0)
+        .where(function () {
+          this.where('statut_operation', '<>', 'Annulé').orWhereNull(
+            'statut_operation',
+          );
+        })
+        .groupBy('categorie')
+        .orderBy('commission', 'desc');
+    };
+
+    const commissions_par_categorie = await getCommissionParCategorie(
+      startDateObj,
+      endDateObj,
+    );
+
     return res.status(200).json({
       status: 'success',
       data: {
@@ -301,6 +339,7 @@ const getDashboardData = catchAsync(
         commission_par_jour,
         top_10_partenaires,
         top_10_services,
+        commissions_par_categorie, // Nouvelle section ajoutée
       },
     });
   },

@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import {
   BarChart,
@@ -14,7 +13,7 @@ import Heading from "../../ui/Heading";
 import { formatLargeNumber, formatNumber } from "../../helper";
 
 const StyledCommissionPartenaire = styled(DashboardBox)`
-  grid-column: 1 / 4;
+  grid-column: 1 / 3;
   height: 100%;
 
   .recharts-cartesian-grid-horizontal line,
@@ -30,8 +29,8 @@ const CommissionPartenaireChart = ({ data }) => {
     background: "#fff",
   };
 
-  const sortedData = [...data.top_10_partenaires].sort(
-    (a, b) => b.commission - a.commission,
+  const sortedData = [...data.top_10_partenaires].sort((a, b) =>
+    a.name.localeCompare(b.name),
   );
 
   const maxCommission = Math.max(
@@ -73,8 +72,8 @@ const CommissionPartenaireChart = ({ data }) => {
 
   return (
     <StyledCommissionPartenaire>
-      <Heading as="h2">Top 10 Partenaires</Heading>
-      <ResponsiveContainer width="100%" height={300}>
+      <Heading as="h2">Commission par Partenaire</Heading>
+      <ResponsiveContainer width="100%" height={400}>
         <BarChart
           data={sortedData}
           margin={{ top: 0, right: 30, left: 0, bottom: 0 }}
