@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   PieChart,
   Pie,
@@ -37,6 +37,11 @@ const SelectedCategory = styled.div`
 `;
 
 const COLORS = ["#0369a1", "#15803d", "#a16207", "#FF8042", "#b91c1c"];
+
+const colors = {
+  text: "#374151",
+  background: "#fff",
+};
 
 function CommissionsCategorieChart({ data }) {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -98,8 +103,9 @@ function CommissionsCategorieChart({ data }) {
             />
           </Pie>
           <Tooltip
-            formatter={(value, name) => [formatNumber(value), name]}
-            contentStyle={{ backgroundColor: "rgba(255, 255, 255, 0.8)" }}
+            contentStyle={{ backgroundColor: colors.background }}
+            itemStyle={{ color: "#0369a1" }}
+            formatter={(value) => formatNumber(value)}
           />
           <Legend layout="vertical" align="center" verticalAlign="bottom" />
         </PieChart>
