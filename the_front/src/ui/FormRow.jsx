@@ -10,11 +10,11 @@ const StyledFormRow = styled.div`
   padding: 1.2rem 0;
 
   &:first-child {
-    padding-top: 0;
+    padding-top: 1px;
   }
 
   &:last-child {
-    padding-bottom: 0;
+    padding-bottom: 1px;
   }
 
   &:not(:last-child) {
