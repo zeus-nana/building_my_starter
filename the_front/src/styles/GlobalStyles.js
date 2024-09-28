@@ -2,7 +2,7 @@ import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
     :root {
-        /* Indigo */
+        /* Brand (Sky) */
         --color-brand-50: #f0f9ff;
         --color-brand-100: #e0f2fe;
         --color-brand-200: #bae6fd;
@@ -11,6 +11,17 @@ const GlobalStyles = createGlobalStyle`
         --color-brand-700: #0369a1;
         --color-brand-800: #075985;
         --color-brand-900: #0c4a6e;
+        
+        /* Indigo */
+        --color-indigo-50: #eef2ff;
+        --color-indigo-100: #e0e7ff;
+        --color-indigo-200: #c7d2fe;
+        --color-indigo-500: #6366f1;
+        --color-indigo-600: #4f46e5;
+        --color-indigo-700: #4338ca;
+        --color-indigo-800: #3730a3;
+        --color-indigo-900: #312e81;
+
 
         /* Grey */
         --color-grey-0: #fff;
@@ -36,8 +47,6 @@ const GlobalStyles = createGlobalStyle`
         --color-yellow-700: #a16207;
         --color-silver-100: #e5e7eb;
         --color-silver-700: #374151;
-        --color-indigo-100: #e0e7ff;
-        --color-indigo-700: #4338ca;
 
         --color-red-100: #fee2e2;
         --color-red-700: #b91c1c;
