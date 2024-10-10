@@ -78,7 +78,7 @@ NavItem.propTypes = {
   ),
 };
 
-function MainNav() {
+function MainNav0() {
   const navItems = [
     { icon: <HiOutlineHome />, text: "Accueil", to: "/" },
     { icon: <HiOutlineChartBar />, text: "Dashboard", to: "/dashboard" },
@@ -111,4 +111,4 @@ function MainNav() {
   );
 }
 
-export default MainNav;
+export default MainNav0;

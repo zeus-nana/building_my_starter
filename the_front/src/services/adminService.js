@@ -100,11 +100,11 @@ class AdminService {
       }
     }
   }
-  
+
   async resetUserPassword(id) {
     try {
       return await ApiService.post(
-        `${API_CONFIG.ENDPOINTS.ADMIN.RESET_USER_PASSWORD}/${id}`
+        `${API_CONFIG.ENDPOINTS.ADMIN.RESET_USER_PASSWORD}/${id}`,
       );
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -112,6 +112,74 @@ class AdminService {
       } else {
         throw new Error(
           "Impossible de définir le mot de passe. Veuillez réessayer plus tard.",
+        );
+      }
+    }
+  }
+
+  async createMenu(menuData) {
+    try {
+      return await ApiService.post(
+        `${API_CONFIG.ENDPOINTS.HABILITATION.MENU}`,
+        menuData,
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error(
+          "Impossible de créer le menu. Veuillez réessayer plus tard.",
+        );
+      }
+    }
+  }
+
+  async createPermission(permissionData) {
+    try {
+      return await ApiService.post(
+        `${API_CONFIG.ENDPOINTS.HABILITATION.PERMISSION}`,
+        permissionData,
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error(
+          "Impossible de créer la permission. Veuillez réessayer plus tard.",
+        );
+      }
+    }
+  }
+
+  async createFonction(fonctionData) {
+    try {
+      return await ApiService.post(
+        `${API_CONFIG.ENDPOINTS.HABILITATION.FONCTION}`,
+        fonctionData,
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error(
+          "Impossible de créer la fonction. Veuillez réessayer plus tard.",
+        );
+      }
+    }
+  }
+
+  async createFonctionMenuPermission(fonctionMenuPermissionData) {
+    try {
+      return await ApiService.post(
+        `${API_CONFIG.ENDPOINTS.HABILITATION.FONCTION_MENU_PERMISSION}`,
+        fonctionMenuPermissionData,
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error(
+          "Impossible de créer la liaison fonction-menu-permission. Veuillez réessayer plus tard.",
         );
       }
     }

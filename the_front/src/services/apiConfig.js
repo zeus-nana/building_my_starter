@@ -32,5 +32,11 @@ export const API_CONFIG = {
       ERREURS_CHARGEMENT: "/reporting/erreurs-chargement",
       CHARGEMENTS: "/reporting/chargements",
     },
+    HABILITATION: {
+      MENU: "/habilitation/menu",
+      PERMISSION: "/habilitation/permission",
+      FONCTION: "/habilitation/fonction",
+      FONCTION_MENU_PERMISSION: "/habilitation/fonction-menu-permission",
+    },
   },
 };
