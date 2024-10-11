@@ -1,15 +1,15 @@
-import Form from "../../ui/Form.jsx";
-import FormRowVertical from "../../ui/FormRowVertical.jsx";
-import Input from "../../ui/Input.jsx";
-import Button from "../../ui/Button.jsx";
-import SpinnerMini from "../../ui/SpinnerMini.jsx";
-import toast from "react-hot-toast";
-import { useState } from "react";
-import { useChangePassword } from "./useChangePassword.js";
-import validator from "validator/es";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import Form from '../../ui/Form.jsx';
+import FormRowVertical from '../../ui/FormRowVertical.jsx';
+import Input from '../../ui/Input.jsx';
+import Button from '../../ui/Button.jsx';
+import SpinnerMini from '../../ui/SpinnerMini.jsx';
+import toast from 'react-hot-toast';
+import { useState } from 'react';
+import { useChangePassword } from './useChangePassword.js';
+import validator from 'validator/es';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const ButtonStyled = styled.div`
   display: flex;
@@ -33,9 +33,9 @@ const LoginTitle = styled.h2`
 `;
 
 function ChangePasswordForm({ onCloseModal, onPasswordChanged, userId }) {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const { isLoading, changePass } = useChangePassword(onCloseModal);
   const navigate = useNavigate();
 
@@ -51,7 +51,7 @@ function ChangePasswordForm({ onCloseModal, onPasswordChanged, userId }) {
 
   function handleCancel() {
     if (!onCloseModal) {
-      if (typeof window !== "undefined") {
+      if (typeof window !== 'undefined') {
         // eslint-disable-next-line no-undef
         window.location.reload();
       } else {
@@ -66,15 +66,15 @@ function ChangePasswordForm({ onCloseModal, onPasswordChanged, userId }) {
   function handleSubmit(e) {
     e.preventDefault();
     if (!currentPassword || !password || !confirmPassword) {
-      return toast.error("Veuillez renseigner tous les champs");
+      return toast.error('Veuillez renseigner tous les champs');
     }
     if (password !== confirmPassword) {
-      return toast.error("Les mots de passe ne correspondent pas");
+      return toast.error('Les mots de passe ne correspondent pas');
     }
 
     if (!validatePassword(password)) {
       return toast.error(
-        "Le mot de passe n'est pas assez fort. Il doit contenir au moins 8 caractères, dont une minuscule, une majuscule, un chiffre et un symbole.",
+        "Le mot de passe n'est pas assez fort. Il doit contenir au moins 8 caractères, dont une minuscule, une majuscule, un chiffre et un symbole."
       );
     }
 
@@ -84,16 +84,12 @@ function ChangePasswordForm({ onCloseModal, onPasswordChanged, userId }) {
         onSuccess: () => {
           onPasswordChanged();
         },
-      },
+      }
     );
   }
 
   return (
     <Form onSubmit={handleSubmit}>
-      <StyledHeader>
-        <LoginTitle>Modifier le mot de passe</LoginTitle>
-      </StyledHeader>
-
       <FormRowVertical label="Ancien mot de passe">
         <Input
           type="password"
@@ -126,16 +122,11 @@ function ChangePasswordForm({ onCloseModal, onPasswordChanged, userId }) {
       </FormRowVertical>
       <FormRowVertical>
         <ButtonStyled>
-          <Button
-            $variation="secondary"
-            type="reset"
-            onClick={handleCancel}
-            disabled={isLoading}
-          >
+          <Button $variation="secondary" type="reset" onClick={handleCancel} disabled={isLoading}>
             Annuler
           </Button>
           <Button size="medium" disabled={isLoading}>
-            {!isLoading ? "Enregistrer" : <SpinnerMini />}
+            {!isLoading ? 'Enregistrer' : <SpinnerMini />}
           </Button>
         </ButtonStyled>
       </FormRowVertical>

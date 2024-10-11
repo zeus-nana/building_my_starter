@@ -1,50 +1,6 @@
-// import styled from "styled-components";
-// import React from "react";
-// import PropTypes from "prop-types";
-//
-// const StyledFileInput = styled.input`
-//   font-size: 1.4rem;
-//   border-radius: var(--border-radius-sm);
-//
-//   &::file-selector-button {
-//     font: inherit;
-//     font-weight: 500;
-//     padding: 0.8rem 1.2rem;
-//     margin-right: 1.2rem;
-//     border-radius: var(--border-radius-sm);
-//     border: none;
-//     color: var(--color-brand-50);
-//     background-color: var(--color-brand-600);
-//     cursor: pointer;
-//     transition:
-//       color 0.2s,
-//       background-color 0.2s;
-//
-//     &:hover {
-//       background-color: var(--color-brand-700);
-//     }
-//   }
-// `;
-//
-// // eslint-disable-next-line react/display-name
-// const FileInput = React.forwardRef((props, ref) => {
-//   const { extensions, ...rest } = props;
-//   const accept = extensions && extensions.map((ext) => `.${ext}`).join(", ");
-//
-//   return (
-//     <StyledFileInput type="file" multiple accept={accept} ref={ref} {...rest} />
-//   );
-// });
-//
-// FileInput.propTypes = {
-//   extensions: PropTypes.arrayOf(PropTypes.string).isRequired,
-// };
-//
-// export default FileInput;
-
-import styled from "styled-components";
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import styled from 'styled-components';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const FileInputWrapper = styled.div`
   position: relative;
@@ -86,17 +42,15 @@ const FileInfo = styled.span`
 // eslint-disable-next-line react/display-name
 const FileInput = React.forwardRef((props, ref) => {
   const { extensions, onChange, ...rest } = props;
-  const accept = extensions && extensions.map((ext) => `.${ext}`).join(", ");
-  const [fileInfo, setFileInfo] = useState("Aucun fichier selectionné");
+  const accept = extensions && extensions.map((ext) => `.${ext}`).join(', ');
+  const [fileInfo, setFileInfo] = useState('Aucun fichier selectionné');
 
   const handleChange = (event) => {
     const fileCount = event.target.files.length;
     if (fileCount > 0) {
-      setFileInfo(
-        `${fileCount} fichier${fileCount > 1 ? "s" : ""} sélectionné${fileCount > 1 ? "s" : ""}`,
-      );
+      setFileInfo(`${fileCount} fichier${fileCount > 1 ? 's' : ''} sélectionné${fileCount > 1 ? 's' : ''}`);
     } else {
-      setFileInfo("Aucun fichier sélectionné");
+      setFileInfo('Aucun fichier sélectionné');
     }
     onChange && onChange(event);
   };
@@ -105,14 +59,7 @@ const FileInput = React.forwardRef((props, ref) => {
     <FileInputWrapper>
       <StyledLabel>
         Choisir des fichiers
-        <StyledFileInput
-          type="file"
-          multiple
-          accept={accept}
-          ref={ref}
-          onChange={handleChange}
-          {...rest}
-        />
+        <StyledFileInput type="file" multiple accept={accept} ref={ref} onChange={handleChange} {...rest} />
       </StyledLabel>
       <FileInfo>{fileInfo}</FileInfo>
     </FileInputWrapper>

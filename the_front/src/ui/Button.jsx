@@ -1,4 +1,5 @@
-import styled, { css } from "styled-components";
+// Button.jsx
+import styled, { css } from 'styled-components';
 
 const sizes = {
   small: css`
@@ -7,16 +8,31 @@ const sizes = {
     text-transform: uppercase;
     font-weight: 600;
     text-align: center;
+
+    @media (max-width: 1366px) {
+      font-size: 1.08rem;
+      padding: 0.36rem 0.72rem;
+    }
   `,
   medium: css`
     font-size: 1.4rem;
     padding: 1.2rem 1.6rem;
     font-weight: 500;
+
+    @media (max-width: 1366px) {
+      font-size: 1.26rem;
+      padding: 1.08rem 1.44rem;
+    }
   `,
   large: css`
     font-size: 1.6rem;
     padding: 1.2rem 2.4rem;
     font-weight: 500;
+
+    @media (max-width: 1366px) {
+      font-size: 1.44rem;
+      padding: 1.08rem 2.16rem;
+    }
   `,
 };
 
@@ -62,12 +78,16 @@ const Button = styled.button`
   box-shadow: var(--shadow-sm);
 
   ${(props) => sizes[props.size]}
-  ${(props) => variations[props.$variation]}
+  ${(props) => variations[props.$variation]};
+
+  @media (max-width: 1366px) {
+    border-radius: calc(var(--border-radius-sm) * 0.9);
+  }
 `;
 
 Button.defaultProps = {
-  $variation: "primary",
-  size: "medium",
+  $variation: 'primary',
+  size: 'medium',
 };
 
 export default Button;

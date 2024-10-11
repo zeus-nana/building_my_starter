@@ -1,20 +1,12 @@
-import { HiOutlineDocumentText, HiOutlineTrash } from "react-icons/hi";
-import Table from "../../ui/Table";
-import Menus from "../../ui/Menus";
-import Modal from "../../ui/Modal";
-import PropTypes from "prop-types";
-import ConfirmAction from "../../ui/ConfirmAction.jsx";
+import { HiOutlineDocumentText, HiOutlineTrash } from 'react-icons/hi';
+import Table from '../../ui/Table';
+import Menus from '../../ui/Menus';
+import Modal from '../../ui/Modal';
+import PropTypes from 'prop-types';
+import ConfirmAction from '../../ui/ConfirmAction.jsx';
 
 function UploadRow({ upload }) {
-  const {
-    id,
-    create_at,
-    etat,
-    nombre_succes,
-    nombre_echec,
-    create_by,
-    statut,
-  } = upload;
+  const { id, create_at, etat, nombre_succes, nombre_echec, create_by, statut } = upload;
 
   return (
     <Table.Row>
@@ -24,16 +16,14 @@ function UploadRow({ upload }) {
       <div>{nombre_succes}</div>
       <div>{nombre_echec}</div>
       <div>{create_by}</div>
-      <div>{statut === "e" ? "En cours" : "Terminé"}</div>
+      <div>{statut === 'e' ? 'En cours' : 'Terminé'}</div>
       <div>
         <Modal>
           <Menus.Menu>
             <Menus.Toggle id={id.toString()} />
             <Menus.List id={id.toString()}>
               <Modal.Open opens="viewDetails">
-                <Menus.Button icon={<HiOutlineDocumentText />}>
-                  Voir les détails
-                </Menus.Button>
+                <Menus.Button icon={<HiOutlineDocumentText />}>Voir les détails</Menus.Button>
               </Modal.Open>
 
               <Modal.Open opens="deleteUpload">
@@ -46,7 +36,7 @@ function UploadRow({ upload }) {
               <div>Détails {id}</div>
             </Modal.Window>
 
-            <Modal.Window name="deleteUpload">
+            <Modal.Window name="deleteUpload" title="Confirmation">
               <ConfirmAction action="deleteUpload" id={id} />
             </Modal.Window>
           </Menus.Menu>

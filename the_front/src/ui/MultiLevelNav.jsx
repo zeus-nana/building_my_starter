@@ -1,14 +1,14 @@
-import { useState } from "react";
-import styled from "styled-components";
-import { NavLink } from "react-router-dom";
-import { HiMiniChevronDown, HiMiniChevronUp } from "react-icons/hi2";
-import PropTypes from "prop-types";
+import { useState } from 'react';
+import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
+import { HiMiniChevronDown, HiMiniChevronUp } from 'react-icons/hi2';
+import PropTypes from 'prop-types';
 
 const NavList = styled.ul`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding-left: ${(props) => props.$level * 1.2}rem;
+  gap: 0.2rem;
+  padding-left: ${(props) => (props.$level > 1 ? props.$level * 1 : 0)}rem;
 `;
 
 const StyledNavItem = styled.li`
@@ -25,6 +25,10 @@ const StyledNavLink = styled(NavLink)`
   padding: 1rem 2.4rem;
   text-decoration: none;
   transition: all 0.3s;
+
+  @media (max-width: 1366px) {
+    font-size: 1.4rem;
+  }
 
   &:hover,
   &.active {
@@ -59,6 +63,10 @@ const SubNavButton = styled.button`
   padding: 1rem 2.4rem;
   transition: all 0.3s;
   cursor: pointer;
+
+  @media (max-width: 1366px) {
+    font-size: 1.4rem;
+  }
 
   &:hover {
     color: var(--color-grey-800);
@@ -97,7 +105,7 @@ const NavItem = ({ icon, text, to, subItems, level = 0 }) => {
     return (
       <StyledNavItem>
         <SubNavButton onClick={() => setIsOpen(!isOpen)} $level={level}>
-          <div style={{ display: "flex", alignItems: "center", gap: "1.2rem" }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
             <IconWrapper>{icon}</IconWrapper>
             <span>{text}</span>
           </div>

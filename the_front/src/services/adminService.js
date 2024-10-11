@@ -1,6 +1,6 @@
-import ApiService from "./apiService.js";
-import { API_CONFIG } from "./apiConfig.js";
-import axios from "axios";
+import ApiService from './apiService.js';
+import { API_CONFIG } from './apiConfig.js';
+import axios from 'axios';
 
 class AdminService {
   static instance = null;
@@ -20,33 +20,24 @@ class AdminService {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         // Si c'est une erreur Axios avec une réponse du serveur
-        throw new Error(
-          `Erreur ${error.response.status}: ${error.response.statusText}`,
-        );
+        throw new Error(`Erreur ${error.response.status}: ${error.response.statusText}`);
       } else {
         // Pour les autres types d'erreurs
-        throw new Error(
-          "Impossible de récupérer la liste des utilisateurs. Veuillez réessayer plus tard.",
-        );
+        throw new Error('Impossible de récupérer la liste des utilisateurs. Veuillez réessayer plus tard.');
       }
     }
   }
 
   async createUser(newUser) {
     try {
-      return await ApiService.post(
-        `${API_CONFIG.ENDPOINTS.ADMIN.USERS}`,
-        newUser,
-      );
+      return await ApiService.post(`${API_CONFIG.ENDPOINTS.ADMIN.USERS}`, newUser);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         // Si c'est une erreur Axios avec une réponse du serveur
         throw error;
       } else {
         // Pour les autres types d'erreurs
-        throw new Error(
-          "Impossible de créer l'utilisateur. Veuillez réessayer plus tard.",
-        );
+        throw new Error("Impossible de créer l'utilisateur. Veuillez réessayer plus tard.");
       }
     }
   }
@@ -60,127 +51,139 @@ class AdminService {
         throw error;
       } else {
         // Pour les autres types d'erreurs
-        throw new Error(
-          "Impossible de sélectionner l'utilisateur. Veuillez réessayer plus tard.",
-        );
+        throw new Error("Impossible de sélectionner l'utilisateur. Veuillez réessayer plus tard.");
       }
     }
   }
 
   async activateUser(id) {
     try {
-      return await ApiService.post(
-        `${API_CONFIG.ENDPOINTS.ADMIN.ACTIVATE_USER}/${id}`,
-        { active: true },
-      );
+      return await ApiService.post(`${API_CONFIG.ENDPOINTS.ADMIN.ACTIVATE_USER}/${id}`, { active: true });
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         throw error;
       } else {
-        throw new Error(
-          "Impossible d'activer l'utilisateur. Veuillez réessayer plus tard.",
-        );
+        throw new Error("Impossible d'activer l'utilisateur. Veuillez réessayer plus tard.");
       }
     }
   }
 
   async deactivateUser(id) {
     try {
-      return await ApiService.post(
-        `${API_CONFIG.ENDPOINTS.ADMIN.DEACTIVATE_USER}/${id}`,
-        { active: false },
-      );
+      return await ApiService.post(`${API_CONFIG.ENDPOINTS.ADMIN.DEACTIVATE_USER}/${id}`, { active: false });
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         throw error;
       } else {
-        throw new Error(
-          "Impossible de désactiver l'utilisateur. Veuillez réessayer plus tard.",
-        );
+        throw new Error("Impossible de désactiver l'utilisateur. Veuillez réessayer plus tard.");
       }
     }
   }
 
   async resetUserPassword(id) {
     try {
-      return await ApiService.post(
-        `${API_CONFIG.ENDPOINTS.ADMIN.RESET_USER_PASSWORD}/${id}`,
-      );
+      return await ApiService.post(`${API_CONFIG.ENDPOINTS.ADMIN.RESET_USER_PASSWORD}/${id}`);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         throw error;
       } else {
-        throw new Error(
-          "Impossible de définir le mot de passe. Veuillez réessayer plus tard.",
-        );
+        throw new Error('Impossible de définir le mot de passe. Veuillez réessayer plus tard.');
       }
     }
   }
 
   async createMenu(menuData) {
     try {
-      return await ApiService.post(
-        `${API_CONFIG.ENDPOINTS.HABILITATION.MENU}`,
-        menuData,
-      );
+      return await ApiService.post(`${API_CONFIG.ENDPOINTS.HABILITATION.MENU}`, menuData);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         throw error;
       } else {
-        throw new Error(
-          "Impossible de créer le menu. Veuillez réessayer plus tard.",
-        );
+        throw new Error('Impossible de créer le menu. Veuillez réessayer plus tard.');
       }
     }
   }
 
   async createPermission(permissionData) {
     try {
-      return await ApiService.post(
-        `${API_CONFIG.ENDPOINTS.HABILITATION.PERMISSION}`,
-        permissionData,
-      );
+      return await ApiService.post(`${API_CONFIG.ENDPOINTS.HABILITATION.PERMISSION}`, permissionData);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         throw error;
       } else {
-        throw new Error(
-          "Impossible de créer la permission. Veuillez réessayer plus tard.",
-        );
+        throw new Error('Impossible de créer la permission. Veuillez réessayer plus tard.');
       }
     }
   }
 
   async createFonction(fonctionData) {
     try {
-      return await ApiService.post(
-        `${API_CONFIG.ENDPOINTS.HABILITATION.FONCTION}`,
-        fonctionData,
-      );
+      return await ApiService.post(`${API_CONFIG.ENDPOINTS.HABILITATION.FONCTION}`, fonctionData);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         throw error;
       } else {
-        throw new Error(
-          "Impossible de créer la fonction. Veuillez réessayer plus tard.",
-        );
+        throw new Error('Impossible de créer la fonction. Veuillez réessayer plus tard.');
       }
     }
   }
 
   async createFonctionMenuPermission(fonctionMenuPermissionData) {
     try {
-      return await ApiService.post(
-        `${API_CONFIG.ENDPOINTS.HABILITATION.FONCTION_MENU_PERMISSION}`,
-        fonctionMenuPermissionData,
-      );
+      return await ApiService.post(`${API_CONFIG.ENDPOINTS.HABILITATION.FONCTION_MENU_PERMISSION}`, fonctionMenuPermissionData);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         throw error;
       } else {
-        throw new Error(
-          "Impossible de créer la liaison fonction-menu-permission. Veuillez réessayer plus tard.",
-        );
+        throw new Error('Impossible de créer la liaison fonction-menu-permission. Veuillez réessayer plus tard.');
+      }
+    }
+  }
+
+  async getAllMenus() {
+    try {
+      return await ApiService.get(`${API_CONFIG.ENDPOINTS.HABILITATION.MENU}`);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error('Impossible de récupérer la liste des menus. Veuillez réessayer plus tard.');
+      }
+    }
+  }
+
+  async getAllPermissions() {
+    try {
+      return await ApiService.get(`${API_CONFIG.ENDPOINTS.HABILITATION.PERMISSION}`);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error('Impossible de récupérer la liste des permissions. Veuillez réessayer plus tard.');
+      }
+    }
+  }
+
+  async getAllFonctions() {
+    try {
+      return await ApiService.get(`${API_CONFIG.ENDPOINTS.HABILITATION.FONCTION}`);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error('Impossible de récupérer la liste des fonctions. Veuillez réessayer plus tard.');
+      }
+    }
+  }
+
+  async getAllFonctionMenuPermissions() {
+    try {
+      return await ApiService.get(`${API_CONFIG.ENDPOINTS.HABILITATION.FONCTION_MENU_PERMISSION}`);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error('Impossible de récupérer la liste des liaisons fonction-menu-permission. Veuillez réessayer plus tard.');
       }
     }
   }

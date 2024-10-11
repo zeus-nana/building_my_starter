@@ -1,11 +1,11 @@
-import PropTypes from "prop-types";
-import FormRow from "../../ui/FormRow";
-import Button from "../../ui/Button";
-import FileInput from "../../ui/FileInput.jsx";
-import styled from "styled-components";
-import { useUploadFile } from "./useUploadFile.js";
-import toast from "react-hot-toast";
-import { useState } from "react";
+import PropTypes from 'prop-types';
+import FormRow from '../../ui/FormRow';
+import Button from '../../ui/Button';
+import FileInput from '../../ui/FileInput.jsx';
+import styled from 'styled-components';
+import { useUploadFile } from './useUploadFile.js';
+import toast from 'react-hot-toast';
+import { useState } from 'react';
 
 const Form = styled.form`
   width: 50rem;
@@ -38,9 +38,7 @@ function UploadFileForm({ onCloseModal }) {
     const selectedFiles = Array.from(event.target.files);
 
     if (selectedFiles.length > MAX_FILES) {
-      toast.error(
-        `Vous ne pouvez pas télécharger plus de ${MAX_FILES} fichiers à la fois.`,
-      );
+      toast.error(`Vous ne pouvez pas télécharger plus de ${MAX_FILES} fichiers à la fois.`);
       return;
     }
 
@@ -48,9 +46,7 @@ function UploadFileForm({ onCloseModal }) {
     const validFiles = selectedFiles.filter((file) => {
       totalSize += file.size;
       if (file.size > MAX_FILE_SIZE) {
-        toast.error(
-          `Le fichier "${file.name}" dépasse la taille maximale autorisée de 5 MB.`,
-        );
+        toast.error(`Le fichier "${file.name}" dépasse la taille maximale autorisée de 5 MB.`);
         return false;
       }
       return true;
@@ -72,20 +68,18 @@ function UploadFileForm({ onCloseModal }) {
   };
 
   const formatFileSize = (bytes) => {
-    if (bytes === 0) return "0 Bytes";
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   return (
-    <Form type={onCloseModal ? "modal" : "default"} onSubmit={handleSubmit}>
-      <StyledHeader>Nouvelle charge</StyledHeader>
-
+    <Form type={onCloseModal ? 'modal' : 'default'} onSubmit={handleSubmit}>
       <FileInput
         type="file"
-        extensions={["csv", "xls", "xlsx"]}
+        extensions={['csv', 'xls', 'xlsx']}
         onChange={handleFileChange}
         multiple // Permet la sélection de plusieurs fichiers
       />
@@ -103,20 +97,11 @@ function UploadFileForm({ onCloseModal }) {
       )}
 
       <FormRow>
-        <Button
-          $variation="secondary"
-          type="button"
-          onClick={() => onCloseModal?.()}
-          disabled={isUploading}
-        >
+        <Button $variation="secondary" type="button" onClick={() => onCloseModal?.()} disabled={isUploading}>
           Annuler
         </Button>
-        <Button
-          size="medium"
-          type="submit"
-          disabled={isUploading || files.length === 0}
-        >
-          {isUploading ? "Chargement en cours..." : "Charger"}
+        <Button size="medium" type="submit" disabled={isUploading || files.length === 0}>
+          {isUploading ? 'Chargement en cours...' : 'Charger'}
         </Button>
       </FormRow>
     </Form>

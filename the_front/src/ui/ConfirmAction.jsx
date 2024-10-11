@@ -1,10 +1,9 @@
-import styled from "styled-components";
-import Button from "./Button";
-import Heading from "./Heading";
-import PropTypes from "prop-types";
-import { useActivateUser } from "../features/users/useActivateUser.js";
-import { useDeactivateUser } from "../features/users/useDeactivateUser.js";
-import { useResetUserPassword } from "../features/users/useResetUserPassword.js";
+import styled from 'styled-components';
+import Button from './Button';
+import PropTypes from 'prop-types';
+import { useActivateUser } from '../features/users/useActivateUser.js';
+import { useDeactivateUser } from '../features/users/useDeactivateUser.js';
+import { useResetUserPassword } from '../features/users/useResetUserPassword.js';
 
 const StyledConfirmAction = styled.div`
   width: 40rem;
@@ -29,32 +28,23 @@ function ConfirmAction({ onConfirm, disabled, onCloseModal, action, id }) {
   const { isDeactivating, deactivateUser } = useDeactivateUser(onCloseModal);
   const { isResetting, resetUserPassword } = useResetUserPassword(onCloseModal);
 
-  if (action === "activate") {
+  if (action === 'activate') {
     onConfirm = () => activateUser(id);
-  } else if (action === "deactivate") {
+  } else if (action === 'deactivate') {
     onConfirm = () => deactivateUser(id);
-  } else if (action === "resetUserPassword") {
+  } else if (action === 'resetUserPassword') {
     onConfirm = () => resetUserPassword(id);
   }
 
   return (
     <StyledConfirmAction>
-      <Heading as="h3">Confirmation</Heading>
       <p>Voulez vous vraiment confirmer ?</p>
 
       <div>
-        <Button
-          $variation="secondary"
-          disabled={disabled}
-          onClick={onCloseModal}
-        >
+        <Button $variation="secondary" disabled={disabled} onClick={onCloseModal}>
           Annuler
         </Button>
-        <Button
-          $variation="danger"
-          disabled={isActivating || isDeactivating || isResetting}
-          onClick={onConfirm}
-        >
+        <Button $variation="danger" disabled={isActivating || isDeactivating || isResetting} onClick={onConfirm}>
           Continuer
         </Button>
       </div>

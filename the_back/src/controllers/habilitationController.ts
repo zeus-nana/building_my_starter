@@ -95,6 +95,13 @@ const createFonction = catchAsync(
     }
 
     try {
+      // Vérification de l'existence du nom
+      const existingFonction = await db('fonction').where('nom', nom).first();
+
+      if (existingFonction) {
+        return next(new AppError('Une fonction avec ce nom existe déjà', 400));
+      }
+
       const nouvelleFonction: FonctionCreate = {
         nom,
         description,
@@ -174,10 +181,75 @@ const createFonctionMenuPermission = catchAsync(
     }
   },
 );
+const getAllMenus = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const menus = await db('menu')
+      .join('users', 'menu.created_by', '=', 'users.id')
+      .select('menu.*', 'users.login as created_by');
+
+    res.status(200).json({
+      status: 'succès',
+      data: {
+        menus,
+      },
+    });
+  },
+);
+
+const getAllPermissions = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const permissions = await db('permission')
+      .join('users', 'permission.created_by', '=', 'users.id')
+      .select('permission.*', 'users.login as created_by');
+
+    res.status(200).json({
+      status: 'succès',
+      data: {
+        permissions,
+      },
+    });
+  },
+);
+
+const getAllFonctions = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const fonctions = await db('fonction')
+      .join('users', 'fonction.created_by', '=', 'users.id')
+      .select('fonction.*', 'users.login as created_by');
+
+    console.log(fonctions);
+
+    res.status(200).json({
+      status: 'succès',
+      data: {
+        fonctions,
+      },
+    });
+  },
+);
+
+const getAllFonctionMenuPermissions = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const fonctionMenuPermissions = await db('fonction_menu_permission')
+      .join('users', 'fonction_menu_permission.created_by', '=', 'users.id')
+      .select('fonction_menu_permission.*', 'users.login as created_by');
+
+    res.status(200).json({
+      status: 'succès',
+      data: {
+        fonctionMenuPermissions,
+      },
+    });
+  },
+);
 
 export default {
   createMenu,
   createPermission,
   createFonction,
   createFonctionMenuPermission,
+  getAllMenus,
+  getAllPermissions,
+  getAllFonctions,
+  getAllFonctionMenuPermissions,
 };

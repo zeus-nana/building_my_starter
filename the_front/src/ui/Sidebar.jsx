@@ -1,13 +1,8 @@
-import styled from "styled-components";
-import Logo from "./Logo.jsx";
-import {
-  HiOutlineBars2,
-  HiOutlineBars4,
-  HiOutlineHome,
-  HiOutlineUsers,
-} from "react-icons/hi2";
-import { HiOutlineChartBar, HiOutlineUpload } from "react-icons/hi";
-import MainNav from "./MultiLevelNav.jsx";
+import styled from 'styled-components';
+import Logo from './Logo.jsx';
+import { HiOutlineBars4, HiOutlineHome, HiOutlineLockClosed, HiOutlineUsers } from 'react-icons/hi2';
+import { HiOutlineChartBar, HiOutlineUpload } from 'react-icons/hi';
+import MainNav from './MultiLevelNav.jsx';
 
 const StyledSidebar = styled.aside`
   background-color: var(--color-grey-0);
@@ -22,42 +17,22 @@ const StyledSidebar = styled.aside`
 
 function Sidebar() {
   const navItems = [
-    { icon: <HiOutlineHome />, text: "Accueil", to: "/" },
-    { icon: <HiOutlineChartBar />, text: "Dashboard", to: "/dashboard" },
-    { icon: <HiOutlineUpload />, text: "Chargement", to: "/chargement" },
-    { icon: <HiOutlineUsers />, text: "Utilisateurs", to: "/users" },
+    { icon: <HiOutlineHome />, text: 'Accueil', to: '/' },
+    { icon: <HiOutlineChartBar />, text: 'Dashboard', to: '/dashboard' },
+    { icon: <HiOutlineUpload />, text: 'Chargement', to: '/chargement' },
     {
       icon: <HiOutlineBars4 />,
-      text: "Reporting",
+      text: 'Reporting',
       subItems: [
-        {
-          icon: <HiOutlineBars2 />,
-          text: "Globale",
-          to: "/reporting/transactions",
-        },
-        {
-          icon: <HiOutlineBars2 />,
-          text: "Agrégées",
-          to: "/reporting/transactions-agrege",
-        },
-        {
-          icon: <HiOutlineBars2 />,
-          text: "Détaillé",
-          subItems: [
-            {
-              icon: <HiOutlineBars2 />,
-              text: "Par région",
-              to: "/reporting/detail/region",
-            },
-            {
-              icon: <HiOutlineBars2 />,
-
-              text: "Par produit",
-              to: "/reporting/detail/produit",
-            },
-          ],
-        },
+        { text: 'Globale', to: '/reporting/transactions' },
+        { text: 'Agrégées', to: '/reporting/transactions-agrege' },
       ],
+    },
+    { icon: <HiOutlineUsers />, text: 'Utilisateurs', to: '/users' },
+    {
+      icon: <HiOutlineLockClosed />,
+      text: 'Habilitation',
+      subItems: [{ text: 'Fonctions', to: '/habilitation/fonctions' }],
     },
   ];
 
