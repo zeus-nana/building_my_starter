@@ -1,37 +1,38 @@
-import PropTypes from "prop-types";
-import Input from "../../ui/Input";
-import Form from "../../ui/Form";
-import { useForm } from "react-hook-form";
-import FormRow from "../../ui/FormRow";
-import Button from "../../ui/Button";
-import Select from "../../ui/Select";
-import { useCreateUser } from "./useCreateUser";
-import SpinnerMini from "../../ui/SpinnerMini";
+import PropTypes from 'prop-types';
+import Input from '../../ui/Input';
+import Form from '../../ui/Form';
+import { useForm } from 'react-hook-form';
+import FormRow from '../../ui/FormRow';
+import Button from '../../ui/Button';
+import Select from '../../ui/Select';
+import { useCreateUser } from './useCreateUser';
+import SpinnerMini from '../../ui/SpinnerMini';
+import FormRowNew from '../../ui/FormRowNew.jsx';
 
 // Définition des énumérations
 const UserProfile = {
-  GESTIONNAIRE: "gestionnaire",
-  REPORTING: "reporting",
-  IT_SUPPORT: "it_support",
+  GESTIONNAIRE: 'gestionnaire',
+  REPORTING: 'reporting',
+  IT_SUPPORT: 'it_support',
 };
 
 const UserLocalisation = {
-  SIEGE: "siège",
-  ADAMAOUA: "adamaoua",
-  CENTRE: "centre",
-  EST: "est",
-  EXTREME_NORD: "extreme_nord",
-  LITTORAL: "littoral",
-  NORD: "nord",
-  NORD_OUEST: "nord_ouest",
-  OUEST: "ouest",
-  SUD: "sud",
-  SUD_OUEST: "sud_ouest",
+  SIEGE: 'siège',
+  ADAMAOUA: 'adamaoua',
+  CENTRE: 'centre',
+  EST: 'est',
+  EXTREME_NORD: 'extreme_nord',
+  LITTORAL: 'littoral',
+  NORD: 'nord',
+  NORD_OUEST: 'nord_ouest',
+  OUEST: 'ouest',
+  SUD: 'sud',
+  SUD_OUEST: 'sud_ouest',
 };
 
 const localisationOptions = Object.values(UserLocalisation).map((value) => ({
   value,
-  label: value.charAt(0).toUpperCase() + value.slice(1).replace("_", " "),
+  label: value.charAt(0).toUpperCase() + value.slice(1).replace('_', ' '),
 }));
 
 const profileOptions = Object.values(UserProfile).map((value) => ({
@@ -66,7 +67,7 @@ function CreateUserForm({ onCloseModal, userToEdit = {} }) {
         onSuccess: async () => {
           reset();
         },
-      },
+      }
     );
   }
 
@@ -75,101 +76,88 @@ function CreateUserForm({ onCloseModal, userToEdit = {} }) {
   }
 
   return (
-    <Form
-      onSubmit={handleSubmit(onSubmit, onError)}
-      type={onCloseModal ? "modal" : "default"}
-    >
-      <FormRow label="Login" error={errors?.login?.message}>
+    <Form onSubmit={handleSubmit(onSubmit, onError)} type={onCloseModal ? 'modal' : 'default'}>
+      <FormRowNew label="Login" error={errors?.login?.message}>
         <Input
           type="text"
           id="login"
           disabled={isCreating}
-          {...register("login", {
-            required: "Ce champ est obligatoire.",
+          {...register('login', {
+            required: 'Ce champ est obligatoire.',
           })}
         />
-      </FormRow>
-      <FormRow label="Nom" error={errors?.username?.message}>
+      </FormRowNew>
+      <FormRowNew label="Nom" error={errors?.username?.message}>
         <Input
           type="text"
           id="username"
           disabled={isCreating}
-          {...register("username", {
-            required: "Ce champ est obligatoire.",
+          {...register('username', {
+            required: 'Ce champ est obligatoire.',
           })}
         />
-      </FormRow>
-      <FormRow label="Email" error={errors?.email?.message}>
+      </FormRowNew>
+      <FormRowNew label="Email" error={errors?.email?.message}>
         <Input
           type="email"
           id="email"
           disabled={isCreating}
-          {...register("email", {
-            required: "Ce champ est obligatoire.",
+          {...register('email', {
+            required: 'Ce champ est obligatoire.',
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: "Adresse email invalide.",
+              message: 'Adresse email invalide.',
             },
           })}
         />
-      </FormRow>
-      <FormRow label="Téléphone" error={errors?.phone?.message}>
+      </FormRowNew>
+      <FormRowNew label="Téléphone" error={errors?.phone?.message}>
         <Input
           type="tel"
           id="phone"
           disabled={isCreating}
-          {...register("phone", {
-            required: "Ce champ est obligatoire.",
+          {...register('phone', {
+            required: 'Ce champ est obligatoire.',
             pattern: {
               value: /^[0-9]+$/,
-              message: "Le numéro ne doit contenir que des chiffres.",
+              message: 'Le numéro ne doit contenir que des chiffres.',
             },
           })}
         />
-      </FormRow>
+      </FormRowNew>
 
-      <FormRow label="Profil" error={errors?.profile?.message}>
+      <FormRowNew label="Profil" error={errors?.profile?.message}>
         <Select
           options={profileOptions}
           id="profile"
           disabled={isCreating}
-          {...register("profile", {
-            required: "Ce champ est obligatoire.",
+          {...register('profile', {
+            required: 'Ce champ est obligatoire.',
           })}
         />
-      </FormRow>
+      </FormRowNew>
 
-      <FormRow label="Département" error={errors?.department?.message}>
-        <Input
-          type="text"
-          id="department"
-          disabled={isCreating}
-          {...register("department")}
-        />
-      </FormRow>
+      <FormRowNew label="Département" error={errors?.department?.message}>
+        <Input type="text" id="department" disabled={isCreating} {...register('department')} />
+      </FormRowNew>
 
-      <FormRow label="Localisation" error={errors?.localisation?.message}>
+      <FormRowNew label="Localisation" error={errors?.localisation?.message}>
         <Select
           options={localisationOptions}
           id="localisation"
           disabled={isCreating}
-          {...register("localisation", {
-            required: "Ce champ est obligatoire.",
+          {...register('localisation', {
+            required: 'Ce champ est obligatoire.',
           })}
         />
-      </FormRow>
+      </FormRowNew>
 
       <FormRow>
-        <Button
-          $variation="secondary"
-          type="reset"
-          onClick={() => onCloseModal?.()}
-          disabled={isCreating}
-        >
+        <Button $variation="secondary" type="reset" onClick={() => onCloseModal?.()} disabled={isCreating}>
           Annuler
         </Button>
         <Button size="medium" disabled={isCreating}>
-          {!isCreating ? "Enregistrer" : <SpinnerMini />}
+          {isCreating ? <SpinnerMini /> : isEditing ? 'Mettre à jour' : 'Créer'}
         </Button>
       </FormRow>
     </Form>
