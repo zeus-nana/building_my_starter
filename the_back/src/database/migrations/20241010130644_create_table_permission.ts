@@ -5,9 +5,8 @@ export async function up(knex: Knex): Promise<void> {
   // Création de la table 'permission'
   await knex.schema.createTable('permission', (table) => {
     table.increments('id').primary();
-    table.string('nom', 255).notNullable();
+    table.string('nom', 255).notNullable().unique();
     table.text('description');
-    table.string('code', 100).notNullable().unique();
     table
       .integer('menu_id')
       .unsigned()

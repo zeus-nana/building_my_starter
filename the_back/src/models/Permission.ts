@@ -2,7 +2,6 @@ export interface Permission {
   id: number;
   nom: string;
   description: string | null;
-  code: string;
   menu_id: number;
   created_by: number;
   updated_by: number | null;

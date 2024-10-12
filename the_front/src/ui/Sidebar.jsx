@@ -32,7 +32,10 @@ function Sidebar() {
     {
       icon: <HiOutlineLockClosed />,
       text: 'Habilitation',
-      subItems: [{ text: 'Fonctions', to: '/habilitation/fonctions' }],
+      subItems: [
+        { text: 'Fonctions', to: '/habilitation/fonctions' },
+        { text: 'Menus', to: '/habilitation/menus' },
+      ],
     },
   ];
 

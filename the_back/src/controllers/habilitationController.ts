@@ -44,7 +44,6 @@ const createOrUpdateMenu = catchAsync(
             nom,
             description,
             updated_by: req.user!.id,
-            updated_at: db.fn.now(),
           },
           ['id', 'nom', 'description'],
         );
@@ -124,20 +123,17 @@ const createMenu = catchAsync(
 
 const createPermission = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { nom, description, code, menu_id } = req.body;
+    const { nom, description, menu_id } = req.body;
 
     // Validation de base
-    if (!nom || !code || !menu_id) {
-      return next(
-        new AppError('Le nom, le code et le menu_id sont requis', 400),
-      );
+    if (!nom || !menu_id) {
+      return next(new AppError('Le nom et le menu sont requis', 400));
     }
 
     try {
       const nouvellePermission: PermissionCreate = {
         nom,
         description,
-        code,
         menu_id,
         created_by: req.user!.id,
       };
@@ -242,7 +238,6 @@ const createOrUpdateFonction = catchAsync(
             nom,
             description,
             updated_by: req.user!.id,
-            updated_at: db.fn.now(),
           },
           ['id', 'nom', 'description'],
         );

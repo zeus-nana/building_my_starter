@@ -92,7 +92,7 @@ class AdminService {
     }
   }
 
-  async createMenu(menuData) {
+  async createUpdateMenu(menuData) {
     try {
       return await ApiService.post(`${API_CONFIG.ENDPOINTS.HABILITATION.MENU}`, menuData);
     } catch (error) {
