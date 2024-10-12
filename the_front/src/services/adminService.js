@@ -104,7 +104,7 @@ class AdminService {
     }
   }
 
-  async createPermission(permissionData) {
+  async createUpdatePermission(permissionData) {
     try {
       return await ApiService.post(`${API_CONFIG.ENDPOINTS.HABILITATION.PERMISSION}`, permissionData);
     } catch (error) {

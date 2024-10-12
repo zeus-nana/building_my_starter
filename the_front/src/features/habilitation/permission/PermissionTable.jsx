@@ -1,40 +1,40 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useGetFonctions } from './useGetFonctions.js';
-import { PAGE_SIZE } from '../../../constants.js';
-import Spinner from '../../../ui/Spinner.jsx';
-import Pagination from '../../../ui/Pagination.jsx';
-import Menus from '../../../ui/Menus.jsx';
-import Table from '../../../ui/Table.jsx';
-import FonctionRow from './FonctionRow.jsx';
+import { useGetPermissions } from './useGetPermissions';
+import { PAGE_SIZE } from '../../../constants';
+import Spinner from '../../../ui/Spinner';
+import Pagination from '../../../ui/Pagination';
+import Menus from '../../../ui/Menus';
+import Table from '../../../ui/Table';
+import PermissionRow from './PermissionRow';
 
-function FonctionsTable() {
+function PermissionTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const [filters, setFilters] = useState({});
 
-  const { isLoading, data, error } = useGetFonctions();
+  const { isLoading, data, error } = useGetPermissions();
 
-  const fonctions = data?.data?.data?.fonctions;
+  const permissions = data?.data?.data?.permissions;
 
-  const filteredFonctions = useMemo(() => {
+  const filteredPermissions = useMemo(() => {
     return (
-      fonctions?.filter((fonction) =>
+      permissions?.filter((permission) =>
         Object.entries(filters).every(([key, value]) => {
           if (!value) return true;
-          return fonction[key]?.toString().toLowerCase().includes(value.toLowerCase());
+          return permission[key]?.toString().toLowerCase().includes(value.toLowerCase());
         })
       ) || []
     );
-  }, [fonctions, filters]);
+  }, [permissions, filters]);
 
-  const paginatedFonctions = useMemo(() => {
+  const paginatedPermissions = useMemo(() => {
     const startIndex = (currentPage - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
-    return filteredFonctions.slice(startIndex, endIndex);
-  }, [filteredFonctions, currentPage]);
+    return filteredPermissions.slice(startIndex, endIndex);
+  }, [filteredPermissions, currentPage]);
 
-  const totalCount = filteredFonctions.length;
+  const totalCount = filteredPermissions.length;
   const pageCount = Math.ceil(totalCount / PAGE_SIZE);
 
   const handleFilterChange = (columnName, value) => {
@@ -51,6 +51,7 @@ function FonctionsTable() {
   const columns = [
     { name: 'nom', width: '200px' },
     { name: 'description', width: '300px' },
+    { name: 'menu', width: '200px' },
     { name: 'create_by', width: '200px' },
     { name: 'actions', width: '100px', filterable: false },
   ];
@@ -67,18 +68,18 @@ function FonctionsTable() {
 
   return (
     <Menus>
-      <Table columns={columns} data={paginatedFonctions} onFilterChange={handleFilterChange} footer={footer}>
+      <Table columns={columns} data={paginatedPermissions} onFilterChange={handleFilterChange} footer={footer}>
         <Table.Header>
           {columns.map((column) => (
             <div key={column.name} name={column.name}>
-              {column.name === 'actions' ? '' : column.name.charAt(0).toUpperCase() + column.name.slice(1)}
+              {column.name === 'actions' ? '' : column.name.charAt(0).toUpperCase() + column.name.slice(1).replace('_', ' ')}
             </div>
           ))}
         </Table.Header>
-        <Table.Body render={(fonction) => <FonctionRow key={fonction.id} fonction={fonction} />} />
+        <Table.Body render={(permission) => <PermissionRow key={permission.id} permission={permission} />} />
       </Table>
     </Menus>
   );
 }
 
-export default FonctionsTable;
+export default PermissionTable;

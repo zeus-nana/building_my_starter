@@ -6,10 +6,10 @@ function AddMenu() {
   return (
     <div>
       <Modal>
-        <Modal.Open opens="new-fonction">
+        <Modal.Open opens="new-menu">
           <Button>Ajouter un menu</Button>
         </Modal.Open>
-        <Modal.Window name="new-fonction" title="Ajouter un menu">
+        <Modal.Window name="new-menu" title="Ajouter un menu">
           <CreateUpdateMenuForm />
         </Modal.Window>
       </Modal>

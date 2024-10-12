@@ -18,6 +18,7 @@ import Dashboard from './pages/Dashboard.jsx';
 import Habilitation from './pages/habilitation/Habilitation.jsx';
 import Fonction from './features/habilitation/fonction/Fonction.jsx';
 import Menu from './features/habilitation/menu/Menu.jsx';
+import Permission from './features/habilitation/permission/Permission.jsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -56,6 +57,7 @@ function App() {
               <Route index element={<Navigate replace to="/habilitation" />} />
               <Route path="fonctions" element={<Fonction />} />
               <Route path="menus" element={<Menu />} />
+              <Route path="permissions" element={<Permission />} />
             </Route>
           </Route>
 

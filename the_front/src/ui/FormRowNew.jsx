@@ -44,6 +44,7 @@ const LabelNew = styled.label`
 const InputContainerNew = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 1px;
 `;
 
 const ErrorNew = styled.span`

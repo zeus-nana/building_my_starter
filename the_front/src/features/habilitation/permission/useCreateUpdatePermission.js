@@ -3,25 +3,25 @@ import toast from 'react-hot-toast';
 import AdminService from '../../../services/adminService.js';
 import axios from 'axios';
 
-export function useCreateUpdateFonction(onCloseModal) {
+export function useCreateUpdatePermission(onCloseModal) {
   const queryClient = useQueryClient();
 
-  const { mutate: createUpdateFonction, isLoading: isCreatingOrUpdating } = useMutation({
-    mutationFn: (data) => AdminService.createUpdateFonction(data),
+  const { mutate: createUpdatePermission, isLoading: isCreatingOrUpdating } = useMutation({
+    mutationFn: (data) => AdminService.createUpdatePermission(data),
     onSuccess: (_, variables) => {
       const isEditing = Boolean(variables.id);
-      toast.success(isEditing ? 'Fonction mise à jour avec succès' : 'Fonction créée avec succès');
-      queryClient.invalidateQueries({ queryKey: ['fonctions'] });
+      toast.success(isEditing ? 'Permission mise à jour avec succès' : 'Permission créée avec succès');
+      queryClient.invalidateQueries({ queryKey: ['permissions'] });
       onCloseModal?.();
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response?.data) {
         toast.error(`Erreur: ${error.response.data.message}`);
       } else {
-        toast.error(`Erreur lors de la création de la fonction.`);
+        toast.error(`Erreur lors de la création/mise à jour de la permission.`);
       }
     },
   });
 
-  return { isCreatingOrUpdating, createUpdateFonction };
+  return { isCreatingOrUpdating, createUpdatePermission };
 }

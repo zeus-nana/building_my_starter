@@ -3,7 +3,7 @@ import Heading from '../../../ui/Heading.jsx';
 import MenuTable from './MenuTable.jsx';
 import AddMenu from './AddMenu.jsx';
 
-function Fonctions() {
+function Menu() {
   return (
     <>
       <Row type="horizontal">
@@ -17,4 +17,4 @@ function Fonctions() {
   );
 }
 
-export default Fonctions;
+export default Menu;

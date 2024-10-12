@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import AdminService from '../../../services/adminService.js';
+import axios from 'axios';
 
 export function useCreateUpdateMenu(onCloseModal) {
   const queryClient = useQueryClient();
@@ -14,7 +15,11 @@ export function useCreateUpdateMenu(onCloseModal) {
       onCloseModal?.();
     },
     onError: (error) => {
-      toast.error(error.message || 'Une erreur est survenue');
+      if (axios.isAxiosError(error) && error.response?.data) {
+        toast.error(`Erreur: ${error.response.data.message}`);
+      } else {
+        toast.error(`Erreur lors de la création du menu.`);
+      }
     },
   });
 

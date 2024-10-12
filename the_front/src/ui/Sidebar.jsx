@@ -35,6 +35,7 @@ function Sidebar() {
       subItems: [
         { text: 'Fonctions', to: '/habilitation/fonctions' },
         { text: 'Menus', to: '/habilitation/menus' },
+        { text: 'Permissions', to: '/habilitation/permissions' },
       ],
     },
   ];

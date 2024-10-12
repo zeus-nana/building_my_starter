@@ -17,8 +17,6 @@ function MenuTable() {
 
   const menus = data?.data?.data?.menus;
 
-  console.log(menus);
-
   const filteredMenus = useMemo(() => {
     return (
       menus?.filter((menu) =>
