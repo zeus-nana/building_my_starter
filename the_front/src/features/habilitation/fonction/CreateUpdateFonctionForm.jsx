@@ -1,31 +1,28 @@
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
-import { useCreateFonction } from './useCreateFonction.js';
+import { useCreateUpdateFonction } from './useCreateUpdateFonction.js';
 import FormRow from '../../../ui/FormRow.jsx';
 import Input from '../../../ui/Input.jsx';
 import Textarea from '../../../ui/Textarea.jsx';
 import Button from '../../../ui/Button.jsx';
 import SpinnerMini from '../../../ui/SpinnerMini.jsx';
 import Form from '../../../ui/Form.jsx';
+import FormRowNew from '../../../ui/FormRowNew.jsx';
 
-function CreateFonctionForm({ onCloseModal, fonctionToEdit = {} }) {
+function CreateUpdateFonctionForm({ onCloseModal, fonctionToEdit = {} }) {
   const { id: fonctionId, ...editValues } = fonctionToEdit;
-  const isEditing = !!fonctionId;
+  const isEditing = Boolean(fonctionId);
 
-  const { register, handleSubmit, reset, formState } = useForm({
+  const { register, handleSubmit, formState } = useForm({
     defaultValues: isEditing ? editValues : {},
   });
 
   const { errors } = formState;
 
-  const { isCreating, createFonction } = useCreateFonction(onCloseModal);
+  const { isCreatingOrUpdating, createUpdateFonction } = useCreateUpdateFonction(onCloseModal);
 
   function onSubmit(data) {
-    if (isEditing) {
-      // Implement update logic here
-    } else {
-      createFonction(data);
-    }
+    createUpdateFonction(isEditing ? { id: fonctionId, ...data } : data);
   }
 
   function onError(errors) {
@@ -34,40 +31,40 @@ function CreateFonctionForm({ onCloseModal, fonctionToEdit = {} }) {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit, onError)} type={onCloseModal ? 'modal' : 'regular'}>
-      <FormRow label="Nom" error={errors?.nom?.message}>
+      <FormRowNew label="Nom" error={errors?.nom?.message}>
         <Input
           type="text"
           id="nom"
-          disabled={isCreating}
+          disabled={isCreatingOrUpdating}
           {...register('nom', {
             required: 'Ce champ est obligatoire.',
           })}
         />
-      </FormRow>
+      </FormRowNew>
 
-      <FormRow label="Description" error={errors?.description?.message}>
+      <FormRowNew label="Description" error={errors?.description?.message}>
         <Textarea
           id="description"
-          disabled={isCreating}
+          disabled={isCreatingOrUpdating}
           {...register('description', {
             required: 'Ce champ est obligatoire.',
           })}
         />
-      </FormRow>
+      </FormRowNew>
 
       <FormRow>
-        <Button $variation="secondary" type="reset" onClick={() => onCloseModal?.()} disabled={isCreating}>
+        <Button $variation="secondary" type="reset" onClick={() => onCloseModal?.()} disabled={isCreatingOrUpdating}>
           Annuler
         </Button>
-        <Button disabled={isCreating}>{isCreating ? <SpinnerMini /> : 'Enregistrer'}</Button>
+        <Button disabled={isCreatingOrUpdating}>{isCreatingOrUpdating ? <SpinnerMini /> : isEditing ? 'Mettre à jour' : 'Créer'}</Button>
       </FormRow>
     </Form>
   );
 }
 
-CreateFonctionForm.propTypes = {
+CreateUpdateFonctionForm.propTypes = {
   onCloseModal: PropTypes.func,
   fonctionToEdit: PropTypes.object,
 };
 
-export default CreateFonctionForm;
+export default CreateUpdateFonctionForm;

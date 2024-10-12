@@ -116,7 +116,7 @@ class AdminService {
     }
   }
 
-  async createFonction(fonctionData) {
+  async createUpdateFonction(fonctionData) {
     try {
       return await ApiService.post(`${API_CONFIG.ENDPOINTS.HABILITATION.FONCTION}`, fonctionData);
     } catch (error) {

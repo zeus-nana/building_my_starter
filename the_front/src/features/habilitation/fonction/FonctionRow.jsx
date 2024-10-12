@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import { HiPencil } from 'react-icons/hi';
 import Modal from '../../../ui/Modal.jsx';
-import CreateFonctionForm from './CreateFonctionForm.jsx';
+import CreateUpdateFonctionForm from './CreateUpdateFonctionForm.jsx';
 import Menus from '../../../ui/Menus.jsx';
 import Table from '../../../ui/Table.jsx';
 
@@ -25,7 +25,7 @@ function FonctionRow({ fonction }) {
             </Menus.List>
 
             <Modal.Window name="edit" title="Editer une fonction">
-              <CreateFonctionForm fonctionToEdit={fonction} />
+              <CreateUpdateFonctionForm fonctionToEdit={fonction} />
             </Modal.Window>
           </Menus.Menu>
         </Modal>

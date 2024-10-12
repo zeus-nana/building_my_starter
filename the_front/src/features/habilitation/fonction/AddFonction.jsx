@@ -1,4 +1,4 @@
-import CreateFonctionForm from './CreateFonctionForm';
+import CreateUpdateFonctionForm from './CreateUpdateFonctionForm.jsx';
 import Modal from '../../../ui/Modal.jsx';
 import Button from '../../../ui/Button.jsx';
 
@@ -10,7 +10,7 @@ function AddFonction() {
           <Button>Ajouter une fonction</Button>
         </Modal.Open>
         <Modal.Window name="new-fonction" title="Ajouter une fonction">
-          <CreateFonctionForm />
+          <CreateUpdateFonctionForm />
         </Modal.Window>
       </Modal>
     </div>
