@@ -2,10 +2,10 @@ import { catchAsync } from '../utils/catchAsync';
 import { Request, Response, NextFunction } from 'express';
 import AppError from '../utils/appError';
 import db from '../database/connection';
-import { Menu, MenuCreate } from '../models/Menu';
-import { Permission, PermissionCreate } from '../models/Permission';
-import { Fonction, FonctionCreate } from '../models/Fonction';
-import { FonctionMenuPermission, FonctionMenuPermissionCreate } from '../models/Fonction_menu_permission';
+import { MenuCreate } from '../models/Menu';
+import { PermissionCreate } from '../models/Permission';
+import { FonctionCreate } from '../models/Fonction';
+import { FonctionMenuPermissionCreate } from '../models/Fonction_menu_permission';
 
 const createOrUpdateMenu = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const { id, nom, description } = req.body;
@@ -243,40 +243,88 @@ const createOrUpdatePermission = catchAsync(async (req: Request, res: Response, 
   }
 });
 
-const createFonctionMenuPermission = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const { fonction_id, menu_id, permission_id } = req.body;
+const createFonctionMenuPermissions = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { fonction_id, menu_id, permission_ids } = req.body;
 
   // Validation de base
-  if (!fonction_id || !menu_id || !permission_id) {
-    return next(new AppError('Les IDs de fonction, menu et permission sont requis', 400));
+  if (!fonction_id || !menu_id || !Array.isArray(permission_ids) || permission_ids.length === 0) {
+    return res.status(400).json({
+      status: 'échec',
+      message: 'Les IDs de fonction, menu et au moins une permission sont requis',
+    });
   }
 
   try {
-    const nouvelleFonctionMenuPermission: FonctionMenuPermissionCreate = {
-      fonction_id,
-      menu_id,
-      permission_id,
-      created_by: req.user!.id,
-    };
+    // Vérification de l'existence de la fonction
+    const fonction = await db('fonction').where({ id: fonction_id }).first();
+    if (!fonction) {
+      return res.status(400).json({
+        status: 'échec',
+        message: "La fonction spécifiée n'existe pas",
+      });
+    }
 
-    const [newFonctionMenuPermission] = await db('fonction_menu_permission').insert(nouvelleFonctionMenuPermission, [
-      'id',
-      'fonction_id',
-      'menu_id',
-      'permission_id',
-    ]);
+    // Vérification de l'existence du menu
+    const menu = await db('menu').where({ id: menu_id }).first();
+    if (!menu) {
+      return res.status(400).json({
+        status: 'échec',
+        message: "Le menu spécifié n'existe pas",
+      });
+    }
+
+    // Vérification de l'existence des permissions
+    const existingPermissions = await db('permission').whereIn('id', permission_ids);
+    if (existingPermissions.length !== permission_ids.length) {
+      return res.status(400).json({
+        status: 'échec',
+        message: "Une ou plusieurs permissions spécifiées n'existent pas",
+      });
+    }
+
+    const insertedPermissions: number[] = [];
+    const alreadyExistingPermissions: number[] = [];
+
+    for (const permission_id of permission_ids) {
+      // Vérification si l'association existe déjà
+      const existingAssociation = await db('fonction_menu_permission')
+        .where({ fonction_id, menu_id, permission_id })
+        .first();
+
+      if (existingAssociation) {
+        alreadyExistingPermissions.push(permission_id);
+      } else {
+        const nouvelleFonctionMenuPermission: FonctionMenuPermissionCreate = {
+          fonction_id,
+          menu_id,
+          permission_id,
+          created_by: req.user!.id,
+        };
+
+        const [newAssociation] = await db('fonction_menu_permission').insert(nouvelleFonctionMenuPermission, [
+          'id',
+          'fonction_id',
+          'menu_id',
+          'permission_id',
+        ]);
+
+        insertedPermissions.push(newAssociation.permission_id);
+      }
+    }
 
     res.status(201).json({
       status: 'succès',
       data: {
-        fonctionMenuPermission: newFonctionMenuPermission as FonctionMenuPermission,
+        insertedPermissions,
+        alreadyExistingPermissions,
       },
     });
   } catch (error) {
-    console.error('Erreur lors de la création de la liaison fonction-menu-permission:', error);
-    return next(new AppError('Erreur lors de la création de la liaison fonction-menu-permission', 500));
+    console.error('Erreur lors de la création des liaisons fonction-menu-permissions:', error);
+    return next(new AppError('Erreur lors de la création des liaisons fonction-menu-permissions', 500));
   }
 });
+
 const getAllMenus = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const menus = await db('menu')
     .join('users', 'menu.created_by', '=', 'users.id')
@@ -305,6 +353,7 @@ const getAllPermissions = catchAsync(async (req: Request, res: Response, next: N
     },
   });
 });
+
 const getAllFonctions = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const fonctions = await db('fonction')
     .join('users', 'fonction.created_by', '=', 'users.id')
@@ -322,8 +371,18 @@ const getAllFonctions = catchAsync(async (req: Request, res: Response, next: Nex
 
 const getAllFonctionMenuPermissions = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const fonctionMenuPermissions = await db('fonction_menu_permission')
-    .join('users', 'fonction_menu_permission.created_by', '=', 'users.id')
-    .select('fonction_menu_permission.*', 'users.login as created_by');
+    .join('fonction', 'fonction_menu_permission.fonction_id', '=', 'fonction.id')
+    .join('menu', 'fonction_menu_permission.menu_id', '=', 'menu.id')
+    .join('permission', 'fonction_menu_permission.permission_id', '=', 'permission.id')
+    .join('users as creator', 'fonction_menu_permission.created_by', '=', 'creator.id')
+    .leftJoin('users as updater', 'fonction_menu_permission.updated_by', '=', 'updater.id')
+    .select(
+      'fonction.nom as fonction',
+      'menu.nom as menu',
+      'permission.nom as permission',
+      'creator.username as created_by',
+      'updater.username as updated_by',
+    );
 
   res.status(200).json({
     status: 'succès',
@@ -335,7 +394,7 @@ const getAllFonctionMenuPermissions = catchAsync(async (req: Request, res: Respo
 
 export default {
   createOrUpdatePermission,
-  createFonctionMenuPermission,
+  createFonctionMenuPermissions,
   getAllMenus,
   getAllPermissions,
   getAllFonctions,
