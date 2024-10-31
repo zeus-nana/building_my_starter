@@ -63,7 +63,7 @@ function ConfigFonctionForm({ onCloseModal }) {
   }));
 
   const menuOptions = menus.map((menu) => ({
-    value: menu.id,
+    value: menu.id.toString(),
     label: menu.nom,
   }));
 
