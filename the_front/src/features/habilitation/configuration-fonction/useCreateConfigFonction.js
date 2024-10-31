@@ -9,7 +9,7 @@ export function useCreateConfigFonction(onCloseModal) {
   const { mutate: createConfigFonction, isLoading: isCreating } = useMutation({
     mutationFn: (data) => AdminService.createConfigFonction(data),
     onSuccess: (response) => {
-      toast.success('Configuration de la fonction avec succès');
+      // toast.success('Configuration de la fonction avec succès');
       queryClient.invalidateQueries({ queryKey: ['configFonction'] });
       onCloseModal?.();
 

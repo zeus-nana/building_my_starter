@@ -377,6 +377,7 @@ const getAllFonctionMenuPermissions = catchAsync(async (req: Request, res: Respo
     .join('users as creator', 'fonction_menu_permission.created_by', '=', 'creator.id')
     .leftJoin('users as updater', 'fonction_menu_permission.updated_by', '=', 'updater.id')
     .select(
+      'fonction_menu_permission.id',
       'fonction.nom as fonction',
       'menu.nom as menu',
       'permission.nom as permission',

@@ -78,7 +78,7 @@ function ConfigFonctionTable() {
             </div>
           ))}
         </Table.Header>
-        <Table.Body render={(permission) => <ConfigFonctionRow key={permission.id} permission={permission} />} />
+        <Table.Body render={(config) => <ConfigFonctionRow key={config.id} config={config} />} />
       </Table>
     </Menus>
   );

@@ -6,14 +6,14 @@ import ConfigFonctionForm from './ConfigFonctionForm.jsx';
 import Menus from '../../../ui/Menus';
 import Table from '../../../ui/Table';
 
-function ConfigFonctionRow({ permission }) {
-  const { id, nom, description, created_by, menu } = permission;
+function ConfigFonctionRow({ config }) {
+  const { id, fonction, menu, permission, created_by } = config;
 
   return (
     <Table.Row>
-      <span name="fonction">{nom}</span>
-      <span name="menu">{description}</span>
-      <span name="permission">{menu}</span>
+      <span name="fonction">{fonction}</span>
+      <span name="menu">{menu}</span>
+      <span name="permission">{permission}</span>
       <span name="create_by">{created_by}</span>
       <span name="actions" alignment="center">
         <Modal>
@@ -25,8 +25,8 @@ function ConfigFonctionRow({ permission }) {
               </Modal.Open>
             </Menus.List>
 
-            <Modal.Window name="edit" title="Editer une permission">
-              <ConfigFonctionForm permissionToEdit={permission} />
+            <Modal.Window name="edit" title="Editer une configuration">
+              <ConfigFonctionForm key={config.id} configToEdit={config} />
             </Modal.Window>
           </Menus.Menu>
         </Modal>
@@ -36,12 +36,12 @@ function ConfigFonctionRow({ permission }) {
 }
 
 ConfigFonctionRow.propTypes = {
-  permission: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    nom: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    created_by: PropTypes.string.isRequired,
-    menu: PropTypes.string.isRequired,
+  config: PropTypes.shape({
+    id: PropTypes.number,
+    fonction: PropTypes.string,
+    permission: PropTypes.string,
+    created_by: PropTypes.string,
+    menu: PropTypes.string,
   }).isRequired,
 };
 

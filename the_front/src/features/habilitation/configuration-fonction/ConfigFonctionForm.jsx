@@ -10,13 +10,12 @@ import Form from '../../../ui/Form.jsx';
 import FormRowNew from '../../../ui/FormRowNew.jsx';
 import SpinnerMini from '../../../ui/SpinnerMini.jsx';
 import Select from '../../../ui/Select.jsx';
+import SelectMultiple from '../../../ui/SelectMultiple.jsx';
 import FormRow from '../../../ui/FormRow.jsx';
-// import SelectManyMenu from '../../../ui/SelectManyMenu';
 import PropTypes from 'prop-types';
 
 function ConfigFonctionForm({ onCloseModal }) {
-  const { control, handleSubmit, watch, formState } = useForm();
-  const [selectedMenuId, setSelectedMenuId] = useState('');
+  const { control, handleSubmit, watch, formState, setValue } = useForm();
   const { isCreating, createConfigFonction } = useCreateConfigFonction(onCloseModal);
 
   const { isLoading: isLoadingFonctions, data: fonctionsData } = useGetFonctions();
@@ -35,17 +34,18 @@ function ConfigFonctionForm({ onCloseModal }) {
 
   useEffect(() => {
     if (selectedMenu) {
-      setSelectedMenuId(selectedMenu);
       const menuPermissions = allPermissions.filter((permission) => permission.menu_id === parseInt(selectedMenu));
       setFilteredPermissions(menuPermissions);
+      // Réinitialiser les permissions sélectionnées quand le menu change
+      setValue('permissions', []);
     }
-  }, [selectedMenu, allPermissions]);
+  }, [selectedMenu, allPermissions, setValue]);
 
   const onSubmit = (data) => {
     const configData = {
       fonction_id: parseInt(data.fonction_id),
       menu_id: parseInt(data.menu_id),
-      permission_ids: data.permissions.map((id) => parseInt(id)),
+      permission_ids: data.permissions.map((option) => parseInt(option.value)),
     };
 
     createConfigFonction(configData);
@@ -92,26 +92,28 @@ function ConfigFonctionForm({ onCloseModal }) {
         />
       </FormRowNew>
 
-      {/*{selectedMenuId && (*/}
-      {/*  <FormRowNew label="Permissions" error={errors?.permissions?.message}>*/}
-      {/*    <Controller*/}
-      {/*      name="permissions"*/}
-      {/*      control={control}*/}
-      {/*      rules={{ required: 'Veuillez sélectionner au moins une permission.' }}*/}
-      {/*      render={({ field }) => (*/}
-      {/*        // <SelectManyMenu*/}
-      {/*        //   id="permissions"*/}
-      {/*        //   options={permissionOptions}*/}
-      {/*        //   onChange={field.onChange}*/}
-      {/*        //   value={field.value}*/}
-      {/*        //   disabled={isCreating}*/}
-      {/*        // />*/}
-      {/*      )}*/}
-      {/*    />*/}
-      {/*  </FormRowNew>*/}
-      {/*)}*/}
+      <FormRowNew label="Permissions" error={errors?.permissions?.message}>
+        <Controller
+          name="permissions"
+          control={control}
+          rules={{ required: 'Veuillez sélectionner au moins une permission.' }}
+          render={({ field: { onChange, value, ...field } }) => (
+            <SelectMultiple
+              {...field}
+              id="permissions"
+              isMulti={true}
+              options={permissionOptions}
+              value={value}
+              onChange={onChange}
+              disabled={isCreating}
+              placeholder="Sélectionnez les permissions"
+              isSearchable
+              closeMenuOnSelect={false}
+            />
+          )}
+        />
+      </FormRowNew>
 
-      {/*<MultiSelectDropdown />*/}
       <FormRow>
         <Button $variation="secondary" type="reset" onClick={() => onCloseModal?.()} disabled={isCreating}>
           Annuler
@@ -121,6 +123,7 @@ function ConfigFonctionForm({ onCloseModal }) {
     </Form>
   );
 }
+
 ConfigFonctionForm.propTypes = {
   onCloseModal: PropTypes.func,
 };
