@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import Input from '../../ui/Input';
 import Form from '../../ui/Form';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import FormRow from '../../ui/FormRow';
 import Button from '../../ui/Button';
-import Select from '../../ui/Select';
+import SelectMulti from '../../ui/SelectMulti.jsx';
 import { useCreateUser } from './useCreateUser';
 import SpinnerMini from '../../ui/SpinnerMini';
 import FormRowNew from '../../ui/FormRowNew.jsx';
@@ -44,13 +44,8 @@ function CreateUserForm({ onCloseModal, userToEdit = {} }) {
   const { id: userId, ...editValues } = userToEdit;
   const isEditing = !!userId;
 
-  const { register, handleSubmit, reset, formState } = useForm({
-    defaultValues: isEditing
-      ? editValues
-      : {
-          localisation: null,
-          profile: null,
-        },
+  const { handleSubmit, reset, formState, control, register } = useForm({
+    defaultValues: isEditing ? editValues : {},
   });
 
   const { errors } = formState;
@@ -127,13 +122,21 @@ function CreateUserForm({ onCloseModal, userToEdit = {} }) {
       </FormRowNew>
 
       <FormRowNew label="Profil" error={errors?.profile?.message}>
-        <Select
-          options={profileOptions}
-          id="profile"
-          disabled={isCreating}
-          {...register('profile', {
-            required: 'Ce champ est obligatoire.',
-          })}
+        <Controller
+          name="profile"
+          control={control}
+          rules={{ required: 'Ce champ est obligatoire.' }}
+          render={({ field: { onChange, value, ...field } }) => (
+            <SelectMulti
+              {...field}
+              id="profile"
+              options={profileOptions}
+              value={profileOptions.find((option) => option.value === value) || null}
+              onChange={(option) => onChange(option?.value)}
+              disabled={isCreating}
+              placeholder="Sélectionnez un profil"
+            />
+          )}
         />
       </FormRowNew>
 
@@ -142,13 +145,21 @@ function CreateUserForm({ onCloseModal, userToEdit = {} }) {
       </FormRowNew>
 
       <FormRowNew label="Localisation" error={errors?.localisation?.message}>
-        <Select
-          options={localisationOptions}
-          id="localisation"
-          disabled={isCreating}
-          {...register('localisation', {
-            required: 'Ce champ est obligatoire.',
-          })}
+        <Controller
+          name="localisation"
+          control={control}
+          rules={{ required: 'Ce champ est obligatoire.' }}
+          render={({ field: { onChange, value, ...field } }) => (
+            <SelectMulti
+              {...field}
+              id="localisation"
+              options={localisationOptions}
+              value={localisationOptions.find((option) => option.value === value) || null}
+              onChange={(option) => onChange(option?.value)}
+              disabled={isCreating}
+              placeholder="Sélectionnez une localisation"
+            />
+          )}
         />
       </FormRowNew>
 

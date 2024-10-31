@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useCreateUpdatePermission } from './useCreateUpdatePermission';
 import FormRow from '../../../ui/FormRow';
 import Input from '../../../ui/Input';
@@ -8,14 +8,14 @@ import Button from '../../../ui/Button';
 import SpinnerMini from '../../../ui/SpinnerMini';
 import Form from '../../../ui/Form';
 import FormRowNew from '../../../ui/FormRowNew';
-import Select from '../../../ui/Select';
 import { useGetMenus } from '../menu/useGetMenus.js';
+import SelectMulti from '../../../ui/SelectMulti.jsx';
 
 function CreateUpdatePermissionForm({ onCloseModal, permissionToEdit = {} }) {
   const { id: permissionId, ...editValues } = permissionToEdit;
   const isEditing = Boolean(permissionId);
 
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState, control } = useForm({
     defaultValues: isEditing ? editValues : {},
   });
 
@@ -64,13 +64,21 @@ function CreateUpdatePermissionForm({ onCloseModal, permissionToEdit = {} }) {
       </FormRowNew>
 
       <FormRowNew label="Menu" error={errors?.menu_id?.message}>
-        <Select
-          options={menuOptions}
-          id="menu_id"
-          disabled={isCreatingOrUpdating}
-          {...register('menu_id', {
-            required: 'Ce champ est obligatoire.',
-          })}
+        <Controller
+          name="menu_id"
+          control={control}
+          rules={{ required: 'Ce champ est obligatoire.' }}
+          render={({ field: { onChange, value, ...field } }) => (
+            <SelectMulti
+              {...field}
+              id="menu_id"
+              options={menuOptions}
+              value={menuOptions.find((option) => option.value === value) || null}
+              onChange={(option) => onChange(option?.value)}
+              disabled={isCreatingOrUpdating}
+              placeholder="Sélectionnez un menu"
+            />
+          )}
         />
       </FormRowNew>
 

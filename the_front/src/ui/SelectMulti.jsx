@@ -31,9 +31,12 @@ const customStyles = {
   }),
   menuPortal: (base) => ({
     ...base,
-    zIndex: 9999, // Assurez-vous que le z-index est élevé
+    zIndex: 9999,
   }),
-
+  placeholder: (base) => ({
+    ...base,
+    color: 'var(--color-grey-700)', // Même couleur que le texte normal
+  }),
   option: (base, state) => ({
     ...base,
     backgroundColor: state.isSelected
@@ -70,12 +73,12 @@ const customStyles = {
   }),
 };
 
-const SelectComponent = React.forwardRef(
+const SelectMulti = React.forwardRef(
   (
     {
       id,
       options,
-      placeholder = 'Sélectionnez une option',
+      placeholder = 'Sélectionnez une',
       isMulti = false, // Optionnel, default false
       ...props
     },
@@ -102,7 +105,7 @@ const SelectComponent = React.forwardRef(
   }
 );
 
-SelectComponent.propTypes = {
+SelectMulti.propTypes = {
   id: PropTypes.string,
   options: PropTypes.arrayOf(
     PropTypes.shape({
@@ -114,6 +117,6 @@ SelectComponent.propTypes = {
   isMulti: PropTypes.bool,
 };
 
-SelectComponent.displayName = 'SelectComponent';
+SelectMulti.displayName = 'SelectMulti';
 
-export default SelectComponent;
+export default SelectMulti;
