@@ -49,11 +49,11 @@ function PermissionTable() {
   if (isLoading) return <Spinner />;
 
   const columns = [
-    { name: 'nom', width: '200px' },
+    { name: 'nom', width: '300px' },
     { name: 'description', width: '300px' },
     { name: 'menu', width: '200px' },
-    { name: 'create_by', width: '200px' },
-    { name: 'actions', width: '100px', filterable: false },
+    { name: 'create_by', width: '150px' },
+    { name: 'actions', width: '50px', filterable: false },
   ];
 
   const footer = (
@@ -72,7 +72,9 @@ function PermissionTable() {
         <Table.Header>
           {columns.map((column) => (
             <div key={column.name} name={column.name}>
-              {column.name === 'actions' ? '' : column.name.charAt(0).toUpperCase() + column.name.slice(1).replace('_', ' ')}
+              {column.name === 'actions'
+                ? ''
+                : column.name.charAt(0).toUpperCase() + column.name.slice(1).replace('_', ' ')}
             </div>
           ))}
         </Table.Header>
