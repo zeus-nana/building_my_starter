@@ -8,12 +8,16 @@ import authRoutes from './routes/authRoutes';
 import adminRoutes from './routes/adminRoutes';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import './controllers/tasks';
 
 // @ts-ignore
 import xss from 'xss-clean';
 import hpp from 'hpp';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes';
+import fileProcessingRoutes from './routes/fileProcessingRoutes';
+import reportingRoutes from './routes/reportingRoutes';
+import habilitationRoutes from './routes/habilitationRoutes';
 
 // Loading of the environment variables in config.env file.
 dotenv.config({ path: './config.env' });
@@ -49,7 +53,7 @@ app.use(express.json());
 // Specifies the API to use CORS to prevent XSS attacks.
 app.use(
   cors({
-    origin: 'http://localhost:5174', // L'URL de votre frontend
+    origin: process.env.FRONTEND_URL, // L'URL de votre frontend
     credentials: true, // Permet l'envoi de cookies
   }),
 );
@@ -76,6 +80,9 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/fileProcessing', fileProcessingRoutes);
+app.use('/api/v1/reporting', reportingRoutes);
+app.use('/api/v1/habilitation', habilitationRoutes);
 
 // UNHANDLED ROUTE
 app.all('*', (req: Request, res: Response, next: NextFunction) => {

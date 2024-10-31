@@ -1,12 +1,6 @@
 import { catchAsync } from '../utils/catchAsync';
 import { NextFunction, Request, Response } from 'express';
-import {
-  User,
-  UserCreationAttributes,
-  UserLocalisation,
-  UserProfile,
-  UserValidationResult,
-} from '../models/User';
+import { User, UserCreationAttributes, UserLocalisation, UserProfile, UserValidationResult } from '../models/User';
 import db from '../database/connection';
 import AppError from '../utils/appError';
 import crypto from 'crypto';
@@ -15,36 +9,34 @@ import { signToken } from '../utils/tokens';
 import validator from 'validator';
 import sendEmail from '../utils/email';
 
-const getUserById = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const user: User | undefined = await db('users')
-      .where({ id: Number(req.params.id) })
-      .first();
+const getUserById = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const user: User | undefined = await db('users')
+    .where({ id: Number(req.params.id) })
+    .first();
 
-    if (!user) {
-      return next(new AppError('User not found', 404));
-    }
+  if (!user) {
+    return next(new AppError('User not found', 404));
+  }
 
-    const selectedUser = {
-      id: user.id,
-      login: user.login,
-      username: user.username,
-      email: user.email,
-      phone: user.phone,
-      department: user.department,
-      profile: user.profile,
-      localisation: user.localisation,
-      active: user.active,
-    };
+  const selectedUser = {
+    id: user.id,
+    login: user.login,
+    username: user.username,
+    email: user.email,
+    phone: user.phone,
+    department: user.department,
+    profile: user.profile,
+    localisation: user.localisation,
+    active: user.active,
+  };
 
-    return res.status(200).json({
-      status: 'success',
-      data: {
-        user: selectedUser,
-      },
-    });
-  },
-);
+  return res.status(200).json({
+    status: 'success',
+    data: {
+      user: selectedUser,
+    },
+  });
+});
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   const users: User[] = await db('users').select('*').orderBy('id', 'asc');
@@ -161,7 +153,7 @@ const createUpdateUser = catchAsync(async (req: Request, res: Response) => {
   const generatedPassword = crypto.randomBytes(10).toString('hex');
   userData.email = userData.email.toLowerCase();
   userData.password = await bcrypt.hash(generatedPassword, 12);
-  userData.created_by = req.user?.id;
+  userData.created_by = req.user!.id;
 
   const createdUser = await db('users').insert(userData, '*');
   signToken(createdUser[0].id, createdUser[0].email);
@@ -196,34 +188,23 @@ Nous vous recommandons de changer ce mot de passe dès votre première connexion
   });
 });
 
-const validateUser = async (
-  body: UserCreationAttributes,
-): Promise<UserValidationResult> => {
+const validateUser = async (body: UserCreationAttributes): Promise<UserValidationResult> => {
   if (!body.login || !validator.isLength(body.login, { min: 3, max: 255 })) {
     return {
       isValid: false,
       message: 'Le login est requis et doit contenir entre 3 et 255 caractères',
     };
   }
-  if (
-    !body.username ||
-    !validator.isLength(body.username, { min: 3, max: 255 })
-  ) {
+  if (!body.username || !validator.isLength(body.username, { min: 3, max: 255 })) {
     return {
       isValid: false,
-      message:
-        "Le nom d'utilisateur est requis et doit contenir entre 3 et 255 caractères",
+      message: "Le nom d'utilisateur est requis et doit contenir entre 3 et 255 caractères",
     };
   }
-  if (
-    !body.email ||
-    !validator.isEmail(body.email) ||
-    !validator.isLength(body.email, { max: 255 })
-  ) {
+  if (!body.email || !validator.isEmail(body.email) || !validator.isLength(body.email, { max: 255 })) {
     return {
       isValid: false,
-      message:
-        'Un email valide est requis et ne doit pas dépasser 255 caractères',
+      message: 'Un email valide est requis et ne doit pas dépasser 255 caractères',
     };
   }
   if (body.department && !validator.isLength(body.department, { max: 255 })) {
@@ -233,24 +214,15 @@ const validateUser = async (
     };
   }
   if (body.profile) {
-    const validProfiles: UserProfile[] = [
-      'gestionnaire',
-      'reporting',
-      'it_support',
-    ];
+    const validProfiles: UserProfile[] = ['gestionnaire', 'reporting', 'it_support'];
     if (!validProfiles.includes(body.profile.toLowerCase() as UserProfile)) {
       return {
         isValid: false,
-        message:
-          'Le profil doit être "gestionnaire", "reporting" ou "it_support"',
+        message: 'Le profil doit être "gestionnaire", "reporting" ou "it_support"',
       };
     }
   }
-  if (
-    body.phone &&
-    (!validator.isMobilePhone(body.phone) ||
-      !validator.isLength(body.phone, { max: 255 }))
-  ) {
+  if (body.phone && (!validator.isMobilePhone(body.phone) || !validator.isLength(body.phone, { max: 255 }))) {
     return {
       isValid: false,
       message: 'Le numéro de téléphone est invalide ou dépasse 255 caractères',
@@ -270,11 +242,7 @@ const validateUser = async (
       'sud',
       'sud_ouest',
     ];
-    if (
-      !validLocalisations.includes(
-        body.localisation.toLowerCase() as UserLocalisation,
-      )
-    ) {
+    if (!validLocalisations.includes(body.localisation.toLowerCase() as UserLocalisation)) {
       return {
         isValid: false,
         message: "La localisation spécifiée n'est pas valide",
@@ -287,9 +255,7 @@ const validateUser = async (
 const activateUser = catchAsync(async (req: Request, res: Response) => {
   const userId = Number(req.params.id);
 
-  await db('users')
-    .where({ id: userId })
-    .update({ active: true, updated_by: req.user!.id });
+  await db('users').where({ id: userId }).update({ active: true, updated_by: req.user!.id });
 
   res.status(200).json({ status: 'succès', message: 'Compte activé' });
 });
@@ -297,61 +263,55 @@ const activateUser = catchAsync(async (req: Request, res: Response) => {
 const deactivateUser = catchAsync(async (req: Request, res: Response) => {
   const userId = Number(req.params.id);
 
-  await db('users')
-    .where({ id: userId })
-    .update({ active: false, updated_by: req.user!.id });
+  await db('users').where({ id: userId }).update({ active: false, updated_by: req.user!.id });
 
   res.status(200).json({ status: 'succès', message: 'Compte désactivé' });
 });
 
-const resetUserPassword = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const userId = Number(req.params.id);
-    // TODO: Add authentication to ensure only support staff can access this endpoint
+const resetUserPassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const userId = Number(req.params.id);
+  // TODO: Add authentication to ensure only support staff can access this endpoint
 
-    // 1) Get user from email
-    const user = await db('users').where({ id: userId }).first();
-    if (!user) {
-      return next(new AppError('User not found with this email.', 404));
-    } else if (user.active === false) {
-      return next(
-        new AppError("Le compte de l'utilisateur est désactivé.", 400),
-      );
-    }
+  // 1) Get user from email
+  const user = await db('users').where({ id: userId }).first();
+  if (!user) {
+    return next(new AppError('Aucun utilisateur correspondant à cet ID.', 404));
+  } else if (user.active === false) {
+    return next(new AppError("Le compte de l'utilisateur est désactivé.", 400));
+  }
 
-    // 2) Generate new random password
-    const newPassword = crypto.randomBytes(10).toString('hex');
-    console.log(newPassword);
+  // 2) Generate new random password
+  const newPassword = crypto.randomBytes(10).toString('hex');
+  console.log(newPassword);
 
-    // 3) Hash and update the password
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
-    await db('users').where({ id: user.id }).update({
-      password: hashedPassword,
-      must_reset_password: true,
-      updated_by: req.user!.id,
-    });
+  // 3) Hash and update the password
+  const hashedPassword = await bcrypt.hash(newPassword, 12);
+  await db('users').where({ id: user.id }).update({
+    password: hashedPassword,
+    must_reset_password: true,
+    updated_by: req.user!.id,
+  });
 
-    // 4) Send new password to user's email
-    let emailSent = true;
-    try {
-      await sendEmail({
-        email: user.email,
-        subject: 'Votre nouveau mot de passe',
-        message: `Bonjour !
+  // 4) Send new password to user's email
+  let emailSent = true;
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Votre nouveau mot de passe',
+      message: `Bonjour !
 
 Votre nouveau mot de passe tempsoraire est "${newPassword}"`,
-      });
-    } catch (err) {
-      console.error(err);
-      emailSent = false;
-    }
-
-    res.status(200).json({
-      status: 'success',
-      message: `Le mot de passe a été réinitialisé${emailSent ? "et envoyé à l'email de l'utilisateur." : "mais n'a pas pu être envoyé à l'email de l'utilisateur."}`,
     });
-  },
-);
+  } catch (err) {
+    console.error(err);
+    emailSent = false;
+  }
+
+  res.status(200).json({
+    status: 'success',
+    message: `Le mot de passe a été réinitialisé${emailSent ? "et envoyé à l'email de l'utilisateur." : "mais n'a pas pu être envoyé à l'email de l'utilisateur."}`,
+  });
+});
 
 export default {
   getUserById,

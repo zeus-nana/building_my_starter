@@ -66,7 +66,7 @@ function LoginForm({ onResetPassword }) {
 
       <StyledHeader>
         <TitleContainer>
-          <LoginTitle>Bienvenu</LoginTitle>
+          <LoginTitle>Welcome</LoginTitle>
         </TitleContainer>
       </StyledHeader>
 

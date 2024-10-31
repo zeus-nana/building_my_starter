@@ -10,9 +10,6 @@ const StyledSettings = styled.div`
 function Settings() {
   return (
     <StyledSettings>
-      {/*<Row type="horizontal">*/}
-      {/*  <Heading type="h1">Settings</Heading>*/}
-      {/*</Row>*/}
       <Outlet />
     </StyledSettings>
   );

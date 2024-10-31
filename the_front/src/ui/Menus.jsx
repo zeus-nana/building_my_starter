@@ -1,9 +1,9 @@
-import { createContext, useContext, useState } from "react";
-import PropTypes from "prop-types";
-import { createPortal } from "react-dom";
-import { HiEllipsisVertical } from "react-icons/hi2";
-import styled from "styled-components";
-import { useOutsideClick } from "../hooks/useOutsideClick";
+import { createContext, useContext, useState } from 'react';
+import PropTypes from 'prop-types';
+import { createPortal } from 'react-dom';
+import { HiEllipsisVertical } from 'react-icons/hi2';
+import styled from 'styled-components';
+import { useOutsideClick } from '../hooks/useOutsideClick';
 
 const Menu = styled.div`
   display: flex;
@@ -20,7 +20,7 @@ const StyledToggle = styled.button`
   transition: all 0.2s;
 
   &:hover {
-    background-color: var(--color-grey-100);
+    background-color: var(--color-grey-200);
   }
 
   & svg {
@@ -28,17 +28,30 @@ const StyledToggle = styled.button`
     height: 2.4rem;
     color: var(--color-grey-700);
   }
+
+  @media (max-width: 1366px) {
+    padding: 0.36rem;
+    transform: translateX(0.72rem);
+
+    & svg {
+      width: 2.16rem;
+      height: 2.16rem;
+    }
+  }
 `;
 
 const StyledList = styled.ul`
   position: fixed;
-
   background-color: var(--color-grey-0);
   box-shadow: var(--shadow-md);
   border-radius: var(--border-radius-md);
 
   right: ${(props) => props.$position.x}px;
   top: ${(props) => props.$position.y}px;
+
+  @media (max-width: 1366px) {
+    border-radius: calc(var(--border-radius-md) * 0.9);
+  }
 `;
 
 const StyledButton = styled.button`
@@ -55,7 +68,7 @@ const StyledButton = styled.button`
   gap: 1.6rem;
 
   &:hover {
-    background-color: var(--color-grey-100);
+    background-color: var(--color-grey-200);
   }
 
   & svg {
@@ -64,24 +77,29 @@ const StyledButton = styled.button`
     color: var(--color-grey-400);
     transition: all 0.3s;
   }
+
+  @media (max-width: 1366px) {
+    padding: 1.08rem 2.16rem;
+    font-size: 1.26rem;
+    gap: 1.44rem;
+
+    & svg {
+      width: 1.44rem;
+      height: 1.44rem;
+    }
+  }
 `;
 
 const MenusContext = createContext();
 
 function Menus({ children }) {
-  const [openId, setOpenId] = useState("");
+  const [openId, setOpenId] = useState('');
   const [position, setPosition] = useState(null);
 
-  const close = () => setOpenId("");
+  const close = () => setOpenId('');
   const open = setOpenId;
 
-  return (
-    <MenusContext.Provider
-      value={{ openId, close, open, position, setPosition }}
-    >
-      {children}
-    </MenusContext.Provider>
-  );
+  return <MenusContext.Provider value={{ openId, close, open, position, setPosition }}>{children}</MenusContext.Provider>;
 }
 
 Menus.propTypes = {
@@ -94,13 +112,14 @@ function Toggle({ id, children, icon = <HiEllipsisVertical /> }) {
   function handleClick(e) {
     e.stopPropagation();
 
-    const rect = e.target.closest("button").getBoundingClientRect();
+    const rect = e.target.closest('button').getBoundingClientRect();
     setPosition({
+      // eslint-disable-next-line no-undef
       x: window.innerWidth - rect.width - rect.x,
       y: rect.y + rect.height + 8,
     });
 
-    openId === "" || openId !== id ? open(id) : close();
+    openId === '' || openId !== id ? open(id) : close();
   }
 
   return <StyledToggle onClick={handleClick}>{children || icon}</StyledToggle>;
@@ -122,7 +141,8 @@ function List({ id, children }) {
     <StyledList $position={position} ref={ref}>
       {children}
     </StyledList>,
-    document.body,
+    // eslint-disable-next-line no-undef
+    document.body
   );
 }
 

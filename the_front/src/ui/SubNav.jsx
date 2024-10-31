@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-import { HiOutlineChevronUpDown } from "react-icons/hi2";
+import { HiMiniChevronDown, HiMiniChevronUp } from "react-icons/hi2";
 
 const SubNavContainer = styled.div`
   width: 100%;
@@ -99,7 +99,7 @@ function SubNav({ mainIcon, mainText, items }) {
           {mainIcon}
           <span>{mainText}</span>
         </div>
-        <HiOutlineChevronUpDown />
+        {isOpen ? <HiMiniChevronUp /> : <HiMiniChevronDown />}
       </SubNavButton>
       {isOpen && (
         <SubNavList>
@@ -118,12 +118,12 @@ function SubNav({ mainIcon, mainText, items }) {
 }
 
 SubNav.propTypes = {
-  mainIcon: PropTypes.node.isRequired,
+  mainIcon: PropTypes.node,
   mainText: PropTypes.string.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       to: PropTypes.string.isRequired,
-      icon: PropTypes.node.isRequired,
+      icon: PropTypes.node,
       text: PropTypes.string.isRequired,
     }),
   ).isRequired,

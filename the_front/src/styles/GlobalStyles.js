@@ -2,15 +2,26 @@ import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
     :root {
+        /* Brand (Sky) */
+        --color-brand-50: #f0f9ff;
+        --color-brand-100: #e0f2fe;
+        --color-brand-200: #bae6fd;
+        --color-brand-500: #0ea5e9;
+        --color-brand-600: #0284c7;
+        --color-brand-700: #0369a1;
+        --color-brand-800: #075985;
+        --color-brand-900: #0c4a6e;
+        
         /* Indigo */
-        --color-brand-50: #eef2ff;
-        --color-brand-100: #e0e7ff;
-        --color-brand-200: #c7d2fe;
-        --color-brand-500: #6366f1;
-        --color-brand-600: #4f46e5;
-        --color-brand-700: #4338ca;
-        --color-brand-800: #3730a3;
-        --color-brand-900: #312e81;
+        --color-indigo-50: #eef2ff;
+        --color-indigo-100: #e0e7ff;
+        --color-indigo-200: #c7d2fe;
+        --color-indigo-500: #6366f1;
+        --color-indigo-600: #4f46e5;
+        --color-indigo-700: #4338ca;
+        --color-indigo-800: #3730a3;
+        --color-indigo-900: #312e81;
+
 
         /* Grey */
         --color-grey-0: #fff;
@@ -26,15 +37,16 @@ const GlobalStyles = createGlobalStyle`
         --color-grey-900: #111827;
 
         --color-blue-100: #e0f2fe;
+        --color-blue-600: #0485b7;
         --color-blue-700: #0369a1;
+        --color-blue-800: #014568;
         --color-green-100: #dcfce7;
         --color-green-700: #15803d;
+        --color-green-800: #166534;
         --color-yellow-100: #fef9c3;
         --color-yellow-700: #a16207;
         --color-silver-100: #e5e7eb;
         --color-silver-700: #374151;
-        --color-indigo-100: #e0e7ff;
-        --color-indigo-700: #4338ca;
 
         --color-red-100: #fee2e2;
         --color-red-700: #b91c1c;
