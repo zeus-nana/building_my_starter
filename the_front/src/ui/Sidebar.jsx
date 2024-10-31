@@ -36,6 +36,7 @@ function Sidebar() {
         { text: 'Fonctions', to: '/habilitation/fonctions' },
         { text: 'Menus', to: '/habilitation/menus' },
         { text: 'Permissions', to: '/habilitation/permissions' },
+        { text: 'Configuration des fonctions', to: '/habilitation/configuration-fonction' },
       ],
     },
   ];

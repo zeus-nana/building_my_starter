@@ -19,6 +19,7 @@ import Habilitation from './pages/habilitation/Habilitation.jsx';
 import Fonction from './features/habilitation/fonction/Fonction.jsx';
 import Menu from './features/habilitation/menu/Menu.jsx';
 import Permission from './features/habilitation/permission/Permission.jsx';
+import ConfigFonction from './features/habilitation/configuration-fonction/ConfigFonction.jsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -58,6 +59,7 @@ function App() {
               <Route path="fonctions" element={<Fonction />} />
               <Route path="menus" element={<Menu />} />
               <Route path="permissions" element={<Permission />} />
+              <Route path="configuration-fonction" element={<ConfigFonction />} />
             </Route>
           </Route>
 
