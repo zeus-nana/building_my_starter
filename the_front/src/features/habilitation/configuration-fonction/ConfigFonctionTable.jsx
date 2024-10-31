@@ -53,7 +53,8 @@ function ConfigFonctionTable() {
     { name: 'menu', width: '200px' },
     { name: 'permission', width: '200px' },
     { name: 'create_by', width: '200px' },
-    { name: 'actions', width: '100px', filterable: false },
+    { name: 'created_at', width: '200px' },
+    // { name: 'actions', width: '100px', filterable: false },
   ];
 
   const footer = (

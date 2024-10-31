@@ -383,6 +383,7 @@ const getAllFonctionMenuPermissions = catchAsync(async (req: Request, res: Respo
       'permission.nom as permission',
       'creator.username as created_by',
       'updater.username as updated_by',
+      'fonction_menu_permission.created_at',
     );
 
   res.status(200).json({

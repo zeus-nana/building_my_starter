@@ -45,7 +45,7 @@ function ConfigFonctionForm({ onCloseModal }) {
     const configData = {
       fonction_id: parseInt(data.fonction_id),
       menu_id: parseInt(data.menu_id),
-      permission_ids: data.permissions.map((option) => parseInt(option.value)),
+      config_ids: data.configs.map((option) => parseInt(option.value)),
     };
 
     createConfigFonction(configData);
@@ -58,7 +58,7 @@ function ConfigFonctionForm({ onCloseModal }) {
   if (isLoadingFonctions || isLoadingMenus || isLoadingPermissions) return <Spinner />;
 
   const fonctionOptions = fonctions.map((fonction) => ({
-    value: fonction.id,
+    value: fonction.id.toString(),
     label: fonction.nom,
   }));
 
