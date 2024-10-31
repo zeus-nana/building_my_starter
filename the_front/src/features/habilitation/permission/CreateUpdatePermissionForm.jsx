@@ -26,7 +26,7 @@ function CreateUpdatePermissionForm({ onCloseModal, permissionToEdit = {} }) {
 
   const menuOptions =
     menusData?.data?.data?.menus.map((menu) => ({
-      value: menu.id,
+      value: menu.id.toString(),
       label: menu.nom,
     })) || [];
 
@@ -78,7 +78,9 @@ function CreateUpdatePermissionForm({ onCloseModal, permissionToEdit = {} }) {
         <Button $variation="secondary" type="reset" onClick={() => onCloseModal?.()} disabled={isCreatingOrUpdating}>
           Annuler
         </Button>
-        <Button disabled={isCreatingOrUpdating}>{isCreatingOrUpdating ? <SpinnerMini /> : isEditing ? 'Mettre à jour' : 'Créer'}</Button>
+        <Button disabled={isCreatingOrUpdating}>
+          {isCreatingOrUpdating ? <SpinnerMini /> : isEditing ? 'Mettre à jour' : 'Créer'}
+        </Button>
       </FormRow>
     </Form>
   );
