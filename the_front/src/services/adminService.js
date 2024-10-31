@@ -192,6 +192,42 @@ class AdminService {
       }
     }
   }
+
+  async getAllUserFonctions() {
+    try {
+      return await ApiService.get(`${API_CONFIG.ENDPOINTS.HABILITATION.USER_FONCTION}`);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error('Impossible de récupérer la liste des fonctions utilisateur. Veuillez réessayer plus tard.');
+      }
+    }
+  }
+
+  async createUserFonction(userFonctionData) {
+    try {
+      return await ApiService.post(`${API_CONFIG.ENDPOINTS.HABILITATION.USER_FONCTION}`, userFonctionData);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error("Impossible d'attribuer la fonction à l'utilisateur. Veuillez réessayer plus tard.");
+      }
+    }
+  }
+
+  async disableUserFonction(id) {
+    try {
+      return await ApiService.put(`${API_CONFIG.ENDPOINTS.HABILITATION.USER_FONCTION}/${id}`);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw error;
+      } else {
+        throw new Error("Impossible de désactiver la fonction de l'utilisateur. Veuillez réessayer plus tard.");
+      }
+    }
+  }
 }
 
 export default AdminService.getInstance();
