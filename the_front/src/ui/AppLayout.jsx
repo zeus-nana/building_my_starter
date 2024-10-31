@@ -5,12 +5,12 @@ import Sidebar from './Sidebar.jsx';
 
 const StyledAppLayout = styled.div`
   display: grid;
-  grid-template-columns: 26rem 1fr;
+  grid-template-columns: 32rem 1fr;
   grid-template-rows: auto 1fr;
   height: 100vh;
 
   @media (max-width: 1200px) {
-    grid-template-columns: 20rem 1fr;
+    grid-template-columns: 24rem 1fr;
   }
 
   @media (max-width: 900px) {

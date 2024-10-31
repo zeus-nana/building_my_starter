@@ -1,49 +1,28 @@
-import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import AdminService from "../../services/adminService";
-import Spinner from "../../ui/Spinner";
-import Table from "../../ui/Table";
-import Menus from "../../ui/Menus";
-import { useSearchParams } from "react-router-dom";
-import { PAGE_SIZE } from "../../constants.js";
-import UsersRow from "./UsersRow";
-import Pagination from "../../ui/Pagination.jsx";
+import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import Spinner from '../../ui/Spinner';
+import Table from '../../ui/Table';
+import Menus from '../../ui/Menus';
+import { PAGE_SIZE } from '../../constants.js';
+import UsersRow from './UsersRow';
+import Pagination from '../../ui/Pagination.jsx';
+import { useGetUsers } from './useGetUsers.js';
 
 function UsersTable() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page") || "1", 10);
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const [filters, setFilters] = useState({});
 
-  const {
-    isLoading,
-    data: response,
-    error,
-  } = useQuery({
-    queryKey: ["users"],
-    queryFn: AdminService.getAllUsers,
-  });
-
-  const allUsers = useMemo(() => {
-    if (
-      response &&
-      response.data &&
-      response.data.data &&
-      Array.isArray(response.data.data.users)
-    ) {
-      return response.data.data.users;
-    }
-    return [];
-  }, [response]);
+  const { users: allUsers, isLoading, error } = useGetUsers();
 
   const filteredUsers = useMemo(() => {
+    if (!allUsers) return [];
+
     return allUsers.filter((user) =>
       Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
-        return user[key]
-          ?.toString()
-          .toLowerCase()
-          .includes(value.toLowerCase());
-      }),
+        return user[key]?.toString().toLowerCase().includes(value.toLowerCase());
+      })
     );
   }, [allUsers, filters]);
 
@@ -61,23 +40,23 @@ function UsersTable() {
       ...prev,
       [columnName]: value,
     }));
-    setSearchParams({ page: "1" });
+    setSearchParams({ page: '1' });
   };
 
   if (error) return <div>Error: {error.message}</div>;
   if (isLoading) return <Spinner />;
 
   const columns = [
-    { name: "avatar", width: "60px", filterable: false },
-    { name: "login", width: "120px" },
-    { name: "username", width: "200px" },
-    { name: "email", width: "250px" },
-    { name: "phone", width: "120px" },
-    { name: "profile", width: "150px" },
-    { name: "department", width: "150px" },
-    { name: "localisation", width: "150px" },
-    { name: "active", width: "100px" },
-    { name: "actions", width: "50px", filterable: false },
+    { name: 'avatar', width: '60px', filterable: false },
+    { name: 'login', width: '120px' },
+    { name: 'username', width: '200px' },
+    { name: 'email', width: '250px' },
+    { name: 'phone', width: '120px' },
+    { name: 'profile', width: '150px' },
+    { name: 'department', width: '150px' },
+    { name: 'localisation', width: '150px' },
+    { name: 'active', width: '100px' },
+    { name: 'actions', width: '50px', filterable: false },
   ];
 
   const footer = (
@@ -92,19 +71,14 @@ function UsersTable() {
 
   return (
     <Menus>
-      <Table
-        columns={columns}
-        data={paginatedUsers}
-        onFilterChange={handleFilterChange}
-        footer={footer}
-      >
+      <Table columns={columns} data={paginatedUsers} onFilterChange={handleFilterChange} footer={footer}>
         <Table.Header>
           {columns.map((column) => (
             <div key={column.name} name={column.name}>
-              {column.name === "avatar" || column.name === "actions"
-                ? ""
-                : column.name === "active"
-                  ? "Statut"
+              {column.name === 'avatar' || column.name === 'actions'
+                ? ''
+                : column.name === 'active'
+                  ? 'Statut'
                   : column.name.charAt(0).toUpperCase() + column.name.slice(1)}
             </div>
           ))}

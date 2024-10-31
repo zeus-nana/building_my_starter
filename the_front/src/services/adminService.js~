@@ -244,8 +244,6 @@ class AdminService {
   async updateUserFonction(data) {
     const { id, action } = data;
 
-    console.log(data);
-
     try {
       return await ApiService.put(`${API_CONFIG.ENDPOINTS.HABILITATION.USER_FONCTION}`, { id, action });
     } catch (error) {

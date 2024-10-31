@@ -6,13 +6,13 @@ import MainNav from './MultiLevelNav.jsx';
 
 const StyledSidebar = styled.aside`
   background-color: var(--color-grey-0);
-  padding: 3.2rem 2.4rem;
+  padding: 3.2rem 1rem;
   border-right: 1px solde var(--color-grey-100);
 
   grid-row: 1 / -1;
   display: flex;
   flex-direction: column;
-  gap: 3.2rem;
+  gap: 3rem;
 `;
 
 function Sidebar() {
@@ -37,6 +37,7 @@ function Sidebar() {
         { text: 'Menus', to: '/habilitation/menus' },
         { text: 'Permissions', to: '/habilitation/permissions' },
         { text: 'Configuration des fonctions', to: '/habilitation/configuration-fonction' },
+        { text: 'Attribution des fonctions', to: '/habilitation/attribution-fonction' },
       ],
     },
   ];

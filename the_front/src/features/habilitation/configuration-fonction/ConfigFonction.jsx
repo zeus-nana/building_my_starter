@@ -3,7 +3,7 @@ import Heading from '../../../ui/Heading.jsx';
 import ConfigFonctionTable from './ConfigFonctionTable.jsx';
 import Add from './Add.jsx';
 
-function Fonctions() {
+function ConfigFonctions() {
   return (
     <>
       <Row type="horizontal">
@@ -17,4 +17,4 @@ function Fonctions() {
   );
 }
 
-export default Fonctions;
+export default ConfigFonctions;

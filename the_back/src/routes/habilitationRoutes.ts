@@ -19,7 +19,7 @@ router.post('/fonction-menu-permission', habilitationController.createFonctionMe
 router.get('/fonction-menu-permission', habilitationController.getAllFonctionMenuPermissions);
 
 router.post('/user-fonction', habilitationController.createUserFonction);
-router.put('/user-fonction', habilitationController.disableUserFonction);
+router.put('/user-fonction/', habilitationController.updateUserFonctionStatus);
 router.get('/user-fonction', habilitationController.getAllUserFonctions);
 
 export default router;

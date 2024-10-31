@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { API_CONFIG } from './apiConfig.js'; // Notez le changement d'extension
+import axios from "axios";
+import { API_CONFIG } from "./apiConfig.js"; // Notez le changement d'extension
 
 class ApiService {
   constructor() {
@@ -12,7 +12,7 @@ class ApiService {
       (response) => response,
       (error) => {
         throw error;
-      }
+      },
     );
   }
 
@@ -31,6 +31,7 @@ class ApiService {
   delete(url, config) {
     return this.api.delete(url, config);
   }
+  
 }
 
 export default new ApiService();

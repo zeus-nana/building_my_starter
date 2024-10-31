@@ -405,17 +405,18 @@ const getAllUserFonctions = catchAsync(async (req: Request, res: Response, next:
       'user_fonction.id',
       'user_fonction.user_id',
       'user_fonction.fonction_id',
-      'u.login as user_login',
-      'f.nom as fonction_nom',
+      'u.login as login',
+      'f.nom as fonction',
       'user_fonction.active',
       'user_fonction.created_by',
       'user_fonction.updated_by',
-      'creator.login as created_by_login',
-      'updater.login as updated_by_login',
+      'creator.login as created_by',
+      'updater.login as updated_by',
       'user_fonction.created_at',
       'user_fonction.updated_at',
-    )
-    .where('user_fonction.active', true);
+    );
+
+  console.log(userFonctions);
 
   res.status(200).json({
     status: 'succès',
@@ -501,6 +502,8 @@ const createUserFonction = catchAsync(async (req: Request, res: Response, next: 
 const disableUserFonction = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
 
+  console.log('ici');
+
   try {
     // Vérification de l'existence de l'attribution
     const existingAttribution = await db('user_fonction').where({ id }).first();
@@ -533,6 +536,50 @@ const disableUserFonction = catchAsync(async (req: Request, res: Response, next:
   }
 });
 
+const updateUserFonctionStatus = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { id, action } = req.body;
+
+  if (!id || !action) {
+    return res.status(400).json({
+      status: 'échec',
+      message: 'Id et action sont requis',
+    });
+  }
+
+  const active = action === 'enable' ? true : false;
+
+  try {
+    // Vérification de l'existence de l'attribution
+    const existingAttribution = await db('user_fonction').where({ id }).first();
+
+    if (!existingAttribution) {
+      return res.status(404).json({
+        status: 'échec',
+        message: "L'attribution de fonction spécifiée n'existe pas",
+      });
+    }
+
+    // Mise à jour de l'attribution
+    const [updatedUserFonctionStatus] = await db('user_fonction').where({ id }).update(
+      {
+        active,
+        updated_by: req.user!.id,
+      },
+      ['id', 'user_id', 'fonction_id', 'active', 'updated_at'],
+    );
+
+    res.status(200).json({
+      status: 'succès',
+      data: {
+        userFonction: updatedUserFonctionStatus,
+      },
+    });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de l'attribution:", error);
+    return next(new AppError("Erreur lors de la mise à jour de l'attribution", 500));
+  }
+});
+
 export default {
   createOrUpdatePermission,
   createFonctionMenuPermission,
@@ -545,4 +592,5 @@ export default {
   getAllUserFonctions,
   createUserFonction,
   disableUserFonction,
+  updateUserFonctionStatus,
 };
