@@ -15,7 +15,11 @@ router.get('/permission', habilitationController.getAllPermissions);
 router.post('/fonction', habilitationController.createOrUpdateFonction);
 router.get('/fonction', habilitationController.getAllFonctions);
 
-router.post('/fonction-menu-permission', habilitationController.createFonctionMenuPermissions);
+router.post('/fonction-menu-permission', habilitationController.createFonctionMenuPermission);
 router.get('/fonction-menu-permission', habilitationController.getAllFonctionMenuPermissions);
+
+router.post('/user-fonction', habilitationController.createUserFonction);
+router.put('/user-fonction', habilitationController.disableUserFonction);
+router.get('/user-fonction', habilitationController.getAllUserFonctions);
 
 export default router;

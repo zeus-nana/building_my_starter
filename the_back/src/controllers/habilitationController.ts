@@ -6,6 +6,7 @@ import { MenuCreate } from '../models/Menu';
 import { PermissionCreate } from '../models/Permission';
 import { FonctionCreate } from '../models/Fonction';
 import { FonctionMenuPermissionCreate } from '../models/Fonction_menu_permission';
+import { UserFonctionCreate } from '../models/UserFonction';
 
 const createOrUpdateMenu = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const { id, nom, description } = req.body;
@@ -243,7 +244,7 @@ const createOrUpdatePermission = catchAsync(async (req: Request, res: Response, 
   }
 });
 
-const createFonctionMenuPermissions = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const createFonctionMenuPermission = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const { fonction_id, menu_id, permission_ids } = req.body;
 
   // Validation de base
@@ -394,13 +395,154 @@ const getAllFonctionMenuPermissions = catchAsync(async (req: Request, res: Respo
   });
 });
 
+const getAllUserFonctions = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const userFonctions = await db('user_fonction')
+    .join('users as u', 'user_fonction.user_id', '=', 'u.id')
+    .join('fonction as f', 'user_fonction.fonction_id', '=', 'f.id')
+    .join('users as creator', 'user_fonction.created_by', '=', 'creator.id')
+    .leftJoin('users as updater', 'user_fonction.updated_by', '=', 'updater.id')
+    .select(
+      'user_fonction.id',
+      'user_fonction.user_id',
+      'user_fonction.fonction_id',
+      'u.login as user_login',
+      'f.nom as fonction_nom',
+      'user_fonction.active',
+      'user_fonction.created_by',
+      'user_fonction.updated_by',
+      'creator.login as created_by_login',
+      'updater.login as updated_by_login',
+      'user_fonction.created_at',
+      'user_fonction.updated_at',
+    )
+    .where('user_fonction.active', true);
+
+  res.status(200).json({
+    status: 'succès',
+    data: {
+      userFonctions,
+    },
+  });
+});
+
+const createUserFonction = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { user_id, fonction_id } = req.body;
+
+  // Validation de base
+  if (!user_id || !fonction_id) {
+    return res.status(400).json({
+      status: 'échec',
+      message: 'Les IDs utilisateur et fonction sont requis',
+    });
+  }
+
+  try {
+    // Vérification de l'existence de l'utilisateur
+    const user = await db('users').where({ id: user_id }).first();
+    if (!user) {
+      return res.status(400).json({
+        status: 'échec',
+        message: "L'utilisateur spécifié n'existe pas",
+      });
+    }
+
+    // Vérification de l'existence de la fonction
+    const fonction = await db('fonction').where({ id: fonction_id }).first();
+    if (!fonction) {
+      return res.status(400).json({
+        status: 'échec',
+        message: "La fonction spécifiée n'existe pas",
+      });
+    }
+
+    // Vérification si l'attribution existe déjà
+    const existingAttribution = await db('user_fonction')
+      .where({
+        user_id,
+        fonction_id,
+        active: true,
+      })
+      .first();
+
+    if (existingAttribution) {
+      return res.status(400).json({
+        status: 'échec',
+        message: 'Fonction déjà attribuée à cet utilisateur',
+      });
+    }
+
+    const nouvelleUserFonction: UserFonctionCreate = {
+      user_id,
+      fonction_id,
+      created_by: req.user!.id,
+      active: true,
+    };
+
+    const [createdUserFonction] = await db('user_fonction').insert(nouvelleUserFonction, [
+      'id',
+      'user_id',
+      'fonction_id',
+      'active',
+      'created_at',
+    ]);
+
+    res.status(201).json({
+      status: 'succès',
+      data: {
+        userFonction: createdUserFonction,
+      },
+    });
+  } catch (error) {
+    console.error("Erreur lors de l'attribution de la fonction:", error);
+    return next(new AppError("Erreur lors de l'attribution de la fonction", 500));
+  }
+});
+
+const disableUserFonction = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+
+  try {
+    // Vérification de l'existence de l'attribution
+    const existingAttribution = await db('user_fonction').where({ id }).first();
+
+    if (!existingAttribution) {
+      return res.status(404).json({
+        status: 'échec',
+        message: "L'attribution de fonction spécifiée n'existe pas",
+      });
+    }
+
+    // Désactivation de l'attribution
+    const [updatedUserFonction] = await db('user_fonction').where({ id }).update(
+      {
+        active: false,
+        updated_by: req.user!.id,
+      },
+      ['id', 'user_id', 'fonction_id', 'active', 'updated_at'],
+    );
+
+    res.status(200).json({
+      status: 'succès',
+      data: {
+        userFonction: updatedUserFonction,
+      },
+    });
+  } catch (error) {
+    console.error("Erreur lors de la désactivation de l'attribution:", error);
+    return next(new AppError("Erreur lors de la désactivation de l'attribution", 500));
+  }
+});
+
 export default {
   createOrUpdatePermission,
-  createFonctionMenuPermissions,
+  createFonctionMenuPermission,
   getAllMenus,
   getAllPermissions,
   getAllFonctions,
   getAllFonctionMenuPermissions,
   createOrUpdateMenu,
   createOrUpdateFonction,
+  getAllUserFonctions,
+  createUserFonction,
+  disableUserFonction,
 };
