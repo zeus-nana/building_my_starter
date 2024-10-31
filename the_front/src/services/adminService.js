@@ -128,9 +128,12 @@ class AdminService {
     }
   }
 
-  async createFonctionMenuPermission(fonctionMenuPermissionData) {
+  async createConfigFonction(fonctionMenuPermissionData) {
     try {
-      return await ApiService.post(`${API_CONFIG.ENDPOINTS.HABILITATION.FONCTION_MENU_PERMISSION}`, fonctionMenuPermissionData);
+      return await ApiService.post(
+        `${API_CONFIG.ENDPOINTS.HABILITATION.FONCTION_MENU_PERMISSION}`,
+        fonctionMenuPermissionData
+      );
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         throw error;
@@ -183,7 +186,9 @@ class AdminService {
       if (axios.isAxiosError(error) && error.response) {
         throw error;
       } else {
-        throw new Error('Impossible de récupérer la liste des liaisons fonction-menu-permission. Veuillez réessayer plus tard.');
+        throw new Error(
+          'Impossible de récupérer la liste des liaisons fonction-menu-permission. Veuillez réessayer plus tard.'
+        );
       }
     }
   }
