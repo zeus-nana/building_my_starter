@@ -25,6 +25,7 @@ export async function up(knex: Knex): Promise<void> {
       .inTable('correspondance_partenaire')
       .onDelete('CASCADE');
     table.string('identifiant', 255).notNullable();
+    table.boolean('active').defaultTo(true);
     table.integer('created_by').unsigned().references('id').inTable('users');
     table.integer('updated_by').unsigned().references('id').inTable('users');
     table.timestamps(true, true);
