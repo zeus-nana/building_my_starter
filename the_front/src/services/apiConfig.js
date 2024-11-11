@@ -39,5 +39,8 @@ export const API_CONFIG = {
       FONCTION_MENU_PERMISSION: '/habilitation/fonction-menu-permission',
       USER_FONCTION: '/habilitation/user-fonction',
     },
+    ETAT: {
+      ETAT: '/etat/etat',
+    },
   },
 };

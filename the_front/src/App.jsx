@@ -21,6 +21,8 @@ import Menu from './features/habilitation/menu/Menu.jsx';
 import Permission from './features/habilitation/permission/Permission.jsx';
 import ConfigFonction from './features/habilitation/configuration-fonction/ConfigFonction.jsx';
 import AttributionFonction from './features/habilitation/attribution-fonction/AttributionFonction.jsx';
+import Etat from './features/etat/Etat.jsx';
+import Configuration from './pages/configuration/Configuration.jsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -62,6 +64,10 @@ function App() {
               <Route path="permissions" element={<Permission />} />
               <Route path="configuration-fonction" element={<ConfigFonction />} />
               <Route path="attribution-fonction" element={<AttributionFonction />} />
+            </Route>
+            <Route path="configuration" element={<Configuration />}>
+              <Route index element={<Navigate replace to="/configuration" />} />
+              <Route path="etat" element={<Etat />} />
             </Route>
           </Route>
 

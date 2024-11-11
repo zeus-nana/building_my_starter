@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_CONFIG } from './apiConfig.js'; // Notez le changement d'extension
+import { API_CONFIG } from './apiConfig.js';
 
 class ApiService {
   constructor() {

@@ -85,8 +85,11 @@ const createOrUpdateEtat = catchAsync(async (req: Request, res: Response, next: 
 
 const getAllEtats = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const etats = await db('etat')
-    .join('users', 'etat.created_by', '=', 'users.id')
-    .select('etat.*', 'users.login as created_by');
+    .join('users as creator', 'etat.created_by', '=', 'creator.id')
+    .leftJoin('users as updater', 'etat.updated_by', '=', 'updater.id')
+    .select('etat.*', 'creator.login as created_by', 'updater.login as updated_by');
+
+  console.log('etat :: ', etats);
 
   res.status(200).json({
     status: 'succès',

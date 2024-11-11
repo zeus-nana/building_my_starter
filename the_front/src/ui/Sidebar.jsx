@@ -1,6 +1,12 @@
 import styled from 'styled-components';
 import Logo from './Logo.jsx';
-import { HiOutlineBars4, HiOutlineHome, HiOutlineLockClosed, HiOutlineUsers } from 'react-icons/hi2';
+import {
+  HiOutlineBars4,
+  HiOutlineHome,
+  HiOutlineLockClosed,
+  HiOutlineUsers,
+  HiOutlineWrenchScrewdriver,
+} from 'react-icons/hi2';
 import { HiOutlineChartBar, HiOutlineUpload } from 'react-icons/hi';
 import MainNav from './MultiLevelNav.jsx';
 
@@ -39,6 +45,11 @@ function Sidebar() {
         { text: 'Configuration des fonctions', to: '/habilitation/configuration-fonction' },
         { text: 'Attribution des fonctions', to: '/habilitation/attribution-fonction' },
       ],
+    },
+    {
+      icon: <HiOutlineWrenchScrewdriver />,
+      text: 'Configuration',
+      subItems: [{ text: 'Etats', to: '/configuration/etat' }],
     },
   ];
 
