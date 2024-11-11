@@ -56,7 +56,10 @@ function Sidebar() {
         },
         {
           text: 'Usage et liste',
-          subItems: [{ text: 'Usage', to: '/configuration/usage' }],
+          subItems: [
+            { text: 'Usage', to: '/configuration/usage' },
+            { text: 'Liste statique', to: '/configuration/liste' },
+          ],
         },
       ],
     },

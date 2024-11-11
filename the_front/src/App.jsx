@@ -24,6 +24,7 @@ import AttributionFonction from './features/habilitation/attribution-fonction/At
 import Etat from './features/configuration/etat/Etat.jsx';
 import Configuration from './pages/configuration/Configuration.jsx';
 import CleListe from './features/configuration/cle-liste/CleListe.jsx';
+import ListeToUse from './features/configuration/liste-to-use/ListeToUse.jsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -70,6 +71,7 @@ function App() {
               <Route index element={<Navigate replace to="/configuration" />} />
               <Route path="etat" element={<Etat />} />
               <Route path="usage" element={<CleListe />} />
+              <Route path="liste" element={<ListeToUse />} />
             </Route>
           </Route>
 
