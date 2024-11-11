@@ -19,6 +19,7 @@ import fileProcessingRoutes from './routes/fileProcessingRoutes';
 import reportingRoutes from './routes/reportingRoutes';
 import habilitationRoutes from './routes/habilitationRoutes';
 import etatRoutes from './routes/etatRoutes';
+import configurationRoutes from './routes/configurationRoutes';
 
 // Loading of the environment variables in config.env file.
 dotenv.config({ path: './config.env' });
@@ -85,6 +86,7 @@ app.use('/api/v1/fileProcessing', fileProcessingRoutes);
 app.use('/api/v1/reporting', reportingRoutes);
 app.use('/api/v1/habilitation', habilitationRoutes);
 app.use('/api/v1/etat', etatRoutes);
+app.use('/api/v1/configuration', configurationRoutes);
 
 // UNHANDLED ROUTE
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
