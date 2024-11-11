@@ -32,8 +32,8 @@ export async function up(knex: Knex): Promise<void> {
           'partenaire', cp.partenaire,
           'identifiant', ac.identifiant
         ))
-        FROM agence_correspondance ac
-        JOIN correspondance_partenaire cp ON cp.id = ac.correspondance_id
+        FROM mapping_agence_etat ac
+        JOIN etat cp ON cp.id = ac.etat_id
         WHERE ac.agence_id = a.id
       ) as correspondances
     FROM 

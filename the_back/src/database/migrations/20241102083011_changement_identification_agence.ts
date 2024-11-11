@@ -4,26 +4,21 @@ import { onUpdateTrigger } from '../../../knexfile';
 export async function up(knex: Knex): Promise<void> {
   const MIGRATION_USER_ID = 1309;
 
-  // 1. Créer la table correspondance_partenaire
-  await knex.schema.createTable('correspondance_partenaire', (table) => {
+  // 1. Créer la table etat
+  await knex.schema.createTable('etat', (table) => {
     table.increments('id').primary();
     table.string('partenaire', 100).notNullable().unique();
     table.integer('created_by').unsigned().references('id').inTable('users');
     table.integer('updated_by').unsigned().references('id').inTable('users');
     table.timestamps(true, true);
   });
-  await knex.raw(onUpdateTrigger('correspondance_partenaire'));
+  await knex.raw(onUpdateTrigger('etat'));
 
-  // 2. Créer la table de liaison agence_correspondance
-  await knex.schema.createTable('agence_correspondance', (table) => {
+  // 2. Créer la table de liaison mapping_agence_etat
+  await knex.schema.createTable('mapping_agence_etat', (table) => {
     table.increments('id').primary();
     table.integer('agence_id').unsigned().references('id').inTable('agence').onDelete('CASCADE');
-    table
-      .integer('correspondance_id')
-      .unsigned()
-      .references('id')
-      .inTable('correspondance_partenaire')
-      .onDelete('CASCADE');
+    table.integer('etat_id').unsigned().references('id').inTable('etat').onDelete('CASCADE');
     table.string('identifiant', 255).notNullable();
     table.boolean('active').defaultTo(true);
     table.integer('created_by').unsigned().references('id').inTable('users');
@@ -31,12 +26,12 @@ export async function up(knex: Knex): Promise<void> {
     table.timestamps(true, true);
 
     // Seule contrainte d'unicité : un identifiant doit être unique par partenaire
-    table.unique(['correspondance_id', 'identifiant'], 'unique_identifiant_par_partenaire');
+    table.unique(['etat_id', 'identifiant'], 'unique_identifiant_par_partenaire');
 
     // Index pour optimiser les recherches
-    table.index(['agence_id', 'correspondance_id']);
+    table.index(['agence_id', 'etat_id']);
   });
-  await knex.raw(onUpdateTrigger('agence_correspondance'));
+  await knex.raw(onUpdateTrigger('mapping_agence_etat'));
 
   // 3. Migration des données existantes
   const idColumns = [
@@ -60,7 +55,7 @@ export async function up(knex: Knex): Promise<void> {
 
   // Insérer les partenaires
   for (const { partenaire } of idColumns) {
-    await knex('correspondance_partenaire').insert({
+    await knex('etat').insert({
       partenaire,
       created_by: MIGRATION_USER_ID,
       updated_by: MIGRATION_USER_ID,
@@ -73,14 +68,14 @@ export async function up(knex: Knex): Promise<void> {
   for (const agence of agences) {
     for (const { column, partenaire } of idColumns) {
       if (agence[column]) {
-        const [correspondance] = await knex('correspondance_partenaire').where('partenaire', partenaire).select('id');
+        const [etat] = await knex('etat').where('partenaire', partenaire).select('id');
 
-        if (correspondance) {
+        if (etat) {
           // console.log(agence);
 
-          await knex('agence_correspondance').insert({
+          await knex('mapping_agence_etat').insert({
             agence_id: agence.id,
-            correspondance_id: correspondance.id,
+            etat_id: etat.id,
             identifiant: agence[column],
             created_by: MIGRATION_USER_ID,
             updated_by: MIGRATION_USER_ID,
@@ -126,11 +121,11 @@ export async function down(knex: Knex): Promise<void> {
   });
 
   // 2. Restaurer les données
-  const correspondances = await knex('agence_correspondance')
+  const etats = await knex('mapping_agence_etat')
     .select('*')
-    .join('correspondance_partenaire', 'correspondance_partenaire.id', '=', 'agence_correspondance.correspondance_id');
+    .join('etat', 'etat.id', '=', 'mapping_agence_etat.etat_id');
 
-  for (const corr of correspondances) {
+  for (const corr of etats) {
     const columnName = `id_${corr.partenaire.toLowerCase().replace(/ /g, '_')}`;
     await knex('agence')
       .where('id', corr.agence_id)
@@ -140,8 +135,11 @@ export async function down(knex: Knex): Promise<void> {
   }
 
   // 3. Supprimer les tables dans l'ordre inverse
-  await knex.schema.dropTableIfExists('agence_correspondance');
-  await knex.schema.dropTableIfExists('correspondance_partenaire');
+  await knex.schema.dropTableIfExists('mapping_agence_etat');
+  await knex.schema.dropTableIfExists('etat');
+
+  // Suppression de la vue
+  await knex.raw('DROP VIEW IF EXISTS vw_agence_localite');
 
   await knex.raw(`
     CREATE OR REPLACE VIEW vw_agence_localite AS
