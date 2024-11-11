@@ -7,7 +7,7 @@ import Menus from '../../../ui/Menus.jsx';
 import CreateUpdateListeToUseForm from './CreateUpdateListeToUseForm.jsx';
 
 function ListeToUseRow({ liste }) {
-  const { id, code, libelle, cle_liste_libelle, created_by_login, created_at, updated_at, updated_by_login } = liste;
+  const { id, code, libelle, usage, created_by_login, created_at, updated_at, updated_by_login } = liste;
 
   const formattedDateCreate = new Date(created_at).toLocaleString('fr-FR', {
     dateStyle: 'short',
@@ -23,7 +23,7 @@ function ListeToUseRow({ liste }) {
     <Table.Row>
       <span name="code">{code}</span>
       <span name="libelle">{libelle}</span>
-      <span name="usage">{cle_liste_libelle}</span>
+      <span name="usage">{usage}</span>
       <span name="created_by" alignment="center">
         {created_by_login}
       </span>
@@ -61,7 +61,7 @@ ListeToUseRow.propTypes = {
     id: PropTypes.number.isRequired,
     code: PropTypes.string.isRequired,
     libelle: PropTypes.string.isRequired,
-    cle_liste_libelle: PropTypes.string.isRequired,
+    usage: PropTypes.string.isRequired,
     created_by_login: PropTypes.string.isRequired,
     created_at: PropTypes.string.isRequired,
     updated_by_login: PropTypes.string,

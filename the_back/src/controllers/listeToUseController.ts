@@ -165,11 +165,13 @@ const getAllListeToUse = catchAsync(async (req: Request, res: Response, next: Ne
     .leftJoin('users as updater', 'liste_to_use.updated_by', '=', 'updater.id')
     .select(
       'liste_to_use.*',
-      'cle_liste.libelle as cle_liste_libelle',
+      'cle_liste.libelle as usage',
       'creator.login as created_by_login',
       'updater.login as updated_by_login',
     )
     .orderBy(['cle_liste.libelle', 'liste_to_use.code']);
+
+  console.log('usage :: ', listes);
 
   res.status(200).json({
     status: 'success',
@@ -203,7 +205,7 @@ const getListeToUseByCle = catchAsync(async (req: Request, res: Response, next: 
         'liste_to_use.id',
         'liste_to_use.code',
         'liste_to_use.libelle',
-        'cle_liste.libelle as cle_liste_libelle',
+        'cle_liste.libelle as usage',
         'creator.login as created_by_login',
         'updater.login as updated_by_login',
         'liste_to_use.created_at',

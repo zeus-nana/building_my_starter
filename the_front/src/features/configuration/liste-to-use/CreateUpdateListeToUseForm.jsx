@@ -67,7 +67,7 @@ function CreateUpdateListeToUseForm({ onCloseModal, listeToEdit = {} }) {
         />
       </FormRowNew>
 
-      <FormRowNew label="Clé de liste :" error={errors?.cle_liste_id?.message}>
+      <FormRowNew label="Usage :" error={errors?.cle_liste_id?.message}>
         <Controller
           name="cle_liste_id"
           control={control}
