@@ -49,7 +49,12 @@ function Sidebar() {
     {
       icon: <HiOutlineWrenchScrewdriver />,
       text: 'Configuration',
-      subItems: [{ text: 'Etats', to: '/configuration/etat' }],
+      subItems: [
+        {
+          text: 'Agence - Etat',
+          subItems: [{ text: 'Etat', to: '/configuration/etat' }],
+        },
+      ],
     },
   ];
 
