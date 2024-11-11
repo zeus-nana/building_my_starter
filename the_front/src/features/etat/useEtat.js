@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import EtatService from '../../services/etatService.js';
+import ConfigurationService from '../../services/configurationService.js';
 
 export function useGetEtats() {
   const {
@@ -11,7 +11,7 @@ export function useGetEtats() {
   } = useQuery({
     queryKey: ['etats'],
     queryFn: async () => {
-      const response = await EtatService.getAllEtats();
+      const response = await ConfigurationService.getAllEtats();
       return response.data.data.etats;
     },
   });
@@ -23,7 +23,7 @@ export function useCreateUpdateEtat(onCloseModal) {
   const queryClient = useQueryClient();
 
   const { mutate: createUpdateEtat, isLoading: isCreatingOrUpdating } = useMutation({
-    mutationFn: (data) => EtatService.createUpdateEtat(data),
+    mutationFn: (data) => ConfigurationService.createUpdateEtat(data),
     onSuccess: (_, variables) => {
       const isEditing = Boolean(variables.id);
       toast.success(isEditing ? 'État mis à jour avec succès' : 'État créé avec succès');

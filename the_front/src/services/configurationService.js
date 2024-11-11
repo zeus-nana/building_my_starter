@@ -2,21 +2,21 @@ import ApiService from './apiService.js';
 import { API_CONFIG } from './apiConfig.js';
 import axios from 'axios';
 
-class EtatService {
+class ConfigurationService {
   static instance = null;
 
   constructor() {}
 
   static getInstance() {
-    if (!EtatService.instance) {
-      EtatService.instance = new EtatService();
+    if (!ConfigurationService.instance) {
+      ConfigurationService.instance = new ConfigurationService();
     }
-    return EtatService.instance;
+    return ConfigurationService.instance;
   }
 
   async getAllEtats() {
     try {
-      return await ApiService.get(`${API_CONFIG.ENDPOINTS.ETAT.ETAT}`);
+      return await ApiService.get(`${API_CONFIG.ENDPOINTS.CONFIGURATION.ETAT}`);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         throw error;
@@ -28,7 +28,7 @@ class EtatService {
 
   async createUpdateEtat(etatData) {
     try {
-      return await ApiService.post(`${API_CONFIG.ENDPOINTS.ETAT.ETAT}`, etatData);
+      return await ApiService.post(`${API_CONFIG.ENDPOINTS.CONFIGURATION.ETAT}`, etatData);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         throw error;
@@ -39,4 +39,4 @@ class EtatService {
   }
 }
 
-export default EtatService.getInstance();
+export default ConfigurationService.getInstance();
