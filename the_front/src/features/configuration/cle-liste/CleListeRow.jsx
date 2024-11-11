@@ -22,10 +22,10 @@ function CleListeRow({ cleListe }) {
   return (
     <Table.Row>
       <span name="libelle">{libelle}</span>
-      <span name="created_by_login" alignment="center">
+      <span name="created_by" alignment="center">
         {created_by_login}
       </span>
-      <span name="updated_by_login" alignment="center">
+      <span name="updated_by" alignment="center">
         {updated_by_login}
       </span>
       <span name="created_at" alignment="center">

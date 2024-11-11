@@ -48,8 +48,8 @@ function CleListeTable() {
 
   const columns = [
     { name: 'libelle', width: '200px' },
-    { name: 'created_by_login', width: '100px' },
-    { name: 'updated_by_login', width: '100px' },
+    { name: 'created_by', width: '100px' },
+    { name: 'updated_by', width: '100px' },
     { name: 'created_at', width: '100px' },
     { name: 'updated_at', width: '100px' },
     { name: 'actions', width: '50px', filterable: false },
