@@ -29,7 +29,7 @@ export async function up(knex: Knex): Promise<void> {
       r.chef_lieu,
       (
         SELECT json_agg(json_build_object(
-          'partenaire', cp.partenaire,
+          'etat', cp.etat,
           'identifiant', ac.identifiant
         ))
         FROM mapping_agence_etat ac

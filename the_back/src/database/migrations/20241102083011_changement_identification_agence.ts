@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
   // 1. Créer la table etat
   await knex.schema.createTable('etat', (table) => {
     table.increments('id').primary();
-    table.string('partenaire', 100).notNullable().unique();
+    table.string('etat', 100).notNullable().unique();
     table.integer('created_by').unsigned().references('id').inTable('users');
     table.integer('updated_by').unsigned().references('id').inTable('users');
     table.timestamps(true, true);
@@ -25,8 +25,8 @@ export async function up(knex: Knex): Promise<void> {
     table.integer('updated_by').unsigned().references('id').inTable('users');
     table.timestamps(true, true);
 
-    // Seule contrainte d'unicité : un identifiant doit être unique par partenaire
-    table.unique(['etat_id', 'identifiant'], 'unique_identifiant_par_partenaire');
+    // Seule contrainte d'unicité : un identifiant doit être unique par etat
+    table.unique(['etat_id', 'identifiant'], 'unique_identifiant_par_etat');
 
     // Index pour optimiser les recherches
     table.index(['agence_id', 'etat_id']);
@@ -35,28 +35,28 @@ export async function up(knex: Knex): Promise<void> {
 
   // 3. Migration des données existantes
   const idColumns = [
-    { column: 'id_lmt_om', partenaire: 'LMT OM' },
-    { column: 'id_avs_momo', partenaire: 'AVS MOMO' },
-    { column: 'id_gs_momo', partenaire: 'GS MOMO' },
-    { column: 'id_gs_om', partenaire: 'GS OM' },
-    { column: 'id_avs_wafacash', partenaire: 'AVS WAFACASH' },
-    { column: 'id_bacm', partenaire: 'BACM' },
-    { column: 'id_intouch', partenaire: 'INTOUCH' },
-    { column: 'id_sce_wafacash', partenaire: 'SCE WAFACASH' },
-    { column: 'id_western_ecobank', partenaire: 'WESTERN ECOBANK' },
-    { column: 'id_afrik_com_wafacash', partenaire: 'AFRIK COM WAFACASH' },
-    { column: 'id_western_emi', partenaire: 'WESTERN EMI' },
-    { column: 'id_hop_international', partenaire: 'HOP INTERNATIONAL' },
-    { column: 'id_emi_ecobank', partenaire: 'EMI ECOBANK' },
-    { column: 'id_uba', partenaire: 'UBA' },
-    { column: 'id_ria', partenaire: 'RIA' },
-    { column: 'id_axa', partenaire: 'AXA' },
+    { column: 'id_lmt_om', etat: 'LMT OM' },
+    { column: 'id_avs_momo', etat: 'AVS MOMO' },
+    { column: 'id_gs_momo', etat: 'GS MOMO' },
+    { column: 'id_gs_om', etat: 'GS OM' },
+    { column: 'id_avs_wafacash', etat: 'AVS WAFACASH' },
+    { column: 'id_bacm', etat: 'BACM' },
+    { column: 'id_intouch', etat: 'INTOUCH' },
+    { column: 'id_sce_wafacash', etat: 'SCE WAFACASH' },
+    { column: 'id_western_ecobank', etat: 'WESTERN ECOBANK' },
+    { column: 'id_afrik_com_wafacash', etat: 'AFRIK COM WAFACASH' },
+    { column: 'id_western_emi', etat: 'WESTERN EMI' },
+    { column: 'id_hop_international', etat: 'HOP INTERNATIONAL' },
+    { column: 'id_emi_ecobank', etat: 'EMI ECOBANK' },
+    { column: 'id_uba', etat: 'UBA' },
+    { column: 'id_ria', etat: 'RIA' },
+    { column: 'id_axa', etat: 'AXA' },
   ];
 
-  // Insérer les partenaires
-  for (const { partenaire } of idColumns) {
+  // Insérer les etats
+  for (const { etat } of idColumns) {
     await knex('etat').insert({
-      partenaire,
+      etat,
       created_by: MIGRATION_USER_ID,
       updated_by: MIGRATION_USER_ID,
     });
@@ -66,16 +66,16 @@ export async function up(knex: Knex): Promise<void> {
   const agences = await knex('agence').select('*');
 
   for (const agence of agences) {
-    for (const { column, partenaire } of idColumns) {
+    for (const { column, etat } of idColumns) {
       if (agence[column]) {
-        const [etat] = await knex('etat').where('partenaire', partenaire).select('id');
+        const [etats] = await knex('etat').where('etat', etat).select('id');
 
-        if (etat) {
+        if (etats) {
           // console.log(agence);
 
           await knex('mapping_agence_etat').insert({
             agence_id: agence.id,
-            etat_id: etat.id,
+            etat_id: etats.id,
             identifiant: agence[column],
             created_by: MIGRATION_USER_ID,
             updated_by: MIGRATION_USER_ID,
@@ -126,7 +126,7 @@ export async function down(knex: Knex): Promise<void> {
     .join('etat', 'etat.id', '=', 'mapping_agence_etat.etat_id');
 
   for (const corr of etats) {
-    const columnName = `id_${corr.partenaire.toLowerCase().replace(/ /g, '_')}`;
+    const columnName = `id_${corr.etat.toLowerCase().replace(/ /g, '_')}`;
     await knex('agence')
       .where('id', corr.agence_id)
       .update({
