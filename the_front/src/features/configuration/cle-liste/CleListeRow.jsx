@@ -1,13 +1,13 @@
 /* eslint-disable react/no-unknown-property */
 import PropTypes from 'prop-types';
 import { HiPencil } from 'react-icons/hi';
-import CreateUpdateEtatForm from './CreateUpdateEtatForm.jsx';
+import CreateUpdateCleListeForm from './CreateUpdateCleListeForm.jsx';
 import Modal from '../../../ui/Modal.jsx';
 import Table from '../../../ui/Table.jsx';
 import Menus from '../../../ui/Menus.jsx';
 
-function EtatRow({ etat }) {
-  const { id, etat: etatNom, created_by, created_at, updated_at, updated_by } = etat;
+function CleListeRow({ cleListe }) {
+  const { id, libelle, created_by_login, created_at, updated_at, updated_by_login } = cleListe;
 
   const formattedDateCreate = new Date(created_at).toLocaleString('fr-FR', {
     dateStyle: 'short',
@@ -21,12 +21,12 @@ function EtatRow({ etat }) {
 
   return (
     <Table.Row>
-      <span name="etat">{etatNom}</span>
-      <span name="created_by" alignment="center">
-        {created_by}
+      <span name="libelle">{libelle}</span>
+      <span name="created_by_login" alignment="center">
+        {created_by_login}
       </span>
-      <span name="updated_by" alignment="center">
-        {updated_by}
+      <span name="updated_by_login" alignment="center">
+        {updated_by_login}
       </span>
       <span name="created_at" alignment="center">
         {formattedDateCreate}
@@ -44,8 +44,8 @@ function EtatRow({ etat }) {
               </Modal.Open>
             </Menus.List>
 
-            <Modal.Window name="edit" title="Editer un état">
-              <CreateUpdateEtatForm etatToEdit={etat} />
+            <Modal.Window name="edit" title="Editer une clé de liste">
+              <CreateUpdateCleListeForm cleListeToEdit={cleListe} />
             </Modal.Window>
           </Menus.Menu>
         </Modal>
@@ -54,15 +54,15 @@ function EtatRow({ etat }) {
   );
 }
 
-EtatRow.propTypes = {
-  etat: PropTypes.shape({
+CleListeRow.propTypes = {
+  cleListe: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    etat: PropTypes.string.isRequired,
-    created_by: PropTypes.string.isRequired,
+    libelle: PropTypes.string.isRequired,
+    created_by_login: PropTypes.string.isRequired,
     created_at: PropTypes.string.isRequired,
-    updated_by: PropTypes.string.isRequired,
+    updated_by_login: PropTypes.string,
     updated_at: PropTypes.string.isRequired,
   }).isRequired,
 };
 
-export default EtatRow;
+export default CleListeRow;

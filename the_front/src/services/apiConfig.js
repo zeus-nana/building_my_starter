@@ -41,6 +41,8 @@ export const API_CONFIG = {
     },
     CONFIGURATION: {
       ETAT: '/configuration/etat',
+      CLE_LISTE: '/configuration/cle-liste',
+      LISTE: '/configuration/liste',
     },
   },
 };

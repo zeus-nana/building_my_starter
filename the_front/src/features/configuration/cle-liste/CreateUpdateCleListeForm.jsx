@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useCreateUpdateEtat } from './useEtat.js';
+import { useCreateUpdateCleListe } from './useCleListe.js';
 import FormRowNew from '../../../ui/FormRowNew.jsx';
 import Input from '../../../ui/Input.jsx';
 import FormRow from '../../../ui/FormRow.jsx';
@@ -8,9 +8,9 @@ import SpinnerMini from '../../../ui/SpinnerMini.jsx';
 import Form from '../../../ui/Form.jsx';
 import { useForm } from 'react-hook-form';
 
-function CreateUpdateEtatForm({ onCloseModal, etatToEdit = {} }) {
-  const { id: etatId, ...editValues } = etatToEdit;
-  const isEditing = Boolean(etatId);
+function CreateUpdateCleListeForm({ onCloseModal, cleListeToEdit = {} }) {
+  const { id: cleListeId, ...editValues } = cleListeToEdit;
+  const isEditing = Boolean(cleListeId);
 
   const { register, handleSubmit, formState } = useForm({
     defaultValues: isEditing ? editValues : {},
@@ -18,10 +18,10 @@ function CreateUpdateEtatForm({ onCloseModal, etatToEdit = {} }) {
 
   const { errors } = formState;
 
-  const { isCreatingOrUpdating, createUpdateEtat } = useCreateUpdateEtat(onCloseModal);
+  const { isCreatingOrUpdating, createUpdateCleListe } = useCreateUpdateCleListe(onCloseModal);
 
   function onSubmit(data) {
-    createUpdateEtat(isEditing ? { id: etatId, ...data } : data);
+    createUpdateCleListe(isEditing ? { id: cleListeId, ...data } : data);
   }
 
   function onError(errors) {
@@ -30,12 +30,12 @@ function CreateUpdateEtatForm({ onCloseModal, etatToEdit = {} }) {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit, onError)} type={onCloseModal ? 'modal' : 'regular'}>
-      <FormRowNew label="État :" error={errors?.etat?.message}>
+      <FormRowNew label="Libellé :" error={errors?.libelle?.message}>
         <Input
           type="text"
-          id="etat"
+          id="libelle"
           disabled={isCreatingOrUpdating}
-          {...register('etat', {
+          {...register('libelle', {
             required: 'Ce champ est obligatoire.',
           })}
         />
@@ -53,9 +53,9 @@ function CreateUpdateEtatForm({ onCloseModal, etatToEdit = {} }) {
   );
 }
 
-CreateUpdateEtatForm.propTypes = {
+CreateUpdateCleListeForm.propTypes = {
   onCloseModal: PropTypes.func,
-  etatToEdit: PropTypes.object,
+  cleListeToEdit: PropTypes.object,
 };
 
-export default CreateUpdateEtatForm;
+export default CreateUpdateCleListeForm;

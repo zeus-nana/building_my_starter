@@ -1,38 +1,38 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useGetEtats } from './useEtat.js';
-import EtatRow from './EtatRow.jsx';
+import { useGetCleListes } from './useCleListe.js';
+import CleListeRow from './CleListeRow.jsx';
 import { PAGE_SIZE } from '../../../constants.js';
 import Spinner from '../../../ui/Spinner.jsx';
 import Pagination from '../../../ui/Pagination.jsx';
 import Menus from '../../../ui/Menus.jsx';
 import Table from '../../../ui/Table.jsx';
 
-function EtatsTable() {
+function CleListeTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const [filters, setFilters] = useState({});
 
-  const { etats, isLoading, error } = useGetEtats();
+  const { cleListes, isLoading, error } = useGetCleListes();
 
-  const filteredEtats = useMemo(() => {
+  const filteredCleListes = useMemo(() => {
     return (
-      etats?.filter((etat) =>
+      cleListes?.filter((cleListe) =>
         Object.entries(filters).every(([key, value]) => {
           if (!value) return true;
-          return etat[key]?.toString().toLowerCase().includes(value.toLowerCase());
+          return cleListe[key]?.toString().toLowerCase().includes(value.toLowerCase());
         })
       ) || []
     );
-  }, [etats, filters]);
+  }, [cleListes, filters]);
 
-  const paginatedEtats = useMemo(() => {
+  const paginatedCleListes = useMemo(() => {
     const startIndex = (currentPage - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
-    return filteredEtats.slice(startIndex, endIndex);
-  }, [filteredEtats, currentPage]);
+    return filteredCleListes.slice(startIndex, endIndex);
+  }, [filteredCleListes, currentPage]);
 
-  const totalCount = filteredEtats.length;
+  const totalCount = filteredCleListes.length;
   const pageCount = Math.ceil(totalCount / PAGE_SIZE);
 
   const handleFilterChange = (columnName, value) => {
@@ -47,9 +47,9 @@ function EtatsTable() {
   if (isLoading) return <Spinner />;
 
   const columns = [
-    { name: 'etat', width: '200px' },
-    { name: 'created_by', width: '100px' },
-    { name: 'updated_by', width: '100px' },
+    { name: 'libelle', width: '200px' },
+    { name: 'created_by_login', width: '100px' },
+    { name: 'updated_by_login', width: '100px' },
     { name: 'created_at', width: '100px' },
     { name: 'updated_at', width: '100px' },
     { name: 'actions', width: '50px', filterable: false },
@@ -67,7 +67,7 @@ function EtatsTable() {
 
   return (
     <Menus>
-      <Table columns={columns} data={paginatedEtats} onFilterChange={handleFilterChange} footer={footer}>
+      <Table columns={columns} data={paginatedCleListes} onFilterChange={handleFilterChange} footer={footer}>
         <Table.Header>
           {columns.map((column) => (
             <div key={column.name} name={column.name}>
@@ -75,10 +75,10 @@ function EtatsTable() {
             </div>
           ))}
         </Table.Header>
-        <Table.Body render={(etat) => <EtatRow key={etat.id} etat={etat} />} />
+        <Table.Body render={(cleListe) => <CleListeRow key={cleListe.id} cleListe={cleListe} />} />
       </Table>
     </Menus>
   );
 }
 
-export default EtatsTable;
+export default CleListeTable;

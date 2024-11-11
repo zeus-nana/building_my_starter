@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import ConfigurationService from '../../services/configurationService.js';
+import ConfigurationService from '../../../services/configurationService.js';
 
 export function useGetEtats() {
   const {

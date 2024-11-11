@@ -1,7 +1,7 @@
 import EtatsTable from './EtatsTable.jsx';
 import AddEtat from './AddEtat.jsx';
-import Row from '../../ui/Row.jsx';
-import Heading from '../../ui/Heading.jsx';
+import Row from '../../../ui/Row.jsx';
+import Heading from '../../../ui/Heading.jsx';
 
 function Etat() {
   return (

@@ -54,6 +54,10 @@ function Sidebar() {
           text: 'Agence - Etat',
           subItems: [{ text: 'Etat', to: '/configuration/etat' }],
         },
+        {
+          text: 'Usage et liste',
+          subItems: [{ text: 'Usage', to: '/configuration/usage' }],
+        },
       ],
     },
   ];
