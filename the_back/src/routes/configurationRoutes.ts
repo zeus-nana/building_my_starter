@@ -7,6 +7,10 @@ const router = express.Router();
 
 router.use(authController.protect);
 
+// Routes pour les etats
+router.post('/etat', etatController.createOrUpdateEtat);
+router.get('/etat', etatController.getAllEtats);
+
 // Routes pour cle_liste
 router.post('/cle-liste', listeToUseController.createOrUpdateCleListe);
 router.get('/cle-liste', listeToUseController.getAllCleListes);

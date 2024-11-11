@@ -85,7 +85,6 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/fileProcessing', fileProcessingRoutes);
 app.use('/api/v1/reporting', reportingRoutes);
 app.use('/api/v1/habilitation', habilitationRoutes);
-app.use('/api/v1/etat', etatRoutes);
 app.use('/api/v1/configuration', configurationRoutes);
 
 // UNHANDLED ROUTE
